@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Watch pygubu projects for UI changes and sync with code"""
+"""Watch pygubu projects for UI changes and sync with code."""
 import sys
 import json
 import time
@@ -7,43 +7,101 @@ import pathlib
 import hashlib
 import logging
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 from .registry import Registry
 from .errors import ProjectNotFoundError
+from .logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 def get_file_hash(filepath: pathlib.Path) -> str:
-    """Get MD5 hash of file"""
-    return hashlib.md5(filepath.read_bytes()).hexdigest()
+    """Calculate MD5 hash of file contents.
+    
+    Args:
+        filepath: Path to file to hash
+        
+    Returns:
+        32-character hexadecimal MD5 hash
+        
+    Raises:
+        OSError: If file cannot be read
+    """
+    try:
+        return hashlib.md5(filepath.read_bytes()).hexdigest()
+    except OSError as e:
+        logger.error(f"Failed to read file {filepath}: {e}")
+        raise
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
-    """Load workflow tracking file"""
+    """Load workflow tracking data from project directory.
+    
+    Args:
+        project_path: Path to project directory
+        
+    Returns:
+        Workflow tracking dictionary with keys:
+        - ui_hash: Last known UI file hash
+        - last_sync: ISO timestamp of last sync
+        - changes: List of change records
+    """
     workflow_file = project_path / ".pygubu-workflow.json"
     if workflow_file.exists():
-        return json.loads(workflow_file.read_text())
+        try:
+            return json.loads(workflow_file.read_text())
+        except json.JSONDecodeError as e:
+            logger.warning(f"Invalid workflow file, using defaults: {e}")
     return {"ui_hash": None, "last_sync": None, "changes": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
-    """Save workflow tracking"""
+    """Save workflow tracking data to project directory.
+    
+    Args:
+        project_path: Path to project directory
+        data: Workflow data dictionary to save
+        
+    Raises:
+        OSError: If unable to write workflow file
+    """
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now().isoformat()
-    workflow_file.write_text(json.dumps(data, indent=2))
+    try:
+        workflow_file.write_text(json.dumps(data, indent=2))
+        logger.debug(f"Saved workflow to {workflow_file}")
+    except OSError as e:
+        logger.error(f"Failed to save workflow: {e}")
+        raise
 
 def watch_project(project_name: str) -> None:
-    """Watch project for UI changes"""
+    """Watch project for UI file changes and suggest sync actions.
+    
+    Monitors .ui files in the project directory and detects changes
+    by comparing file hashes. When changes are detected, suggests
+    appropriate AI sync commands to the user.
+    
+    Args:
+        project_name: Name of registered project to watch
+        
+    Raises:
+        ProjectNotFoundError: If project is not registered
+    """
+    logger.debug(f"Starting watch for project: {project_name}")
     registry = Registry()
     projects = registry.list_projects()
     
     if project_name not in projects:
         available = ', '.join(projects.keys()) if projects else 'none'
+        logger.error(f"Project '{project_name}' not found")
         raise ProjectNotFoundError(project_name, f"Available: {available}")
     
     project_path = pathlib.Path(projects[project_name])
-    ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
+    if not project_path.exists():
+        logger.error(f"Project path does not exist: {project_path}")
+        return
+    
+    ui_files = list(project_path.glob("*.ui"))
     
     if not ui_files:
-        logger.warning(f"No .ui files in {project_name}")
+        logger.warning(f"No .ui files found in {project_name}")
         return
     
     print(f"👁️  Watching {project_name}...")

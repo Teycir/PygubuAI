@@ -143,8 +143,10 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ### Developer Documentation
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture, API reference, contributing
+- **[New Features Guide](docs/NEW_FEATURES.md)** - Recent improvements and new capabilities
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - Contribution guidelines
+- [Improvements Summary](IMPROVEMENTS_SUMMARY.md) - Detailed improvement documentation
 
 ### Development Commands
 ```bash
@@ -155,6 +157,17 @@ make format            # Format code with black
 make typecheck         # Run mypy type checking
 make pre-commit-install # Install pre-commit hooks
 ```
+
+## Recent Improvements
+
+PygubuAI has been enhanced with:
+- **Structured Logging**: Debug mode with `PYGUBUAI_LOG_LEVEL=DEBUG`
+- **Environment Variables**: Configure via `PYGUBUAI_*` environment variables
+- **Custom Templates**: Add your own templates in `~/.pygubuai/templates/`
+- **Enhanced Testing**: 90% test coverage with 81 tests
+- **Better Documentation**: Comprehensive docstrings and guides
+
+See [New Features Guide](docs/NEW_FEATURES.md) for details.
 
 ## Examples
 
