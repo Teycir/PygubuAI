@@ -2,25 +2,11 @@
 """AI-powered pygubu project creator"""
 import sys
 import pathlib
+import pygubuai_widgets
 
 def parse_description(description):
     """Extract widgets and features from description"""
-    desc_lower = description.lower()
-    widgets = []
-    
-    # Detect widgets
-    if any(w in desc_lower for w in ['label', 'title', 'heading']):
-        widgets.append(('label', 'Label'))
-    if any(w in desc_lower for w in ['entry', 'input', 'field', 'textbox']):
-        widgets.append(('entry', 'Entry'))
-    if any(w in desc_lower for w in ['button', 'submit', 'click']):
-        widgets.append(('button', 'Button'))
-    if any(w in desc_lower for w in ['list', 'table', 'tree']):
-        widgets.append(('treeview', 'List'))
-    if any(w in desc_lower for w in ['text area', 'textarea', 'multiline']):
-        widgets.append(('text', 'Text Area'))
-    
-    return widgets
+    return pygubuai_widgets.detect_widgets(description)
 
 def generate_ui(name, description):
     """Generate UI XML from description"""
@@ -42,64 +28,17 @@ def generate_ui(name, description):
         '        </layout>',
     ]
     
-    for i, (widget_type, label) in enumerate(widgets, 1):
-        if widget_type == 'label':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Label" id="label{i}">',
-                f'            <property name="text">{label}</property>',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'entry':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Entry" id="entry{i}">',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'button':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Button" id="button{i}">',
-                '            <property name="text">Submit</property>',
-                '            <property name="command">on_button_click</property>',
-                '            <layout manager="pack"><property name="pady">10</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'treeview':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Treeview" id="treeview{i}">',
-                '            <layout manager="pack">',
-                '              <property name="expand">true</property>',
-                '              <property name="fill">both</property>',
-                '            </layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'text':
-            xml.extend([
-                '        <child>',
-                f'          <object class="tk.Text" id="text{i}">',
-                '            <property name="height">10</property>',
-                '            <layout manager="pack">',
-                '              <property name="expand">true</property>',
-                '              <property name="fill">both</property>',
-                '            </layout>',
-                '          </object>',
-                '        </child>',
-            ])
+    for i, (widget_type, config) in enumerate(widgets, 1):
+        widget_id = f"{widget_type}{i}"
+        xml.extend(pygubuai_widgets.generate_widget_xml(widget_type, widget_id, config, i))
     
     xml.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
     return '\n'.join(xml)
 
-def generate_python(name, has_button):
+def generate_python(name, widgets):
     """Generate Python application code"""
     class_name = name.replace('_', ' ').title().replace(' ', '')
+    callbacks = pygubuai_widgets.get_callbacks(widgets)
     
     code = f'''#!/usr/bin/env python3
 import pathlib
@@ -117,11 +56,11 @@ class {class_name}App:
         self.builder.connect_callbacks(self)
 '''
     
-    if has_button:
-        code += '''
-    def on_button_click(self):
-        """Handle button click"""
-        print("Button clicked!")
+    for callback in callbacks:
+        code += f'''
+    def {callback}(self):
+        """Handle {callback.replace('on_', '').replace('_', ' ')}""" 
+        print("{callback} triggered")
 '''
     
     code += f'''
@@ -145,8 +84,8 @@ def create_project(name, description):
     ui_file.write_text(ui_content)
     
     # Generate Python
-    has_button = 'button' in description.lower()
-    py_content = generate_python(name, has_button)
+    widgets = parse_description(description)
+    py_content = generate_python(name, widgets)
     py_file = base / f"{name}.py"
     py_file.write_text(py_content)
     py_file.chmod(0o755)

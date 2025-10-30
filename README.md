@@ -33,6 +33,16 @@ pygubu-create todo 'todo app with entry, button, and list'
 ```
 Describe your UI in plain English, get a working Tkinter app!
 
+**NEW:** Enhanced with 15+ widget types including dropdowns, sliders, tabs, and more!
+
+### 🎯 Project Templates
+```bash
+pygubu-template myapp login    # Login form
+pygubu-template myapp crud     # CRUD interface
+pygubu-template myapp settings # Settings dialog
+```
+Instant professional UIs from pre-built templates!
+
 ### 🌍 Global Project Registry
 ```bash
 pygubu-register scan ~/projects  # Find all pygubu projects
@@ -86,15 +96,23 @@ This installs tools to `~/bin/` (or `/usr/local/bin/`).
 | Command | Description |
 |---------|-------------|
 | `pygubu-create <name> '<desc>'` | Create new project from description |
+| `pygubu-template <name> <template>` | Create from template (login, crud, etc.) |
+| `pygubu-template list` | List all available templates |
 | `pygubu-register list` | Show all registered projects |
 | `pygubu-register active <name>` | Set active project |
 | `pygubu-register scan <dir>` | Auto-discover projects |
 | `tkinter-to-pygubu <file>.py` | Convert tkinter to pygubu |
 | `pygubu-ai-workflow watch <proj>` | Watch for UI changes |
+| `python3 run_tests.py` | Run test suite |
 
 ## Documentation
 
 See [PYGUBUAI.md](PYGUBUAI.md) for complete documentation.
+
+**NEW Features:** [docs/FEATURES.md](docs/FEATURES.md)
+- Testing Framework
+- Project Templates  
+- Enhanced Widget Support
 
 Quick reference: `cat pygubuai-quickref.txt`
 
