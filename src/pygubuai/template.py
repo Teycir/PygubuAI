@@ -5,8 +5,9 @@ from pathlib import Path
 
 from . import __version__
 from .errors import PygubuAIError, validate_pygubu
-from .utils import validate_project_name, ensure_directory, find_pygubu_designer
-from .templates import get_template, list_templates, generate_from_template, generate_callbacks
+from .utils import validate_project_name, ensure_directory
+from .templates import get_template, list_templates, get_template_widgets_and_callbacks
+from .generator import generate_base_ui_xml_structure, generate_python_app_structure, generate_readme_content
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -26,56 +27,17 @@ def create_from_template(name: str, template_name: str):
         name = validate_project_name(name)
         base = ensure_directory(Path.cwd() / name)
         
+        template_widgets, template_callbacks_code = get_template_widgets_and_callbacks(template_name)
+        
         ui_file = base / f"{name}.ui"
-        ui_file.write_text(generate_from_template(template_name))
-        
-        class_name = name.replace('_', ' ').title().replace(' ', '')
-        callbacks = generate_callbacks(template_name)
-        
-        py_content = f'''#!/usr/bin/env python3
-import pathlib
-import tkinter as tk
-import pygubu
-
-PROJECT_PATH = pathlib.Path(__file__).parent
-PROJECT_UI = PROJECT_PATH / "{name}.ui"
-
-class {class_name}App:
-    def __init__(self, master=None):
-        self.builder = pygubu.Builder()
-        self.builder.add_from_file(PROJECT_UI)
-        self.mainwindow = self.builder.get_object('mainwindow', master)
-        self.builder.connect_callbacks(self)
-
-{callbacks}
-    def run(self):
-        self.mainwindow.mainloop()
-
-if __name__ == '__main__':
-    app = {class_name}App()
-    app.run()
-'''
+        ui_file.write_text(generate_base_ui_xml_structure(name, template_widgets))
         
         py_file = base / f"{name}.py"
-        py_file.write_text(py_content)
+        py_file.write_text(generate_python_app_structure(name, [], custom_callbacks_code=template_callbacks_code))
         py_file.chmod(0o755)
         
         readme = base / "README.md"
-        readme.write_text(f'''# {name.replace("_", " ").title()}
-
-Template: {template_name}
-{template["description"]}
-
-## Run
-```bash
-python {name}.py
-```
-
-## Edit UI
-```bash
-{find_pygubu_designer()} {name}.ui
-```
-''')
+        readme.write_text(generate_readme_content(name, template["description"], f"{name}.ui", template_name=template_name))
         
         logger.info(f"✓ Created from '{template_name}' template: {base}/")
         logger.info(f"  Files: {name}.ui, {name}.py, README.md")

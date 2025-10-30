@@ -1,4 +1,5 @@
 """Project templates"""
+from typing import List, Tuple, Dict, Any
 
 TEMPLATES = {
     "login": {
@@ -36,18 +37,27 @@ TEMPLATES = {
         ],
         "callbacks": ["on_save", "on_cancel"],
     },
-}
-
-WIDGET_MAP = {
-    "label": "ttk.Label",
-    "entry": "ttk.Entry",
-    "button": "ttk.Button",
-    "treeview": "ttk.Treeview",
-    "text": "tk.Text",
-    "combobox": "ttk.Combobox",
-    "checkbutton": "ttk.Checkbutton",
-    "labelframe": "ttk.Labelframe",
-    "notebook": "ttk.Notebook",
+    "dashboard": {
+        "description": "Dashboard with multiple panels",
+        "widgets": [
+            ("label", "Dashboard", "title_label"),
+            ("labelframe", "Statistics", "stats_frame"),
+            ("labelframe", "Recent Activity", "activity_frame"),
+            ("button", "Refresh", "refresh_button", {"command": "on_refresh"}),
+        ],
+        "callbacks": ["on_refresh"],
+    },
+    "wizard": {
+        "description": "Multi-step wizard interface",
+        "widgets": [
+            ("label", "Step 1 of 3", "step_label"),
+            ("notebook", "", "wizard_notebook"),
+            ("button", "Previous", "prev_button", {"command": "on_previous"}),
+            ("button", "Next", "next_button", {"command": "on_next"}),
+            ("button", "Finish", "finish_button", {"command": "on_finish"}),
+        ],
+        "callbacks": ["on_previous", "on_next", "on_finish"],
+    },
 }
 
 def get_template(name):
@@ -58,63 +68,12 @@ def list_templates():
     """List templates"""
     return [(name, tmpl["description"]) for name, tmpl in TEMPLATES.items()]
 
-def generate_from_template(template_name):
-    """Generate UI XML"""
+def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple], List[str]]:
+    """Extract widgets and callbacks from template."""
+    from .errors import PygubuAIError
+    
     template = get_template(template_name)
     if not template:
-        return None
+        raise PygubuAIError(f"Template '{template_name}' not found.")
     
-    xml = [
-        '<?xml version="1.0" encoding="utf-8"?>',
-        '<interface version="1.2">',
-        '  <object class="tk.Toplevel" id="mainwindow">',
-        f'    <property name="title">{template_name.title()}</property>',
-        '    <property name="height">400</property>',
-        '    <property name="width">600</property>',
-        '    <child>',
-        '      <object class="ttk.Frame" id="mainframe">',
-        '        <property name="padding">20</property>',
-        '        <layout manager="pack">',
-        '          <property name="expand">true</property>',
-        '          <property name="fill">both</property>',
-        '        </layout>',
-    ]
-    
-    for i, widget_data in enumerate(template["widgets"], 1):
-        widget_type = widget_data[0]
-        text = widget_data[1] if len(widget_data) > 1 else ""
-        widget_id = widget_data[2] if len(widget_data) > 2 else f"{widget_type}{i}"
-        props = widget_data[3] if len(widget_data) > 3 else {}
-        
-        widget_class = WIDGET_MAP.get(widget_type, "ttk.Label")
-        xml.extend([
-            '        <child>',
-            f'          <object class="{widget_class}" id="{widget_id}">',
-        ])
-        
-        if text:
-            xml.append(f'            <property name="text">{text}</property>')
-        
-        for key, value in props.items():
-            xml.append(f'            <property name="{key}">{value}</property>')
-        
-        xml.extend([
-            '            <layout manager="pack"><property name="pady">5</property></layout>',
-            '          </object>',
-            '        </child>',
-        ])
-    
-    xml.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
-    return '\n'.join(xml)
-
-def generate_callbacks(template_name):
-    """Generate callback methods"""
-    template = get_template(template_name)
-    if not template or not template.get("callbacks"):
-        return ""
-    
-    code = []
-    for callback in template["callbacks"]:
-        code.append(f'    def {callback}(self):\n        print("{callback} triggered")\n')
-    
-    return '\n'.join(code)
+    return template["widgets"], template.get("callbacks", [])

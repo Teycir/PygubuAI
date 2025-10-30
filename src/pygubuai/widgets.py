@@ -1,4 +1,5 @@
 """Widget detection and generation"""
+from typing import List, Tuple, Dict, Any
 
 WIDGET_PATTERNS = {
     "label": {"keywords": ["label", "title", "heading"], "class": "ttk.Label", "properties": {"text": "Label"}},
@@ -31,11 +32,11 @@ def detect_widgets(description):
     
     return widgets if widgets else [("label", WIDGET_PATTERNS["label"]), ("button", WIDGET_PATTERNS["button"])]
 
-def generate_widget_xml(widget_type, widget_id, config, index=1):
+def generate_widget_xml(widget_type: str, widget_id: str, config: dict, index: int = 1) -> List[str]:
     """Generate XML for widget"""
-    xml = ['        <child>', f'          <object class="{config["class"]}" id="{widget_id}">']
+    xml = ['        <child>', f'          <object class="{config.get("class", "ttk.Label")}" id="{widget_id}">']
     
-    for prop, value in config["properties"].items():
+    for prop, value in config.get("properties", {}).items():
         xml.append(f'            <property name="{prop}">{value}</property>')
     
     layout = '            <layout manager="pack">'

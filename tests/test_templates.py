@@ -21,17 +21,10 @@ class TestTemplates(unittest.TestCase):
         self.assertIn("widgets", template)
         self.assertIn("callbacks", template)
     
-    def test_generate_from_template(self):
-        """Test XML generation from template"""
-        xml = pygubuai_templates.generate_from_template("login")
-        self.assertIsNotNone(xml)
-        self.assertIn("<?xml", xml)
-        self.assertIn("ttk.Entry", xml)
-        self.assertIn("ttk.Button", xml)
-    
-    def test_generate_callbacks(self):
-        """Test callback generation"""
-        callbacks = pygubuai_templates.generate_callbacks("login")
+    def test_get_template_widgets_and_callbacks(self):
+        """Test extracting widgets and callbacks from template"""
+        widgets, callbacks = pygubuai_templates.get_template_widgets_and_callbacks("login")
+        self.assertGreater(len(widgets), 0)
         self.assertIn("on_login", callbacks)
     
     def test_crud_template(self):
