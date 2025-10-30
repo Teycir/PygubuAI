@@ -27,8 +27,12 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
     workflow_file = project_path / ".pygubu-workflow.json"
     if workflow_file.exists():
         try:
-            return json.loads(workflow_file.read_text())
-        except (json.JSONDecodeError, OSError) as e:
+            data = json.loads(workflow_file.read_text())
+            if not isinstance(data, dict):
+                logger.warning("Invalid workflow file format. Using defaults.")
+                return {"ui_hash": None, "last_sync": None, "changes": []}
+            return data
+        except (json.JSONDecodeError, OSError, ValueError) as e:
             logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
     return {"ui_hash": None, "last_sync": None, "changes": []}
 
@@ -36,10 +40,14 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking"""
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now(timezone.utc).isoformat()
+    # Limit changes history to last 100 entries
+    if "changes" in data and len(data["changes"]) > 100:
+        data["changes"] = data["changes"][-100:]
     try:
         workflow_file.write_text(json.dumps(data, indent=2))
-    except (OSError, IOError) as e:
+    except (OSError, IOError, TypeError) as e:
         logger.error(f"Failed to save workflow file: {e}")
+        raise
 
 def watch_project(project_name: str) -> None:
     """Watch project for UI changes"""
@@ -100,12 +108,19 @@ def watch_project(project_name: str) -> None:
                         save_workflow(project_path, workflow)
                 
                 time.sleep(2)
-            except Exception as e:
-                logger.error(f"Error during watch cycle: {e}")
+            except (OSError, IOError) as e:
+                logger.error(f"File system error during watch cycle: {e}")
+                time.sleep(2)
+            except KeyError as e:
+                logger.error(f"Workflow data corruption: {e}")
+                workflow = load_workflow(project_path)
                 time.sleep(2)
     
     except KeyboardInterrupt:
         print("\n\n✓ Stopped watching")
+    except Exception as e:
+        logger.exception(f"Fatal error in watch loop: {e}")
+        raise
 
 def main():
     """Main CLI entry point"""
@@ -130,6 +145,8 @@ def main():
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)
+    except KeyboardInterrupt:
+        sys.exit(0)
     except Exception as e:
         logger.exception(f"Unexpected error: {e}")
         sys.exit(1)
