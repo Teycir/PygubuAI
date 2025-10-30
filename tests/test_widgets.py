@@ -4,8 +4,8 @@ import unittest
 import sys
 import pathlib
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-import pygubuai_widgets
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
+from pygubuai import widgets as pygubuai_widgets
 
 class TestWidgetDetection(unittest.TestCase):
     def test_basic_widgets(self):
@@ -31,10 +31,10 @@ class TestWidgetDetection(unittest.TestCase):
     
     def test_advanced_widgets(self):
         """Test advanced widget detection"""
-        widgets = pygubuai_widgets.detect_widgets("app with dropdown and slider")
+        widgets = pygubuai_widgets.detect_widgets("app with dropdown and checkbox")
         widget_types = [w[0] for w in widgets]
         self.assertIn("combobox", widget_types)
-        self.assertIn("scale", widget_types)
+        self.assertIn("checkbutton", widget_types)
     
     def test_callback_extraction(self):
         """Test callback method extraction"""

@@ -31,7 +31,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
     "coverage>=7.0",
+    "black>=23.0",
+    "flake8>=6.0",
 ]
 
 [project.urls]
@@ -40,18 +44,29 @@ Documentation = "https://github.com/yourusername/pygubuai/blob/main/PYGUBUAI.md"
 Repository = "https://github.com/yourusername/pygubuai"
 
 [project.scripts]
-pygubu-create = "pygubu_create:main"
-pygubu-template = "pygubu_template:main"
-pygubu-quickstart = "pygubu_quickstart:main"
+pygubu-create = "pygubuai.create:main"
+pygubu-register = "pygubuai.register:main"
+pygubu-template = "pygubuai.template:main"
+pygubu-ai-workflow = "pygubuai.workflow:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
-only-include = [
-    "pygubu_create.py",
-    "pygubu_template.py",
-    "pygubu_quickstart.py",
-    "pygubuai_config.py",
-    "pygubuai_errors.py",
-    "pygubuai_templates.py",
-    "pygubuai_widgets.py",
+packages = ["src/pygubuai"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["src/pygubuai"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
 ]

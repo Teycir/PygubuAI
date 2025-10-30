@@ -4,8 +4,8 @@ import unittest
 import sys
 import pathlib
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-import pygubuai_templates
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
+from pygubuai import templates as pygubuai_templates
 
 class TestTemplates(unittest.TestCase):
     def test_list_templates(self):

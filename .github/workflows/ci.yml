@@ -20,13 +20,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pygubu pygubu-designer
+        pip install -e ".[dev]"
     
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
-        python -m unittest discover tests
+        pytest --cov=src/pygubuai --cov-report=term-missing
     
-    - name: Check tools are executable
+    - name: Test CLI installation
       run: |
-        chmod +x pygubu-create pygubu-register pygubu-ai-workflow tkinter-to-pygubu
-        ./pygubu-create --help || true
+        pygubu-create --version
+        pygubu-create --help

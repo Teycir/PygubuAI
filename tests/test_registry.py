@@ -6,35 +6,37 @@ import pathlib
 import json
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
+from pygubuai.registry import Registry
+import os
 
 class TestRegistry(unittest.TestCase):
     def setUp(self):
-        self.temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json')
-        self.registry_path = pathlib.Path(self.temp_file.name)
-        self.temp_file.close()
+        self.temp_dir = tempfile.mkdtemp()
+        self.old_home = os.environ.get('HOME')
+        os.environ['HOME'] = self.temp_dir
     
     def tearDown(self):
-        if self.registry_path.exists():
-            self.registry_path.unlink()
+        if self.old_home:
+            os.environ['HOME'] = self.old_home
     
     def test_registry_creation(self):
-        """Test registry file creation"""
-        registry = {"projects": {}, "active": None}
-        self.registry_path.write_text(json.dumps(registry))
-        self.assertTrue(self.registry_path.exists())
+        """Test registry initialization"""
+        registry = Registry()
+        self.assertTrue(registry.registry_path.parent.exists())
     
     def test_add_project(self):
-        """Test adding project to registry"""
-        registry = {"projects": {}, "active": None}
-        registry["projects"]["test"] = {"path": "/test/path", "created": "2024-01-01"}
-        self.assertIn("test", registry["projects"])
+        """Test adding project"""
+        registry = Registry()
+        registry.add_project("test", "/test/path")
+        self.assertIn("test", registry.list_projects())
     
     def test_set_active(self):
         """Test setting active project"""
-        registry = {"projects": {"test": {"path": "/test"}}, "active": None}
-        registry["active"] = "test"
-        self.assertEqual(registry["active"], "test")
+        registry = Registry()
+        registry.add_project("test", "/test/path")
+        registry.set_active("test")
+        self.assertEqual(registry.get_active(), "test")
 
 if __name__ == '__main__':
     unittest.main()

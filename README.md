@@ -76,20 +76,29 @@ Auto-detects UI changes and prompts for code sync.
 - Python 3.9+
 - [Pygubu](https://github.com/alejandroautalan/pygubu) and [Pygubu Designer](https://github.com/alejandroautalan/pygubu-designer)
 
-### Install Pygubu First
-```bash
-pip install pygubu pygubu-designer
-```
-
-### Install PygubuAI Tools
+### Recommended: pip install
 ```bash
 git clone https://github.com/yourusername/pygubuai.git
 cd pygubuai
-chmod +x install.sh
-./install.sh
+pip install -e .
 ```
 
-This installs tools to `~/bin/` (or `/usr/local/bin/`).
+### Alternative: Shell script install
+```bash
+./install.sh  # Installs to ~/bin/ or /usr/local/bin/
+```
+
+### Development Setup
+```bash
+make dev  # or: pip install -e ".[dev]"
+make test
+```
+
+### Uninstall
+```bash
+./uninstall.sh  # For shell script install
+pip uninstall pygubuai  # For pip install
+```
 
 ## Commands
 
@@ -121,10 +130,13 @@ This installs tools to `~/bin/` (or `/usr/local/bin/`).
 ### Testing
 ```bash
 # Run tests
-python3 run_tests.py
+make test
 
 # Run with coverage
-./run_coverage.sh
+make coverage
+
+# Lint code
+make lint
 ```
 
 ## Examples

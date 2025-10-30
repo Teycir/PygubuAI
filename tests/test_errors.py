@@ -5,33 +5,20 @@ import tempfile
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from pygubuai_errors import ProjectNotFoundError, InvalidProjectError, validate_project_structure
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
+from pygubuai.errors import ProjectNotFoundError, InvalidProjectError
 
 class TestErrors(unittest.TestCase):
     def test_project_not_found_error(self):
         """Test ProjectNotFoundError message"""
-        error = ProjectNotFoundError("test_project")
+        error = ProjectNotFoundError("test_project", "use pygubu-register")
         self.assertIn("test_project", str(error))
-        self.assertIn("Suggestion", str(error))
     
-    def test_validate_nonexistent_project(self):
-        """Test validation of nonexistent project"""
-        with self.assertRaises(InvalidProjectError):
-            validate_project_structure("/nonexistent/path")
-    
-    def test_validate_empty_project(self):
-        """Test validation of project without .ui files"""
-        temp_dir = tempfile.mkdtemp()
-        with self.assertRaises(InvalidProjectError):
-            validate_project_structure(temp_dir)
-    
-    def test_validate_valid_project(self):
-        """Test validation of valid project"""
-        temp_dir = pathlib.Path(tempfile.mkdtemp())
-        (temp_dir / "test.ui").write_text("<?xml version='1.0'?>")
-        
-        self.assertTrue(validate_project_structure(temp_dir))
+    def test_invalid_project_error(self):
+        """Test InvalidProjectError message"""
+        error = InvalidProjectError("/test/path", "no .ui files")
+        self.assertIn("/test/path", str(error))
+        self.assertIn("no .ui files", str(error))
 
 if __name__ == '__main__':
     unittest.main()

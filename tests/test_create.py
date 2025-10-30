@@ -5,7 +5,7 @@ import tempfile
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
 
 class TestProjectCreation(unittest.TestCase):
     def setUp(self):
@@ -20,7 +20,7 @@ class TestProjectCreation(unittest.TestCase):
     
     def test_parse_description(self):
         """Test widget detection from description"""
-        import pygubuai_widgets
+        from pygubuai import widgets as pygubuai_widgets
         
         widgets = pygubuai_widgets.detect_widgets("login form with username and password")
         self.assertTrue(any(w[0] == 'entry' for w in widgets))
@@ -31,7 +31,7 @@ class TestProjectCreation(unittest.TestCase):
     
     def test_project_structure(self):
         """Test complete project creation"""
-        import pygubuai_widgets
+        from pygubuai import widgets as pygubuai_widgets
         
         # Test that we can detect widgets and generate structure
         widgets = pygubuai_widgets.detect_widgets("simple app with button")
