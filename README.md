@@ -107,14 +107,25 @@ This installs tools to `~/bin/` (or `/usr/local/bin/`).
 
 ## Documentation
 
-See [PYGUBUAI.md](PYGUBUAI.md) for complete documentation.
+### User Guides
+- [Complete Documentation](PYGUBUAI.md) - Full user guide
+- [Features Guide](docs/FEATURES.md) - Testing, Templates, Widgets
+- [Quick Reference](pygubuai-quickref.txt) - Command cheat sheet
+- [Demo Guide](DEMO.md) - Quick examples
 
-**NEW Features:** [docs/FEATURES.md](docs/FEATURES.md)
-- Testing Framework
-- Project Templates  
-- Enhanced Widget Support
+### Developer Docs
+- [Architecture](docs/ARCHITECTURE.md) - System design and diagrams
+- [Implementation Summary](IMPLEMENTATION_SUMMARY.md) - Recent improvements
+- [Changelog](CHANGELOG.md) - Version history
 
-Quick reference: `cat pygubuai-quickref.txt`
+### Testing
+```bash
+# Run tests
+python3 run_tests.py
+
+# Run with coverage
+./run_coverage.sh
+```
 
 ## Examples
 
@@ -154,10 +165,18 @@ pygubu-designer myapp/myapp.ui
 
 ## Requirements
 
+### Runtime
 - Python 3.9+
 - pygubu >= 0.39
 - pygubu-designer >= 0.42
 - tkinter (usually included with Python)
+
+### Development (Optional)
+- coverage >= 7.0 (for code coverage)
+
+```bash
+pip install -e ".[dev]"  # Install with dev dependencies
+```
 
 ## Contributing
 

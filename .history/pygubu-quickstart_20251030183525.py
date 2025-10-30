@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Creates a minimal, empty pygubu project."""
+"""Quick starter for pygubu projects"""
 import sys
 import pathlib
 
@@ -59,15 +59,8 @@ if __name__ == '__main__':
     print(f"\nNext steps:")
     print(f"  ~/pygubu-designer {ui_file}")
 
-def main(args=None):
-    if args is None:
-        args = sys.argv[1:]
-    
-    if len(args) != 1:
-        print(f"Usage: {pathlib.Path(__file__).name} <project_name>")
-        sys.exit(1)
-    
-    create_project(args[0])
-
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) != 2:
+        print("Usage: pygubu-quickstart <project_name>")
+        sys.exit(1)
+    create_project(sys.argv[1])

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pygubuai"
+version = "0.1.0"
+description = "AI-powered workflow tools for Pygubu - Build Tkinter UIs with natural language"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "PygubuAI Contributors"}
+]
+keywords = ["pygubu", "tkinter", "ai", "gui", "workflow"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: User Interfaces",
+]
+dependencies = [
+    "pygubu>=0.39",
+    "pygubu-designer>=0.42",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage>=7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/pygubuai"
+Documentation = "https://github.com/yourusername/pygubuai/blob/main/PYGUBUAI.md"
+Repository = "https://github.com/yourusername/pygubuai"
+
+[project.scripts]
+pygubu-create = "pygubu_create:main"
+pygubu-template = "pygubu_template:main"
+pygubu-quickstart = "pygubu_quickstart:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+only-include = [
+    "pygubu_create.py",
+    "pygubu_template.py",
+    "pygubu_quickstart.py",
+    "pygubuai_config.py",
+    "pygubuai_errors.py",
+    "pygubuai_templates.py",
+    "pygubuai_widgets.py",
+]
