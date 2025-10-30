@@ -140,8 +140,8 @@ def main():
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     subparsers = parser.add_subparsers(dest='command', required=True)
     
-    watch_parser = subparsers.add_parser('watch', help='Watch project for UI changes')
-    watch_parser.add_argument('project_name', help='Name of project to watch')
+    watch_parser = subparsers.add_parser('watch', help='Watch project(s) for UI changes')
+    watch_parser.add_argument('project_name', help='Project name(s), comma-separated or "all"')
     watch_parser.add_argument('--interval', type=float, help='Watch interval in seconds (default: 2.0)')
     watch_parser.add_argument('--patterns', help='File patterns to watch, comma-separated (default: *.ui)')
     
@@ -150,7 +150,16 @@ def main():
     try:
         if args.command == 'watch':
             patterns = [p.strip() for p in args.patterns.split(',')] if args.patterns else None
-            watch_project(args.project_name, interval=args.interval, patterns=patterns)
+            
+            if args.project_name == 'all':
+                from .multi_watch import watch_all_projects
+                watch_all_projects(interval=args.interval, patterns=patterns)
+            elif ',' in args.project_name:
+                from .multi_watch import watch_multiple_projects
+                projects = [p.strip() for p in args.project_name.split(',')]
+                watch_multiple_projects(projects, interval=args.interval, patterns=patterns)
+            else:
+                watch_project(args.project_name, interval=args.interval, patterns=patterns)
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)

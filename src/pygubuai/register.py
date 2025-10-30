@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import Optional, Dict, List
 from .registry import Registry
 from .errors import ProjectNotFoundError, InvalidProjectError
+from .progress import ProgressBar
 
 logger = logging.getLogger(__name__)
 
@@ -106,12 +107,13 @@ def get_active() -> Optional[str]:
         }, indent=2))
     return project_path
 
-def scan_directory(directory: str = ".") -> None:
+def scan_directory(directory: str = ".", show_progress: bool = True) -> None:
     """Auto-scan directory for pygubu projects"""
     base = pathlib.Path(directory).resolve()
     if not base.exists():
         raise InvalidProjectError(str(directory), "directory does not exist")
     
+    print(f"Scanning {directory}...")
     found = []
     for item in base.rglob("*.ui"):
         project_dir = item.parent
@@ -122,13 +124,20 @@ def scan_directory(directory: str = ".") -> None:
         print(f"No pygubu projects found in {directory}")
         return
     
-    print(f"Found {len(found)} project(s):\n")
+    print(f"\nFound {len(found)} project(s)")
     registry = Registry()
     
-    for proj_dir in found:
-        name = proj_dir.name
-        print(f"  {name} - {proj_dir}")
-        registry.add_project(name, str(proj_dir), description="Auto-discovered project")
+    if show_progress and len(found) > 3:
+        progress = ProgressBar(len(found), prefix="Registering")
+        for proj_dir in found:
+            name = proj_dir.name
+            registry.add_project(name, str(proj_dir), description="Auto-discovered project")
+            progress.update()
+    else:
+        for proj_dir in found:
+            name = proj_dir.name
+            print(f"  {name} - {proj_dir}")
+            registry.add_project(name, str(proj_dir), description="Auto-discovered project")
     
     print(f"\n[SUCCESS] Registered {len(found)} project(s)")
 
