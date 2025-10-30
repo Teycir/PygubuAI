@@ -1,4 +1,4 @@
-# PygubuAI 🤖
+# PygubuAI
 
 [![CI](https://github.com/yourusername/pygubuai/workflows/CI/badge.svg)](https://github.com/yourusername/pygubuai/actions)
 [![codecov](https://codecov.io/gh/yourusername/pygubuai/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/pygubuai)
@@ -10,11 +10,11 @@ AI-powered workflow tools for [Pygubu](https://github.com/alejandroautalan/pygub
 ## What is PygubuAI?
 
 PygubuAI adds AI-assisted development tools on top of Pygubu, enabling:
-- 🗣️ Natural language UI creation
-- 🔄 Seamless visual-to-code synchronization  
-- 🌍 Global project management across all AI chats
-- 🔧 Automatic tkinter-to-pygubu conversion
-- 📊 Project tracking and context awareness
+- Natural language UI creation
+- Seamless visual-to-code synchronization  
+- Global project management across all AI chats
+- Automatic tkinter-to-pygubu conversion
+- Project tracking and context awareness
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ pygubu-create myapp 'login form with username and password'
 
 ## Features
 
-### 🎨 Natural Language UI Creation
+### Natural Language UI Creation
 ```bash
 pygubu-create todo 'todo app with entry, button, and list'
 ```
@@ -40,7 +40,7 @@ Describe your UI in plain English, get a working Tkinter app!
 
 **NEW:** Enhanced with 15+ widget types including dropdowns, sliders, tabs, and more!
 
-### 🎯 Project Templates
+### Project Templates
 ```bash
 pygubu-template myapp login    # Login form
 pygubu-template myapp crud     # CRUD interface
@@ -48,20 +48,20 @@ pygubu-template myapp settings # Settings dialog
 ```
 Instant professional UIs from pre-built templates!
 
-### 🌍 Global Project Registry
+### Global Project Registry
 ```bash
 pygubu-register scan ~/projects  # Find all pygubu projects
 pygubu-register active myapp     # Set active project
 ```
 Access any project from any AI chat session.
 
-### 🔄 Convert Existing Code
+### Convert Existing Code
 ```bash
 tkinter-to-pygubu old_app.py
 ```
 Migrate legacy tkinter code to pygubu format.
 
-### 🤖 AI Chat Integration
+### AI Chat Integration
 In ANY conversation with your AI assistant:
 - "Add a button to my project"
 - "Change the color scheme"
@@ -69,7 +69,7 @@ In ANY conversation with your AI assistant:
 
 Use `@pygubu-context` prompt for automatic context loading.
 
-### 👁️ Watch Mode
+### Watch Mode
 ```bash
 pygubu-ai-workflow watch myapp
 ```
@@ -238,4 +238,4 @@ PygubuAI is built on top of [Pygubu](https://github.com/alejandroautalan/pygubu)
 
 ---
 
-**Made with ❤️ for seamless AI-human collaboration in Tkinter development**
+**Made for seamless AI-human collaboration in Tkinter development**

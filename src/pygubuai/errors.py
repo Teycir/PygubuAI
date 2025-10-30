@@ -8,9 +8,9 @@ class PygubuAIError(Exception):
         super().__init__(self.message)
     
     def __str__(self):
-        error = f"❌ {self.message}"
+        error = f"[ERROR] {self.message}"
         if self.suggestion:
-            error += f"\n💡 {self.suggestion}"
+            error += f"\n[SUGGESTION] {self.suggestion}"
         return error
 
 class ProjectNotFoundError(PygubuAIError):

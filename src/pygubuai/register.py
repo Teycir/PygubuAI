@@ -26,7 +26,7 @@ def register_project(path: str) -> None:
     
     registry.add_project(project_name, str(project_path))
     
-    print(f"✓ Registered: {project_name}")
+    print(f"[SUCCESS] Registered: {project_name}")
     print(f"  Path: {project_path}")
     print(f"  UI files: {len(ui_files)}")
 
@@ -40,7 +40,7 @@ def set_active(project_name: str) -> None:
         raise ProjectNotFoundError(project_name, f"Available: {available}")
     
     registry.set_active(project_name)
-    print(f"✓ Active project: {project_name}")
+    print(f"[SUCCESS] Active project: {project_name}")
 
 def list_projects() -> None:
     """List all registered projects"""
@@ -54,9 +54,9 @@ def list_projects() -> None:
         print("  pygubu-register add /path/to/project")
         return
     
-    print("📁 Registered Pygubu Projects:\n")
+    print("Registered Pygubu Projects:\n")
     for name, path in projects.items():
-        active_marker = " ⭐" if name == active else ""
+        active_marker = " [ACTIVE]" if name == active else ""
         project_path = pathlib.Path(path)
         ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
         print(f"  {name}{active_marker}")
@@ -111,7 +111,7 @@ def scan_directory(directory: str = ".") -> None:
         print(f"  {name} - {proj_dir}")
         registry.add_project(name, str(proj_dir))
     
-    print(f"\n✓ Registered {len(found)} project(s)")
+    print(f"\n[SUCCESS] Registered {len(found)} project(s)")
 
 def main():
     """Main CLI entry point"""

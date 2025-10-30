@@ -26,7 +26,7 @@ python3 run_tests.py -v
 - **test_widgets.py** - Widget detection
 - **test_templates.py** - Template system
 
-## 2. Project Templates 🎨
+## 2. Project Templates 
 
 Pre-built templates for common UI patterns.
 
@@ -63,7 +63,7 @@ python mylogin.py
 - Professional structure
 - Ready to customize
 
-## 3. Enhanced Widget Support 🔧
+## 3. Enhanced Widget Support 
 
 Expanded widget detection with 15+ widget types and context awareness.
 

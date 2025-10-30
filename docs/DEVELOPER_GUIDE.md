@@ -242,8 +242,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.info("✓ Created project: %s", project_path)
-logger.error("❌ Failed to create project: %s", error)
+logger.info("[SUCCESS] Created project: %s", project_path)
+logger.error("[ERROR] Failed to create project: %s", error)
 ```
 
 ## Testing

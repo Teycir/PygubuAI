@@ -2,7 +2,7 @@
 
 AI-integrated workflow for building Tkinter applications with Pygubu designer.
 
-## 🚀 Quick Start
+## [ROCKET] Quick Start
 
 ```bash
 # Create a new project
@@ -18,7 +18,7 @@ AI-integrated workflow for building Tkinter applications with Pygubu designer.
 ~/pygubu-designer myapp/myapp.ui
 ```
 
-## 🤖 AI Workflow
+##  AI Workflow
 
 ### In ANY chat, say:
 - "Work on my pygubu project"
@@ -103,7 +103,7 @@ venv/bin/pip install pygubu-designer
 ~/pygubu-register info | grep ui_files
 ```
 
-## 🎯 Workflow Examples
+##  Workflow Examples
 
 ### Example 1: New Project
 ```bash
@@ -139,7 +139,7 @@ venv/bin/pip install pygubu-designer
 # In chat: "I added a logout button, update the code"
 ```
 
-## 📁 File Structure
+## [FOLDER] File Structure
 
 ```
 ~/.pygubu-registry.json          # Global project registry
@@ -152,7 +152,7 @@ project/
 └── .pygubu-workflow.json       # Workflow tracking
 ```
 
-## 🎨 Features
+##  Features
 
 ✅ **Natural Language UI Creation** - Describe what you want, AI generates it  
 ✅ **Global Project Registry** - Access any project from any chat  
@@ -161,7 +161,7 @@ project/
 ✅ **Convert Existing** - Migrate tkinter apps to pygubu  
 ✅ **Context Tracking** - AI remembers your project state  
 
-## 💡 AI Integration
+## [TIP] AI Integration
 
 ### Use the saved prompt:
 ```
@@ -176,7 +176,7 @@ project/
 
 AI reads `~/.pygubu-registry.json` and loads your active project automatically!
 
-## 🔧 Advanced
+##  Advanced
 
 ### Custom Widgets
 Edit `~/Repos/pygubu/src/pygubu/widgets/` to add custom widgets.
@@ -206,4 +206,4 @@ AI updates both UI and logic!
 
 ---
 
-**Made with ❤️ for seamless AI-human collaboration**
+**Made with [HEART] for seamless AI-human collaboration**
