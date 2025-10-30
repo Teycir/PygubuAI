@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="title">Number Game</property>
+    <property name="height">400</property>
+    <property name="width">600</property>
+    <child>
+      <object class="ttk.Frame" id="mainframe">
+        <property name="padding">20</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="title_label">
+            <property name="text">🎮 Guess the Number (1-100)</property>
+            <property name="font">Helvetica 16 bold</property>
+            <layout manager="pack"><property name="pady">10</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="hint_label">
+            <property name="text">I'm thinking of a number...</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="guess_entry">
+            <property name="width">20</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="guess_button">
+            <property name="text">🎯 Guess!</property>
+
+            <layout manager="pack"><property name="pady">10</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="result_label">
+            <property name="text">Make your guess!</property>
+            <property name="font">Helvetica 12</property>
+            <property name="foreground">#0066cc</property>
+            <layout manager="pack"><property name="pady">10</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="attempts_label">
+            <property name="text">Attempts: 0</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="reset_button">
+            <property name="text">🔄 New Game</property>
+
+            <layout manager="pack"><property name="pady">10</property></layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
