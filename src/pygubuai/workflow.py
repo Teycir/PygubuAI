@@ -1,90 +1,50 @@
 #!/usr/bin/env python3
-"""Watch pygubu projects for UI changes and sync with code."""
+"""Watch pygubu projects for UI changes and sync with code"""
 import sys
 import json
 import time
 import pathlib
+import hashlib
 import logging
 import argparse
 from datetime import datetime
-from typing import Dict
+from typing import Dict, List
 from .registry import Registry
 from .errors import ProjectNotFoundError
-from .logging_config import get_logger
-from .utils import get_file_hash
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
+
+def get_file_hash(filepath: pathlib.Path) -> str:
+    """Get MD5 hash of file"""
+    return hashlib.md5(filepath.read_bytes()).hexdigest()
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
-    """Load workflow tracking data from project directory.
-    
-    Args:
-        project_path: Path to project directory
-        
-    Returns:
-        Workflow tracking dictionary with keys:
-        - ui_hash: Last known UI file hash
-        - last_sync: ISO timestamp of last sync
-        - changes: List of change records
-    """
+    """Load workflow tracking file"""
     workflow_file = project_path / ".pygubu-workflow.json"
     if workflow_file.exists():
-        try:
-            return json.loads(workflow_file.read_text())
-        except json.JSONDecodeError as e:
-            logger.warning(f"Invalid workflow file, using defaults: {e}")
+        return json.loads(workflow_file.read_text())
     return {"ui_hash": None, "last_sync": None, "changes": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
-    """Save workflow tracking data to project directory.
-    
-    Args:
-        project_path: Path to project directory
-        data: Workflow data dictionary to save
-        
-    Raises:
-        OSError: If unable to write workflow file
-    """
+    """Save workflow tracking"""
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now().isoformat()
-    try:
-        workflow_file.write_text(json.dumps(data, indent=2))
-        logger.debug(f"Saved workflow to {workflow_file}")
-    except OSError as e:
-        logger.error(f"Failed to save workflow: {e}")
-        raise
+    workflow_file.write_text(json.dumps(data, indent=2))
 
 def watch_project(project_name: str) -> None:
-    """Watch project for UI file changes and suggest sync actions.
-    
-    Monitors .ui files in the project directory and detects changes
-    by comparing file hashes. When changes are detected, suggests
-    appropriate AI sync commands to the user.
-    
-    Args:
-        project_name: Name of registered project to watch
-        
-    Raises:
-        ProjectNotFoundError: If project is not registered
-    """
-    logger.debug(f"Starting watch for project: {project_name}")
+    """Watch project for UI changes"""
     registry = Registry()
     projects = registry.list_projects()
     
     if project_name not in projects:
         available = ', '.join(projects.keys()) if projects else 'none'
-        logger.error(f"Project '{project_name}' not found")
         raise ProjectNotFoundError(project_name, f"Available: {available}")
     
     project_path = pathlib.Path(projects[project_name])
-    if not project_path.exists():
-        logger.error(f"Project path does not exist: {project_path}")
-        return
-    
-    ui_files = list(project_path.glob("*.ui"))
+    ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
     
     if not ui_files:
-        logger.warning(f"No .ui files found in {project_name}")
+        logger.warning(f"No .ui files in {project_name}")
         return
     
     print(f"👁️  Watching {project_name}...")
@@ -130,18 +90,14 @@ def main():
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     
     parser = argparse.ArgumentParser(
-        description="Watch a pygubu project for UI changes and suggest AI sync actions.",
-        epilog="Example:\n"
-               "  pygubu-ai-workflow watch myapp",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        prog='pygubu-ai-workflow',
+        description='Watch pygubu projects for UI changes and sync with code'
     )
-    parser.add_argument(
-        '--version', action='version', version=f"pygubu-ai-workflow {__version__}"
-    )
-    subparsers = parser.add_subparsers(dest='command', required=True, help='Sub-command help')
+    parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
+    subparsers = parser.add_subparsers(dest='command', required=True)
     
-    watch_parser = subparsers.add_parser('watch', help='Watch a project for UI changes')
-    watch_parser.add_argument('project_name', help='Name of the project to watch.')
+    watch_parser = subparsers.add_parser('watch', help='Watch project for UI changes')
+    watch_parser.add_argument('project_name', help='Name of project to watch')
     
     args = parser.parse_args()
     
@@ -151,8 +107,8 @@ def main():
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)
-    except Exception:
-        logger.exception("An unexpected error occurred while watching the project.")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':

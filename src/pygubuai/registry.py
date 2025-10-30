@@ -1,18 +1,16 @@
 """Thread-safe project registry"""
 import json
 import logging
-import sys
 from pathlib import Path
 from typing import Dict, Optional
 from contextlib import contextmanager
 
-from .config import Config
+try:
+    from filelock import FileLock
+except ImportError:
+    FileLock = None
 
-# Platform-specific imports for file locking
-if sys.platform == 'win32':
-    import msvcrt
-else:
-    import fcntl
+from .config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -37,21 +35,16 @@ class Registry:
     @contextmanager
     def _lock(self, mode='r'):
         """Cross-platform file locking context manager"""
-        f = open(self.registry_path, mode)
-        try:
-            if sys.platform == 'win32':
-                # Windows file locking
-                msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
-            else:
-                # Unix/Linux/macOS file locking
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            yield f
-        finally:
-            if sys.platform == 'win32':
-                msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-            f.close()
+        if FileLock:
+            lock = FileLock(str(self.registry_path) + '.lock', timeout=10)
+            with lock:
+                with open(self.registry_path, mode) as f:
+                    yield f
+        else:
+            # Fallback without locking if filelock not available
+            logger.warning("filelock not installed, registry operations not thread-safe")
+            with open(self.registry_path, mode) as f:
+                yield f
     
     def _read(self) -> Dict:
         """Read with lock"""

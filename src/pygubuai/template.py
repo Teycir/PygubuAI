@@ -1,6 +1,7 @@
 """Template CLI"""
 import sys
 import logging
+import argparse
 from pathlib import Path
 
 from . import __version__
@@ -53,29 +54,41 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
 
 def main(args=None):
     """CLI entry point"""
-    if args is None:
-        args = sys.argv[1:]
+    parser = argparse.ArgumentParser(
+        prog='pygubu-template',
+        description='Create pygubu projects from templates'
+    )
+    parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
+    subparsers = parser.add_subparsers(dest='command')
     
-    if '--version' in args:
-        print(f"pygubu-template {__version__}")
-        return
+    list_parser = subparsers.add_parser('list', help='List available templates')
     
-    if len(args) == 1 and args[0] == 'list':
+    create_parser = subparsers.add_parser('create', help='Create project from template')
+    create_parser.add_argument('name', help='Project name')
+    create_parser.add_argument('template', help='Template name')
+    
+    # Support legacy positional args: pygubu-template <name> <template>
+    parsed_args = parser.parse_args(args)
+    
+    if parsed_args.command == 'list':
         print("Available templates:\n")
         for name, desc in list_templates():
             print(f"  {name:12} - {desc}")
-        return
-    
-    if len(args) != 2 or '--help' in args:
-        print(f"pygubu-template {__version__}")
-        print("\nUsage: pygubu-template <name> <template>")
-        print("       pygubu-template list")
-        print("\nExamples:")
-        print("  pygubu-template mylogin login")
-        print("  pygubu-template myapp crud")
-        sys.exit(0 if '--help' in args else 1)
-    
-    create_from_template(args[0], args[1])
+    elif parsed_args.command == 'create':
+        create_from_template(parsed_args.name, parsed_args.template)
+    else:
+        # Legacy mode: pygubu-template <name> <template>
+        if args is None:
+            args = sys.argv[1:]
+        if len(args) == 1 and args[0] == 'list':
+            print("Available templates:\n")
+            for name, desc in list_templates():
+                print(f"  {name:12} - {desc}")
+        elif len(args) == 2:
+            create_from_template(args[0], args[1])
+        else:
+            parser.print_help()
+            sys.exit(1)
 
 if __name__ == '__main__':
     main()
