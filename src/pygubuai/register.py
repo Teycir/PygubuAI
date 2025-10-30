@@ -3,6 +3,7 @@
 import sys
 import pathlib
 import logging
+import argparse
 from datetime import datetime
 from typing import Optional, Dict, List
 from .registry import Registry
@@ -117,41 +118,46 @@ def main():
     from . import __version__
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     
-    if '--version' in sys.argv:
-        print(f"pygubu-register {__version__}")
-        return
+    parser = argparse.ArgumentParser(
+        description="Register and manage pygubu projects globally.",
+        epilog="Examples:\n"
+               "  pygubu-register add ~/number_game\n"
+               "  pygubu-register active number_game\n"
+               "  pygubu-register scan ~/projects",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        '--version', action='version', version=f"pygubu-register {__version__}"
+    )
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    if '--help' in sys.argv or len(sys.argv) < 2:
-        print(f"pygubu-register {__version__}")
-        print("\nCommands:")
-        print("  add <path>      - Register a project")
-        print("  active <name>   - Set active project")
-        print("  list            - List all projects")
-        print("  info            - Show active project")
-        print("  scan [dir]      - Auto-scan for projects")
-        print("\nExamples:")
-        print("  pygubu-register add ~/number_game")
-        print("  pygubu-register active number_game")
-        print("  pygubu-register scan ~/projects")
-        sys.exit(0 if '--help' in sys.argv else 1)
+    add_parser = subparsers.add_parser('add', help='Register a project')
+    add_parser.add_argument('path', help='Path to the project directory')
     
-    cmd = sys.argv[1]
+    active_parser = subparsers.add_parser('active', help='Set active project')
+    active_parser.add_argument('name', help='Name of the project to set as active')
+    
+    subparsers.add_parser('list', help='List all registered projects')
+    subparsers.add_parser('info', help='Show active project information')
+    
+    scan_parser = subparsers.add_parser('scan', help='Auto-scan directory for projects')
+    scan_parser.add_argument('directory', nargs='?', default='.', help='Directory to scan (default: current directory)')
+    
+    args = parser.parse_args()
     
     try:
-        if cmd == "add" and len(sys.argv) == 3:
-            register_project(sys.argv[2])
-        elif cmd == "active" and len(sys.argv) == 3:
-            set_active(sys.argv[2])
-        elif cmd == "list":
+        if args.command == 'add':
+            register_project(args.path)
+        elif args.command == 'active':
+            set_active(args.name)
+        elif args.command == 'list':
             list_projects()
-        elif cmd == "info":
+        elif args.command == 'info':
             get_active()
-        elif cmd == "scan":
-            directory = sys.argv[2] if len(sys.argv) == 3 else "."
-            scan_directory(directory)
+        elif args.command == 'scan':
+            scan_directory(args.directory)
         else:
-            print("Invalid command")
-            sys.exit(1)
+            parser.print_help()
     except (ProjectNotFoundError, InvalidProjectError) as e:
         logger.error(str(e))
         sys.exit(1)

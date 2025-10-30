@@ -1,6 +1,7 @@
 """Project creation with error handling"""
 import sys
 import logging
+import argparse
 from pathlib import Path
 from typing import List, Tuple
 
@@ -120,22 +121,21 @@ python {name}.py
 
 def main(args=None):
     """CLI entry point"""
-    if args is None:
-        args = sys.argv[1:]
+    parser = argparse.ArgumentParser(
+        description="Create a new pygubu project from a natural language description.",
+        epilog="Examples:\n"
+               "  pygubu-create login 'login form with username and password'\n"
+               "  pygubu-create todo 'todo app with entry, button, and list'",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        '--version', action='version', version=f"pygubu-create {__version__}"
+    )
+    parser.add_argument('name', help='Name of the project to create.')
+    parser.add_argument('description', help='Natural language description of the UI.')
     
-    if '--version' in args:
-        print(f"pygubu-create {__version__}")
-        return
-    
-    if len(args) != 2 or '--help' in args:
-        print(f"pygubu-create {__version__}")
-        print("\nUsage: pygubu-create <name> '<description>'")
-        print("\nExamples:")
-        print("  pygubu-create login 'login form with username and password'")
-        print("  pygubu-create todo 'todo app with entry, button, and list'")
-        sys.exit(0 if '--help' in args else 1)
-    
-    create_project(args[0], args[1])
+    parsed_args = parser.parse_args(args)
+    create_project(parsed_args.name, parsed_args.description)
 
 if __name__ == '__main__':
     main()

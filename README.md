@@ -4,14 +4,12 @@
 [![codecov](https://codecov.io/gh/yourusername/pygubuai/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/pygubuai)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-**AI-powered workflow tools for [Pygubu](https://github.com/alejandroautalan/pygubu) to build Tkinter UIs with natural language.**
 
 AI-powered workflow tools for [Pygubu](https://github.com/alejandroautalan/pygubu) - Build Tkinter UIs with natural language and visual design.
 
 ## What is PygubuAI?
 
 PygubuAI adds AI-assisted development tools on top of Pygubu, enabling:
-PygubuAI enhances the Pygubu ecosystem with a suite of AI-assisted development tools, enabling:
 - 🗣️ Natural language UI creation
 - 🔄 Seamless visual-to-code synchronization  
 - 🌍 Global project management across all AI chats
@@ -27,15 +25,9 @@ cd pygubuai
 
 # Install
 ./install.sh
-# Install in editable mode (recommended)
-pip install -e .
 
 # Create your first AI-powered project
 pygubu-create myapp 'login form with username and password'
-
-# Run your new application
-cd myapp
-python myapp.py
 ```
 
 ## Features
@@ -90,20 +82,13 @@ Auto-detects UI changes and prompts for code sync.
 - [Pygubu](https://github.com/alejandroautalan/pygubu) and [Pygubu Designer](https://github.com/alejandroautalan/pygubu-designer)
 
 ### Recommended Method: pip install
-### Install Pygubu First
-```bash
-pip install pygubu pygubu-designer
-```
 
 **This is the preferred installation method:**
 
-### Install PygubuAI Tools
 ```bash
 git clone https://github.com/yourusername/pygubuai.git
 cd pygubuai
 pip install -e .
-chmod +x install.sh
-./install.sh
 ```
 
 Verify installation:
@@ -111,7 +96,6 @@ Verify installation:
 pygubu-create --version
 pygubu-register list
 ```
-This installs tools to `~/bin/` (or `/usr/local/bin/`).
 
 ### Alternative: Shell Script (Legacy)
 
@@ -156,13 +140,11 @@ pip uninstall pygubuai  # For pip install (recommended)
 - **[User Guide](docs/USER_GUIDE.md)** - Complete guide for using PygubuAI
 - [Quick Reference](pygubuai-quickref.txt) - Command cheat sheet
 - [Examples](examples/) - Sample projects
-See [PYGUBUAI.md](PYGUBUAI.md) for complete documentation.
 
 ### Developer Documentation
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture, API reference, contributing
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - Contribution guidelines
-Quick reference: `cat pygubuai-quickref.txt`
 
 ### Development Commands
 ```bash
