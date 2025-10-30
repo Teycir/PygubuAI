@@ -145,6 +145,9 @@ def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict,
         elif current_hash != prev_hash:
             _notify_ui_change(ui_file, project_name)
             workflow["file_hashes"][file_key] = current_hash
+            # Trim changes array before appending to prevent unbounded growth
+            if len(workflow["changes"]) >= 100:
+                workflow["changes"] = workflow["changes"][-99:]
             workflow["changes"].append({
                 "file": ui_file.name,
                 "timestamp": datetime.now(timezone.utc).isoformat()

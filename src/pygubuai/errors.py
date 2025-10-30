@@ -15,11 +15,13 @@ class PygubuAIError(Exception):
 
 class ProjectNotFoundError(PygubuAIError):
     """Project not found"""
-    pass
+    def __init__(self, project_name: str, suggestion: str = ""):
+        super().__init__(f"Project '{project_name}' not found", suggestion)
 
 class InvalidProjectError(PygubuAIError):
     """Invalid project structure"""
-    pass
+    def __init__(self, path: str, reason: str):
+        super().__init__(f"Invalid project at '{path}': {reason}")
 
 class DependencyError(PygubuAIError):
     """Missing dependency"""

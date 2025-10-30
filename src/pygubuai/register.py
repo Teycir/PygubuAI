@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 
 def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
     """Register a pygubu project"""
-    project_path = pathlib.Path(path).resolve()
+    project_path = pathlib.Path(path)
     if not project_path.exists():
         raise InvalidProjectError(str(path), "path does not exist")
+    project_path = project_path.resolve()
     
     ui_files = list(project_path.glob("*.ui"))
     if not ui_files:

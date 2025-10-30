@@ -43,7 +43,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
         # Use template if specified
         if template:
             from .template import create_from_template
-            # Template function creates files, just return after
+            create_from_template(name, template, dry_run=dry_run, init_git=init_git)
             return
         
         widgets = detect_widgets(description)
