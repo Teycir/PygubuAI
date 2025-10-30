@@ -231,5 +231,76 @@ class TestWorkflowErrorRecovery(unittest.TestCase):
                     except KeyboardInterrupt:
                         pass  # Expected
 
+class TestMultiFileTracking(unittest.TestCase):
+    """Test per-file hash tracking."""
+    
+    def test_tracks_multiple_files_separately(self):
+        """Test workflow tracks each file's hash separately"""
+        temp_dir = tempfile.mkdtemp()
+        project_dir = pathlib.Path(temp_dir) / "proj"
+        project_dir.mkdir()
+        
+        # Create multiple UI files
+        file1 = project_dir / "main.ui"
+        file2 = project_dir / "dialog.ui"
+        file1.write_text("<ui>main</ui>")
+        file2.write_text("<ui>dialog</ui>")
+        
+        workflow = load_workflow(project_dir)
+        self.assertIn("file_hashes", workflow)
+        self.assertEqual(workflow["file_hashes"], {})
+    
+    def test_detects_specific_file_change(self):
+        """Test detects which specific file changed"""
+        temp_dir = tempfile.mkdtemp()
+        project_dir = pathlib.Path(temp_dir) / "proj"
+        project_dir.mkdir()
+        
+        file1 = project_dir / "a.ui"
+        file2 = project_dir / "b.ui"
+        file1.write_text("<ui>a</ui>")
+        file2.write_text("<ui>b</ui>")
+        
+        workflow = load_workflow(project_dir)
+        workflow["file_hashes"] = {
+            "a.ui": get_file_hash(file1),
+            "b.ui": get_file_hash(file2)
+        }
+        save_workflow(project_dir, workflow)
+        
+        # Change only file1
+        file1.write_text("<ui>a_modified</ui>")
+        
+        # Verify hashes differ
+        new_hash = get_file_hash(file1)
+        self.assertNotEqual(workflow["file_hashes"]["a.ui"], new_hash)
+        self.assertEqual(workflow["file_hashes"]["b.ui"], get_file_hash(file2))
+
+class TestConfigurableWatch(unittest.TestCase):
+    """Test configurable watch settings."""
+    
+    def test_default_watch_interval(self):
+        """Test default watch interval is 2.0 seconds"""
+        from pygubuai.workflow import get_watch_interval
+        self.assertEqual(get_watch_interval(), 2.0)
+    
+    def test_custom_watch_interval(self):
+        """Test custom watch interval from environment"""
+        from pygubuai.workflow import get_watch_interval
+        with patch.dict(os.environ, {'PYGUBUAI_WATCH_INTERVAL': '5.0'}):
+            self.assertEqual(get_watch_interval(), 5.0)
+    
+    def test_default_file_patterns(self):
+        """Test default file patterns"""
+        from pygubuai.workflow import get_file_patterns
+        self.assertEqual(get_file_patterns(), ['*.ui'])
+    
+    def test_custom_file_patterns(self):
+        """Test custom file patterns from environment"""
+        from pygubuai.workflow import get_file_patterns
+        with patch.dict(os.environ, {'PYGUBUAI_WATCH_PATTERNS': '*.ui, *.xml'}):
+            patterns = get_file_patterns()
+            self.assertEqual(patterns, ['*.ui', '*.xml'])
+
 if __name__ == '__main__':
     unittest.main()
