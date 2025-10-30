@@ -7,22 +7,12 @@ import pathlib
 import hashlib
 import logging
 import argparse
-import os
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from .registry import Registry
 from .errors import ProjectNotFoundError
 
 logger = logging.getLogger(__name__)
-
-def get_watch_interval() -> float:
-    """Get watch interval from environment or default"""
-    return float(os.environ.get('PYGUBUAI_WATCH_INTERVAL', '2.0'))
-
-def get_file_patterns() -> List[str]:
-    """Get file patterns to watch from environment or default"""
-    patterns = os.environ.get('PYGUBUAI_WATCH_PATTERNS', '*.ui')
-    return [p.strip() for p in patterns.split(',')]
 
 def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
     """Get SHA256 hash of file"""
@@ -40,7 +30,7 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
             return json.loads(workflow_file.read_text())
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
-    return {"ui_hash": None, "last_sync": None, "changes": [], "file_hashes": {}}
+    return {"ui_hash": None, "last_sync": None, "changes": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking"""
@@ -51,7 +41,7 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     except (OSError, IOError) as e:
         logger.error(f"Failed to save workflow file: {e}")
 
-def watch_project(project_name: str, interval: Optional[float] = None, patterns: Optional[List[str]] = None) -> None:
+def watch_project(project_name: str) -> None:
     """Watch project for UI changes"""
     registry = Registry()
     projects = registry.list_projects()
@@ -64,30 +54,22 @@ def watch_project(project_name: str, interval: Optional[float] = None, patterns:
     if not project_path.exists() or not project_path.is_dir():
         raise ProjectNotFoundError(project_name, f"Invalid project path: {project_path}")
     
-    interval = interval or get_watch_interval()
-    patterns = patterns or get_file_patterns()
-    
     try:
-        ui_files = []
-        for pattern in patterns:
-            ui_files.extend(project_path.glob(pattern))
+        ui_files = list(project_path.glob("*.ui"))
     except OSError as e:
         logger.error(f"Failed to scan project directory: {e}")
         return
     
     if not ui_files:
-        logger.warning(f"No files matching {patterns} in {project_name}")
+        logger.warning(f"No .ui files in {project_name}")
         return
     
     print(f"👁️  Watching {project_name}...")
     print(f"   Path: {project_path}")
-    print(f"   Files: {len(ui_files)} ({', '.join(patterns)})")
-    print(f"   Interval: {interval}s")
+    print(f"   UI files: {len(ui_files)}")
     print("\nPress Ctrl+C to stop\n")
     
     workflow = load_workflow(project_path)
-    if "file_hashes" not in workflow:
-        workflow["file_hashes"] = {}
     
     try:
         while True:
@@ -100,30 +82,27 @@ def watch_project(project_name: str, interval: Optional[float] = None, patterns:
                     if current_hash is None:
                         continue
                     
-                    file_key = ui_file.name
-                    prev_hash = workflow["file_hashes"].get(file_key)
-                    
-                    if prev_hash is None:
-                        workflow["file_hashes"][file_key] = current_hash
+                    if workflow["ui_hash"] is None:
+                        workflow["ui_hash"] = current_hash
                         save_workflow(project_path, workflow)
-                    elif current_hash != prev_hash:
+                    elif current_hash != workflow["ui_hash"]:
                         print(f"🔄 UI changed: {ui_file.name}")
                         print(f"   Time: {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
                         print("\n💡 Suggested action:")
                         print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
                         print(f"   Or: 'Review changes in {project_name}'\n")
                         
-                        workflow["file_hashes"][file_key] = current_hash
+                        workflow["ui_hash"] = current_hash
                         workflow["changes"].append({
-                            "file": ui_file.name,
+                            "file": str(ui_file),
                             "timestamp": datetime.now(timezone.utc).isoformat()
                         })
                         save_workflow(project_path, workflow)
                 
-                time.sleep(interval)
+                time.sleep(2)
             except Exception as e:
                 logger.error(f"Error during watch cycle: {e}")
-                time.sleep(interval)
+                time.sleep(2)
     
     except KeyboardInterrupt:
         print("\n\n✓ Stopped watching")
@@ -140,26 +119,14 @@ def main():
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     subparsers = parser.add_subparsers(dest='command', required=True)
     
-    watch_parser = subparsers.add_parser('watch', help='Watch project(s) for UI changes')
-    watch_parser.add_argument('project_name', help='Project name(s), comma-separated or "all"')
-    watch_parser.add_argument('--interval', type=float, help='Watch interval in seconds (default: 2.0)')
-    watch_parser.add_argument('--patterns', help='File patterns to watch, comma-separated (default: *.ui)')
+    watch_parser = subparsers.add_parser('watch', help='Watch project for UI changes')
+    watch_parser.add_argument('project_name', help='Name of project to watch')
     
     args = parser.parse_args()
     
     try:
         if args.command == 'watch':
-            patterns = [p.strip() for p in args.patterns.split(',')] if args.patterns else None
-            
-            if args.project_name == 'all':
-                from .multi_watch import watch_all_projects
-                watch_all_projects(interval=args.interval, patterns=patterns)
-            elif ',' in args.project_name:
-                from .multi_watch import watch_multiple_projects
-                projects = [p.strip() for p in args.project_name.split(',')]
-                watch_multiple_projects(projects, interval=args.interval, patterns=patterns)
-            else:
-                watch_project(args.project_name, interval=args.interval, patterns=patterns)
+            watch_project(args.project_name)
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)
