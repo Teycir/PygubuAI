@@ -7,7 +7,7 @@ from pathlib import Path
 from . import __version__
 from .errors import PygubuAIError, validate_pygubu
 from .utils import validate_project_name, ensure_directory
-from .templates import get_template, list_templates, get_template_widgets_and_callbacks
+from .template_data import get_template, list_templates, get_template_widgets_and_callbacks
 from .generator import generate_base_ui_xml_structure, generate_python_app_structure, generate_readme_content
 
 logger = logging.getLogger(__name__)

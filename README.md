@@ -97,13 +97,17 @@ pygubu-create --version
 pygubu-register list
 ```
 
-### Alternative: Shell Script (Legacy)
+### Alternative: Shell Script (DEPRECATED)
+
+**⚠️ This method is deprecated and will be removed in v0.5.0**
 
 Only use if pip installation doesn't work on your system:
 
 ```bash
 ./install.sh  # Installs to ~/bin/ or /usr/local/bin/
 ```
+
+**Migration:** Switch to `pip install -e .` before v0.5.0
 
 ### Development Setup
 

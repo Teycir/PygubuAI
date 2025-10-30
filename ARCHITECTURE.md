@@ -89,7 +89,8 @@ Copies wrapper scripts to `~/bin/` or `/usr/local/bin/`.
 |--------|---------|
 | `create.py` | Project creation with validation |
 | `register.py` | Global project registry |
-| `template.py` | Template-based creation |
+| `template.py` | Template-based creation (CLI handler) |
+| `template_data.py` | Template definitions and data |
 | `workflow.py` | Watch mode for UI changes |
 | `converter.py` | Tkinter-to-pygubu conversion |
 | `widgets.py` | Widget detection from descriptions |
@@ -163,6 +164,30 @@ All standalone implementations have been replaced with the wrapper pattern:
    ```
 4. Add to `install.sh` if supporting shell install
 
-## Version
+## Deprecation Notice (v0.4.2)
 
-Architecture standardized in v0.4.0
+### Shell Script Installation (Deprecated)
+
+The `install.sh` method is **deprecated** and will be removed in v0.5.0.
+
+**Use pip installation instead:**
+```bash
+pip install -e .
+```
+
+### Physical Wrapper Scripts (To Be Removed)
+
+Physical wrapper scripts (`pygubu-create`, etc.) will be removed in v0.5.0.
+Entry points in `pyproject.toml` will be the sole installation method.
+
+## Module Naming (v0.4.2)
+
+- `template.py` - CLI command handler for template operations
+- `template_data.py` - Template definitions and data (renamed from `templates.py`)
+- `template_discovery.py` - Dynamic template discovery system
+
+## Version History
+
+- **v0.4.0**: Architecture standardized with wrapper pattern
+- **v0.4.2**: Deprecated install.sh, renamed templates.py → template_data.py, added CLI tests
+- **v0.5.0**: (Planned) Remove wrapper scripts and install.sh, pip-only installation

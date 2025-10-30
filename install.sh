@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+echo "⚠️  WARNING: This installation method is DEPRECATED and will be removed in v0.5.0"
+echo "⚠️  Please use: pip install -e ."
+echo ""
+read -p "Continue with legacy install? (y/N) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Installation cancelled. Use: pip install -e ."
+    exit 0
+fi
+
 echo "🤖 Installing PygubuAI Tools..."
 
 # Determine install location

@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from .logging_config import get_logger
-from .templates import TEMPLATES, WIDGET_MAP, validate_widget
+from .template_data import TEMPLATES, WIDGET_MAP, validate_widget
 
 logger = get_logger(__name__)
 

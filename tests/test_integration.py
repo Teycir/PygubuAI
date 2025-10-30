@@ -57,7 +57,7 @@ class TestEndToEndWorkflow(unittest.TestCase):
     def test_template_creation_workflow(self):
         """Test creating project from template"""
         from pygubuai.template import create_from_template
-        from pygubuai.templates import TEMPLATES
+        from pygubuai.template_data import TEMPLATES
         
         # Create from login template
         create_from_template("loginapp", "login", skip_validation=True)
