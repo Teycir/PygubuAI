@@ -43,6 +43,10 @@ class NumberGameApp:
     
     def on_guess(self):
         """Handle guess submission"""
+        # Guard against guesses after win
+        if self.guess_entry.cget('state') == 'disabled':
+            return
+        
         try:
             guess = int(self.guess_entry.get())
             self.attempts += 1
@@ -60,6 +64,7 @@ class NumberGameApp:
                 self.result_label.config(text=f"🎉 YOU WIN! It was {self.secret_number}!", foreground="#51cf66")
                 self.hint_label.config(text=f"You got it in {self.attempts} attempts!")
                 self.guess_entry.config(state='disabled')
+                self.guess_button.config(state='disabled')
             
             self.guess_entry.delete(0, tk.END)
         except ValueError:
@@ -73,6 +78,7 @@ class NumberGameApp:
         self.result_label.config(text="Make your guess!", foreground="#0066cc")
         self.hint_label.config(text="I'm thinking of a number...")
         self.guess_entry.config(state='normal')
+        self.guess_button.config(state='normal')
         self.guess_entry.delete(0, tk.END)
         self.guess_entry.focus()
     
