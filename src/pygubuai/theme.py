@@ -85,43 +85,138 @@ def get_current_theme(project_name: str) -> Optional[str]:
 def main():
     """CLI entry point"""
     import sys
+    from .theme_presets import THEME_PRESETS, list_presets, get_preset
+    from .theme_advanced import apply_preset as apply_preset_advanced, get_preset_info
+    from .theme_builder import create_custom_theme, export_theme, import_theme, list_custom_themes
+    from .theme_preview import preview_theme
     
     if len(sys.argv) < 2:
         print("Usage: pygubu-theme <command> [args]")
         print("Commands:")
-        print("  list                    - List available themes")
-        print("  <project> <theme>       - Apply theme to project")
-        print("  <project> --current     - Show current theme")
+        print("  list [--presets]        - List available themes")
+        print("  info <theme>            - Show theme details")
+        print("  apply <project> <theme> - Apply theme/preset to project")
+        print("  preview <project> <theme> - Preview theme without saving")
+        print("  current <project>       - Show current theme")
+        print("  create <name>           - Create custom theme")
+        print("  export <name> [file]    - Export theme")
+        print("  import <file>           - Import theme")
         sys.exit(1)
     
     command = sys.argv[1]
     
     if command == "list":
-        print("\\nAvailable Themes:\\n")
+        show_presets = "--presets" in sys.argv or len(sys.argv) == 2
+        
+        print("\nAvailable Themes:\n")
+        print("Basic Themes:")
         for theme, desc in AVAILABLE_THEMES.items():
-            print(f"  {theme:12} - {desc}")
+            print(f"  {theme:15} - {desc}")
+        
+        if show_presets:
+            print("\nTheme Presets:")
+            for name in list_presets():
+                preset = get_preset(name)
+                print(f"  {name:15} - {preset['description']}")
+            
+            custom = list_custom_themes()
+            if custom:
+                print("\nCustom Themes:")
+                for name in custom:
+                    print(f"  {name:15} - Custom theme")
         print()
     
-    elif len(sys.argv) == 3:
-        project_name = sys.argv[1]
-        
-        if sys.argv[2] == "--current":
-            theme = get_current_theme(project_name)
-            if theme:
-                print(f"Current theme: {theme}")
-            else:
-                print("Could not determine current theme")
+    elif command == "info" and len(sys.argv) == 3:
+        theme_name = sys.argv[2]
+        info = get_preset_info(theme_name)
+        if info:
+            print(f"\nTheme: {info['name']}")
+            print(f"Description: {info['description']}")
+            print(f"Base: {info['base']}")
+            print(f"\nColors:")
+            for key, value in info['colors'].items():
+                print(f"  {key:15} {value}")
         else:
-            theme_name = sys.argv[2]
-            try:
+            print(f"Theme '{theme_name}' not found")
+    
+    elif command == "apply" and len(sys.argv) == 4:
+        project_name = sys.argv[2]
+        theme_name = sys.argv[3]
+        
+        try:
+            # Try preset first
+            if theme_name in THEME_PRESETS:
+                apply_preset_advanced(project_name, theme_name)
+                print(f"✓ Applied preset '{theme_name}' to project '{project_name}'")
+            else:
+                # Try basic theme
                 apply_theme(project_name, theme_name)
                 print(f"✓ Applied theme '{theme_name}' to project '{project_name}'")
-                print(f"  Backup saved as {project_name}.ui.bak")
-            except Exception as e:
-                print(f"Error: {e}")
-                sys.exit(1)
+            print(f"  Backup saved as {project_name}.ui.bak")
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+    
+    elif command == "preview" and len(sys.argv) >= 4:
+        project_name = sys.argv[2]
+        theme_name = sys.argv[3]
+        try:
+            preview_theme(project_name, theme_name)
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+    
+    elif command == "current" and len(sys.argv) == 3:
+        project_name = sys.argv[2]
+        theme = get_current_theme(project_name)
+        if theme:
+            print(f"Current theme: {theme}")
+        else:
+            print("Could not determine current theme")
+    
+    elif command == "create" and len(sys.argv) >= 3:
+        name = sys.argv[2]
+        print(f"Creating custom theme: {name}")
+        print("Enter colors (or press Enter for defaults):")
+        
+        colors = {}
+        for key in ["bg", "fg", "accent", "button_bg", "button_fg", "entry_bg", "entry_fg"]:
+            value = input(f"  {key} (#hex): ").strip()
+            if value:
+                colors[key] = value
+        
+        if not colors:
+            print("No colors provided, using defaults")
+            colors = {"bg": "#ffffff", "fg": "#000000", "accent": "#0078d4"}
+        
+        try:
+            create_custom_theme(name, colors=colors)
+            print(f"✓ Theme '{name}' created")
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+    
+    elif command == "export" and len(sys.argv) >= 3:
+        name = sys.argv[2]
+        output = sys.argv[3] if len(sys.argv) > 3 else f"{name}.json"
+        try:
+            export_theme(name, output)
+            print(f"✓ Theme '{name}' exported to {output}")
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+    
+    elif command == "import" and len(sys.argv) == 3:
+        source = sys.argv[2]
+        try:
+            name = import_theme(source)
+            print(f"✓ Theme '{name}' imported")
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+    
     else:
-        print("Invalid arguments")
+        print("Invalid command or arguments")
         sys.exit(1)
 
 if __name__ == "__main__":
