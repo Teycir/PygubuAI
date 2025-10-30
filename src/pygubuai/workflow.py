@@ -46,7 +46,7 @@ def watch_project(project_name: str) -> None:
         logger.warning(f"No .ui files in {project_name}")
         return
     
-    print(f"[WATCHING] {project_name}...")
+    print(f"👁️  Watching {project_name}...")
     print(f"   Path: {project_path}")
     print(f"   UI files: {len(ui_files)}")
     print("\nPress Ctrl+C to stop\n")
@@ -65,9 +65,9 @@ def watch_project(project_name: str) -> None:
                     workflow["ui_hash"] = current_hash
                     save_workflow(project_path, workflow)
                 elif current_hash != workflow["ui_hash"]:
-                    print(f"[CHANGE DETECTED] UI changed: {ui_file.name}")
+                    print(f"🔄 UI changed: {ui_file.name}")
                     print(f"   Time: {datetime.now().strftime('%H:%M:%S')}")
-                    print("\n[SUGGESTION] Suggested action:")
+                    print("\n💡 Suggested action:")
                     print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
                     print(f"   Or: 'Review changes in {project_name}'\n")
                     
@@ -81,7 +81,7 @@ def watch_project(project_name: str) -> None:
             time.sleep(2)
     
     except KeyboardInterrupt:
-        print("\n\n[STOPPED] Stopped watching")
+        print("\n\n✓ Stopped watching")
 
 def main():
     """Main CLI entry point"""
@@ -105,8 +105,8 @@ def main():
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+    except Exception:
+        logger.exception("An unexpected error occurred while watching the project.")
         sys.exit(1)
 
 if __name__ == '__main__':

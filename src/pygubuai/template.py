@@ -12,10 +12,11 @@ from .generator import generate_base_ui_xml_structure, generate_python_app_struc
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-def create_from_template(name: str, template_name: str):
+def create_from_template(name: str, template_name: str, skip_validation: bool = False):
     """Create project from template"""
     try:
-        validate_pygubu()
+        if not skip_validation:
+            validate_pygubu()
         
         template = get_template(template_name)
         if not template:

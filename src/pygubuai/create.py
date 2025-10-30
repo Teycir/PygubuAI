@@ -13,10 +13,11 @@ from .generator import generate_base_ui_xml_structure, generate_python_app_struc
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-def create_project(name: str, description: str) -> None:
+def create_project(name: str, description: str, skip_validation: bool = False) -> None:
     """Create project with error handling"""
     try:
-        validate_pygubu()
+        if not skip_validation:
+            validate_pygubu()
         name = validate_project_name(name)
         base = ensure_directory(Path.cwd() / name)
         

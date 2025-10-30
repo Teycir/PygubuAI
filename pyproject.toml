@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
     "pygubu>=0.39",
     "pygubu-designer>=0.42",
+    "filelock>=3.0",
 ]
 
 [project.optional-dependencies]
