@@ -18,23 +18,27 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
     """Get SHA256 hash of file"""
     try:
         return hashlib.sha256(filepath.read_bytes()).hexdigest()
-    except (OSError, IOError) as e:
+    except Exception as e:
         logger.error(f"Failed to read file {filepath}: {e}")
         return None
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
     """Load workflow tracking file"""
+    default_workflow = {"ui_hash": None, "last_sync": None, "changes": []}
     workflow_file = project_path / ".pygubu-workflow.json"
-    if workflow_file.exists():
-        try:
-            data = json.loads(workflow_file.read_text())
-            if not isinstance(data, dict):
-                logger.warning("Invalid workflow file format. Using defaults.")
-                return {"ui_hash": None, "last_sync": None, "changes": []}
-            return data
-        except (json.JSONDecodeError, OSError, ValueError) as e:
-            logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
-    return {"ui_hash": None, "last_sync": None, "changes": []}
+    
+    if not workflow_file.exists():
+        return default_workflow
+    
+    try:
+        data = json.loads(workflow_file.read_text())
+        if not isinstance(data, dict):
+            logger.warning("Invalid workflow file format. Using defaults.")
+            return default_workflow
+        return data
+    except Exception as e:
+        logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
+        return default_workflow
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking"""
@@ -45,9 +49,9 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
         data["changes"] = data["changes"][-100:]
     try:
         workflow_file.write_text(json.dumps(data, indent=2))
-    except (OSError, IOError, TypeError) as e:
+    except Exception as e:
         logger.error(f"Failed to save workflow file: {e}")
-        raise
+        raise RuntimeError(f"Cannot save workflow: {e}") from e
 
 def watch_project(project_name: str) -> None:
     """Watch project for UI changes"""
@@ -64,9 +68,9 @@ def watch_project(project_name: str) -> None:
     
     try:
         ui_files = list(project_path.glob("*.ui"))
-    except OSError as e:
+    except Exception as e:
         logger.error(f"Failed to scan project directory: {e}")
-        return
+        raise RuntimeError(f"Cannot access project directory: {e}") from e
     
     if not ui_files:
         logger.warning(f"No .ui files in {project_name}")
@@ -82,45 +86,47 @@ def watch_project(project_name: str) -> None:
     try:
         while True:
             try:
-                for ui_file in ui_files:
-                    if not ui_file.exists():
-                        continue
-                    
-                    current_hash = get_file_hash(ui_file)
-                    if current_hash is None:
-                        continue
-                    
-                    if workflow["ui_hash"] is None:
-                        workflow["ui_hash"] = current_hash
-                        save_workflow(project_path, workflow)
-                    elif current_hash != workflow["ui_hash"]:
-                        print(f"🔄 UI changed: {ui_file.name}")
-                        print(f"   Time: {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
-                        print("\n💡 Suggested action:")
-                        print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
-                        print(f"   Or: 'Review changes in {project_name}'\n")
-                        
-                        workflow["ui_hash"] = current_hash
-                        workflow["changes"].append({
-                            "file": str(ui_file),
-                            "timestamp": datetime.now(timezone.utc).isoformat()
-                        })
-                        save_workflow(project_path, workflow)
-                
+                _check_ui_changes(ui_files, workflow, project_path, project_name)
                 time.sleep(2)
-            except (OSError, IOError) as e:
-                logger.error(f"File system error during watch cycle: {e}")
-                time.sleep(2)
-            except KeyError as e:
-                logger.error(f"Workflow data corruption: {e}")
+            except KeyboardInterrupt:
+                raise
+            except Exception as e:
+                logger.error(f"Error during watch cycle: {e}")
                 workflow = load_workflow(project_path)
                 time.sleep(2)
-    
     except KeyboardInterrupt:
         print("\n\n✓ Stopped watching")
-    except Exception as e:
-        logger.exception(f"Fatal error in watch loop: {e}")
-        raise
+
+def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict, 
+                      project_path: pathlib.Path, project_name: str) -> None:
+    """Check UI files for changes and update workflow"""
+    for ui_file in ui_files:
+        if not ui_file.exists():
+            continue
+        
+        current_hash = get_file_hash(ui_file)
+        if current_hash is None:
+            continue
+        
+        if workflow.get("ui_hash") is None:
+            workflow["ui_hash"] = current_hash
+            save_workflow(project_path, workflow)
+        elif current_hash != workflow["ui_hash"]:
+            _notify_ui_change(ui_file, project_name)
+            workflow["ui_hash"] = current_hash
+            workflow.setdefault("changes", []).append({
+                "file": str(ui_file),
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+            save_workflow(project_path, workflow)
+
+def _notify_ui_change(ui_file: pathlib.Path, project_name: str) -> None:
+    """Print notification when UI file changes"""
+    print(f"🔄 UI changed: {ui_file.name}")
+    print(f"   Time: {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
+    print("\n💡 Suggested action:")
+    print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
+    print(f"   Or: 'Review changes in {project_name}'\n")
 
 def main():
     """Main CLI entry point"""
