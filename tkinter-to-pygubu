@@ -1,176 +1,27 @@
 #!/usr/bin/env python3
-"""Convert existing tkinter code to pygubu"""
+"""Convert tkinter code to pygubu format (placeholder)"""
 import sys
 import pathlib
-import re
 
-def analyze_tkinter_code(code):
-    """Analyze tkinter code and extract widgets"""
-    widgets = []
-    
-    # Find widget creations
-    patterns = [
-        (r'tk\.Label\([^)]*text\s*=\s*["\']([^"\']+)', 'label'),
-        (r'ttk\.Label\([^)]*text\s*=\s*["\']([^"\']+)', 'label'),
-        (r'tk\.Button\([^)]*text\s*=\s*["\']([^"\']+)', 'button'),
-        (r'ttk\.Button\([^)]*text\s*=\s*["\']([^"\']+)', 'button'),
-        (r'tk\.Entry\(', 'entry'),
-        (r'ttk\.Entry\(', 'entry'),
-        (r'tk\.Text\(', 'text'),
-        (r'tk\.Frame\(', 'frame'),
-        (r'ttk\.Frame\(', 'frame'),
-        (r'tk\.Listbox\(', 'listbox'),
-        (r'ttk\.Treeview\(', 'treeview'),
-    ]
-    
-    for pattern, widget_type in patterns:
-        matches = re.finditer(pattern, code)
-        for match in matches:
-            text = match.group(1) if match.groups() else ''
-            widgets.append((widget_type, text))
-    
-    return widgets
-
-def generate_ui_from_widgets(widgets, title="Converted App"):
-    """Generate pygubu UI XML from widget list"""
-    xml = [
-        "<?xml version='1.0' encoding='utf-8'?>",
-        '<interface version="1.2">',
-        '  <object class="tk.Toplevel" id="mainwindow">',
-        f'    <property name="title">{title}</property>',
-        '    <property name="height">400</property>',
-        '    <property name="width">600</property>',
-        '    <child>',
-        '      <object class="ttk.Frame" id="mainframe">',
-        '        <property name="padding">20</property>',
-        '        <layout manager="pack">',
-        '          <property name="expand">true</property>',
-        '          <property name="fill">both</property>',
-        '        </layout>',
-    ]
-    
-    for i, (widget_type, text) in enumerate(widgets, 1):
-        if widget_type == 'label':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Label" id="label{i}">',
-                f'            <property name="text">{text or "Label"}</property>',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'entry':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Entry" id="entry{i}">',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'button':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Button" id="button{i}">',
-                f'            <property name="text">{text or "Button"}</property>',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'text':
-            xml.extend([
-                '        <child>',
-                f'          <object class="tk.Text" id="text{i}">',
-                '            <property name="height">10</property>',
-                '            <layout manager="pack">',
-                '              <property name="expand">true</property>',
-                '              <property name="fill">both</property>',
-                '            </layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif widget_type == 'treeview':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Treeview" id="treeview{i}">',
-                '            <layout manager="pack">',
-                '              <property name="expand">true</property>',
-                '              <property name="fill">both</property>',
-                '            </layout>',
-                '          </object>',
-                '        </child>',
-            ])
-    
-    xml.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
-    return '\n'.join(xml)
-
-def convert_project(tkinter_file):
-    """Convert tkinter project to pygubu"""
-    tk_path = pathlib.Path(tkinter_file)
-    if not tk_path.exists():
-        print(f"Error: {tkinter_file} not found")
+def convert_tkinter(filepath):
+    """Convert tkinter Python file to pygubu format"""
+    source = pathlib.Path(filepath)
+    if not source.exists():
+        print(f"Error: {filepath} not found")
         return
     
-    # Read original code
-    code = tk_path.read_text()
-    
-    # Analyze widgets
-    widgets = analyze_tkinter_code(code)
-    
-    # Extract title if possible
-    title_match = re.search(r'title\(["\']([^"\']+)', code)
-    title = title_match.group(1) if title_match else tk_path.stem.replace('_', ' ').title()
-    
-    # Generate UI file
-    ui_content = generate_ui_from_widgets(widgets, title)
-    ui_file = tk_path.parent / f"{tk_path.stem}_pygubu.ui"
-    ui_file.write_text(ui_content)
-    
-    # Generate pygubu Python file
-    class_name = tk_path.stem.replace('_', ' ').title().replace(' ', '')
-    py_content = f'''#!/usr/bin/env python3
-import pathlib
-import tkinter as tk
-import pygubu
-
-PROJECT_PATH = pathlib.Path(__file__).parent
-PROJECT_UI = PROJECT_PATH / "{tk_path.stem}_pygubu.ui"
-
-class {class_name}App:
-    def __init__(self, master=None):
-        self.builder = pygubu.Builder()
-        self.builder.add_from_file(PROJECT_UI)
-        self.mainwindow = self.builder.get_object('mainwindow', master)
-        self.builder.connect_callbacks(self)
-
-    def run(self):
-        self.mainwindow.mainloop()
-
-if __name__ == '__main__':
-    app = {class_name}App()
-    app.run()
-'''
-    
-    py_file = tk_path.parent / f"{tk_path.stem}_pygubu.py"
-    py_file.write_text(py_content)
-    py_file.chmod(0o755)
-    
-    print(f"✓ Converted {tkinter_file} to pygubu!")
-    print(f"\n📁 Generated files:")
-    print(f"  - {ui_file.name}")
-    print(f"  - {py_file.name}")
-    print(f"\n🔍 Found {len(widgets)} widgets:")
-    for wtype, text in widgets:
-        print(f"  - {wtype}: {text if text else '(no text)'}")
-    print(f"\n🚀 Next steps:")
-    print(f"  ~/pygubu-designer {ui_file}  # Refine UI visually")
-    print(f"  python {py_file.name}        # Run converted app")
-    print(f"\n💡 Original file preserved: {tkinter_file}")
+    print(f"Converting {source.name} to Pygubu format...")
+    print("\n⚠️  This is a placeholder implementation.")
+    print("Full conversion requires parsing tkinter widget creation code.")
+    print("\nSuggested approach:")
+    print("1. Manually recreate UI in pygubu-designer")
+    print("2. Copy business logic to new pygubu app class")
+    print("3. Connect callbacks via builder.connect_callbacks()")
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Usage: tkinter-to-pygubu <tkinter_file.py>")
-        print("\nConverts existing tkinter code to pygubu format")
-        print("Example: tkinter-to-pygubu my_app.py")
+        print("Usage: tkinter-to-pygubu <file>.py")
+        print("\nConverts legacy tkinter code to pygubu format")
         sys.exit(1)
     
-    convert_project(sys.argv[1])
+    convert_tkinter(sys.argv[1])

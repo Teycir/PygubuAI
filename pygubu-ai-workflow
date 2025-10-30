@@ -1,225 +1,95 @@
 #!/usr/bin/env python3
-"""AI-integrated pygubu workflow manager"""
+"""Watch pygubu projects for UI changes and sync with code"""
 import sys
-import pathlib
 import json
-import subprocess
 import time
+import pathlib
+import hashlib
+from datetime import datetime
 
-WORKFLOW_FILE = ".pygubu-workflow.json"
+def get_file_hash(filepath):
+    """Get MD5 hash of file"""
+    return hashlib.md5(pathlib.Path(filepath).read_bytes()).hexdigest()
 
-def init_workflow(project_path):
-    """Initialize AI workflow tracking"""
-    workflow = {
-        "project": project_path.name,
-        "ui_file": f"{project_path.name}.ui",
-        "py_file": f"{project_path.name}.py",
-        "history": [],
-        "ai_suggestions": []
-    }
-    (project_path / WORKFLOW_FILE).write_text(json.dumps(workflow, indent=2))
-    return workflow
-
-def log_action(project_path, action, details):
-    """Log workflow action"""
-    workflow_file = project_path / WORKFLOW_FILE
+def load_workflow(project_path):
+    """Load workflow tracking file"""
+    workflow_file = project_path / ".pygubu-workflow.json"
     if workflow_file.exists():
-        workflow = json.loads(workflow_file.read_text())
-    else:
-        workflow = init_workflow(project_path)
-    
-    workflow["history"].append({
-        "timestamp": time.time(),
-        "action": action,
-        "details": details
-    })
-    workflow_file.write_text(json.dumps(workflow, indent=2))
+        return json.loads(workflow_file.read_text())
+    return {"ui_hash": None, "last_sync": None, "changes": []}
 
-def watch_mode(project_path):
-    """Watch UI file and auto-sync with AI"""
-    ui_file = project_path / f"{project_path.name}.ui"
-    py_file = project_path / f"{project_path.name}.py"
+def save_workflow(project_path, data):
+    """Save workflow tracking"""
+    workflow_file = project_path / ".pygubu-workflow.json"
+    data["last_sync"] = datetime.now().isoformat()
+    workflow_file.write_text(json.dumps(data, indent=2))
+
+def watch_project(project_name):
+    """Watch project for UI changes"""
+    # Load registry
+    registry_file = pathlib.Path.home() / ".pygubu-registry.json"
+    if not registry_file.exists():
+        print("No projects registered. Run: pygubu-register scan")
+        return
     
-    print(f"🤖 AI Workflow Active for: {project_path.name}")
-    print(f"📁 Watching: {ui_file}")
-    print(f"\n💡 Workflow:")
-    print(f"  1. Edit UI in designer")
-    print(f"  2. Save (Ctrl+S)")
-    print(f"  3. AI auto-detects changes")
-    print(f"  4. Ask AI to update Python code")
-    print(f"\nPress Ctrl+C to stop\n")
+    registry = json.loads(registry_file.read_text())
     
-    last_mtime = ui_file.stat().st_mtime if ui_file.exists() else 0
+    if project_name not in registry["projects"]:
+        print(f"Project '{project_name}' not found")
+        print(f"Available: {', '.join(registry['projects'].keys())}")
+        return
+    
+    project_info = registry["projects"][project_name]
+    project_path = pathlib.Path(project_info["path"])
+    ui_files = [pathlib.Path(f) for f in project_info["ui_files"]]
+    
+    if not ui_files:
+        print(f"No .ui files in {project_name}")
+        return
+    
+    print(f"👁️  Watching {project_name}...")
+    print(f"   Path: {project_path}")
+    print(f"   UI files: {len(ui_files)}")
+    print("\nPress Ctrl+C to stop\n")
+    
+    workflow = load_workflow(project_path)
     
     try:
         while True:
-            time.sleep(1)
-            if ui_file.exists():
-                current_mtime = ui_file.stat().st_mtime
-                if current_mtime > last_mtime:
-                    print(f"✓ UI changed detected at {time.strftime('%H:%M:%S')}")
-                    print(f"  💬 Tell AI: 'I updated the UI, sync the code'")
-                    log_action(project_path, "ui_modified", {"file": str(ui_file)})
-                    last_mtime = current_mtime
+            for ui_file in ui_files:
+                if not ui_file.exists():
+                    continue
+                
+                current_hash = get_file_hash(ui_file)
+                
+                if workflow["ui_hash"] is None:
+                    workflow["ui_hash"] = current_hash
+                    save_workflow(project_path, workflow)
+                elif current_hash != workflow["ui_hash"]:
+                    print(f"🔄 UI changed: {ui_file.name}")
+                    print(f"   Time: {datetime.now().strftime('%H:%M:%S')}")
+                    print("\n💡 Suggested action:")
+                    print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
+                    print(f"   Or: 'Review changes in {project_name}'\n")
+                    
+                    workflow["ui_hash"] = current_hash
+                    workflow["changes"].append({
+                        "file": str(ui_file),
+                        "timestamp": datetime.now().isoformat()
+                    })
+                    save_workflow(project_path, workflow)
+            
+            time.sleep(2)
+    
     except KeyboardInterrupt:
-        print("\n\n👋 Workflow stopped")
-
-def create_ai_project(name, description):
-    """Create project with AI context"""
-    base = pathlib.Path.cwd() / name
-    base.mkdir(exist_ok=True)
-    
-    # Parse description for widgets
-    widgets = []
-    desc_lower = description.lower()
-    
-    if any(w in desc_lower for w in ['label', 'title']):
-        widgets.append(('label', 'Title'))
-    if any(w in desc_lower for w in ['entry', 'input']):
-        widgets.append(('entry', ''))
-    if any(w in desc_lower for w in ['button', 'submit']):
-        widgets.append(('button', 'Submit'))
-    if any(w in desc_lower for w in ['list', 'table']):
-        widgets.append(('treeview', ''))
-    
-    # Generate UI
-    xml = [
-        "<?xml version='1.0' encoding='utf-8'?>",
-        '<interface version="1.2">',
-        '  <object class="tk.Toplevel" id="mainwindow">',
-        f'    <property name="title">{name.replace("_", " ").title()}</property>',
-        '    <property name="height">400</property>',
-        '    <property name="width">600</property>',
-        '    <child>',
-        '      <object class="ttk.Frame" id="mainframe">',
-        '        <property name="padding">20</property>',
-        '        <layout manager="pack">',
-        '          <property name="expand">true</property>',
-        '          <property name="fill">both</property>',
-        '        </layout>',
-    ]
-    
-    for i, (wtype, text) in enumerate(widgets, 1):
-        if wtype == 'label':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Label" id="label{i}">',
-                f'            <property name="text">{text}</property>',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif wtype == 'entry':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Entry" id="entry{i}">',
-                '            <layout manager="pack"><property name="pady">5</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-        elif wtype == 'button':
-            xml.extend([
-                '        <child>',
-                f'          <object class="ttk.Button" id="btn{i}">',
-                f'            <property name="text">{text}</property>',
-                '            <property name="command">on_button_click</property>',
-                '            <layout manager="pack"><property name="pady">10</property></layout>',
-                '          </object>',
-                '        </child>',
-            ])
-    
-    xml.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
-    
-    ui_file = base / f"{name}.ui"
-    ui_file.write_text('\n'.join(xml))
-    
-    # Generate Python with AI comments
-    class_name = name.replace('_', ' ').title().replace(' ', '')
-    py_content = f'''#!/usr/bin/env python3
-"""
-{description}
-
-AI Workflow:
-- Edit UI: ~/pygubu-designer {name}.ui
-- Watch changes: ~/pygubu-ai-workflow watch {name}
-- Ask AI to sync code after UI changes
-"""
-import pathlib
-import tkinter as tk
-import pygubu
-
-PROJECT_PATH = pathlib.Path(__file__).parent
-PROJECT_UI = PROJECT_PATH / "{name}.ui"
-
-class {class_name}App:
-    def __init__(self, master=None):
-        self.builder = pygubu.Builder()
-        self.builder.add_from_file(PROJECT_UI)
-        self.mainwindow = self.builder.get_object('mainwindow', master)
-        self.builder.connect_callbacks(self)
-    
-    def on_button_click(self):
-        """AI: Implement button logic here"""
-        print("Button clicked!")
-    
-    def run(self):
-        self.mainwindow.mainloop()
+        print("\n\n✓ Stopped watching")
 
 if __name__ == '__main__':
-    app = {class_name}App()
-    app.run()
-'''
-    
-    py_file = base / f"{name}.py"
-    py_file.write_text(py_content)
-    py_file.chmod(0o755)
-    
-    # Create AI context file
-    context = {
-        "description": description,
-        "widgets": [{"type": w[0], "text": w[1]} for w in widgets],
-        "ai_instructions": [
-            "Edit UI visually in pygubu-designer",
-            "Save changes",
-            "Tell AI: 'sync the code with UI changes'",
-            "AI will update Python callbacks and logic"
-        ]
-    }
-    (base / ".ai-context.json").write_text(json.dumps(context, indent=2))
-    
-    # Initialize workflow
-    init_workflow(base)
-    
-    print(f"✓ Created AI-integrated project: {base}/")
-    print(f"\n📝 Description: {description}")
-    print(f"\n📁 Files:")
-    print(f"  - {name}.ui (UI definition)")
-    print(f"  - {name}.py (Python code)")
-    print(f"  - .ai-context.json (AI context)")
-    print(f"  - .pygubu-workflow.json (Workflow tracking)")
-    print(f"\n🤖 AI Workflow Commands:")
-    print(f"  ~/pygubu-ai-workflow watch {name}  # Watch for changes")
-    print(f"  ~/pygubu-designer {name}.ui        # Edit UI")
-    print(f"  python {name}.py                   # Run app")
-    print(f"\n💡 Tell AI: '@{name}.ui I changed X, update the code'")
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("AI-Integrated Pygubu Workflow Manager")
-        print("\nCommands:")
-        print("  create <name> '<description>'  - Create AI-tracked project")
-        print("  watch <project>                - Watch for UI changes")
-        print("\nExamples:")
-        print("  ~/pygubu-ai-workflow create todo 'todo app with entry and list'")
-        print("  ~/pygubu-ai-workflow watch todo")
+    if len(sys.argv) < 3 or sys.argv[1] != "watch":
+        print("Usage: pygubu-ai-workflow watch <project_name>")
+        print("\nExample:")
+        print("  pygubu-ai-workflow watch myapp")
+        print("\nThis monitors .ui file changes and suggests AI sync actions")
         sys.exit(1)
     
-    cmd = sys.argv[1]
-    
-    if cmd == "create" and len(sys.argv) == 4:
-        create_ai_project(sys.argv[2], sys.argv[3])
-    elif cmd == "watch" and len(sys.argv) == 3:
-        watch_mode(pathlib.Path.cwd() / sys.argv[2])
-    else:
-        print("Invalid command. Use: create or watch")
-        sys.exit(1)
+    watch_project(sys.argv[2])

@@ -1,55 +1,114 @@
 # Contributing to PygubuAI
 
-Thank you for your interest in contributing! 
-
-## Getting Started
-
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/pygubuai.git`
-3. Create a branch: `git checkout -b feature/your-feature`
-4. Make your changes
-5. Run tests: `python -m unittest discover tests`
-6. Commit: `git commit -m "Add your feature"`
-7. Push: `git push origin feature/your-feature`
-8. Open a Pull Request
+Thank you for your interest in contributing to PygubuAI!
 
 ## Development Setup
+
+### 1. Clone and Install Dependencies
 
 ```bash
 git clone https://github.com/yourusername/pygubuai.git
 cd pygubuai
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install pygubu pygubu-designer
 ```
 
-## Running Tests
+### 2. Run Tools Without Installing
 
 ```bash
-python -m unittest discover tests
+# Run tools directly from repo
+./pygubu-create mytest 'test app with button'
+./pygubu-register list
+./pygubu-ai-workflow watch mytest
+
+# Or add to PATH temporarily
+export PATH="$PWD:$PATH"
+pygubu-create mytest 'test app'
 ```
+
+### 3. Test Your Changes
+
+```bash
+# Test project creation
+./pygubu-create testapp 'login form with username and password'
+cd testapp
+python testapp.py
+
+# Test registration
+./pygubu-register add testapp
+./pygubu-register list
+```
+
+## Project Structure
+
+```
+pygubuai/
+├── pygubu-create           # Project creation wrapper
+├── pygubu-quickstart.py    # Core project generator
+├── pygubu-register         # Project registry manager
+├── pygubu-ai-workflow      # Watch mode for UI changes
+├── tkinter-to-pygubu       # Converter (placeholder)
+├── install.sh              # Installation script
+├── .amazonq/prompts/       # AI context files
+└── examples/               # Example projects
+```
+
+## Making Changes
+
+### Adding Features
+
+1. Create a feature branch: `git checkout -b feature/my-feature`
+2. Make your changes
+3. Test thoroughly
+4. Submit a pull request
+
+### Improving AI Generation
+
+The `pygubu-create` tool uses simple keyword matching in `parse_description()`. To improve:
+
+1. Add more widget detection patterns
+2. Implement layout inference (grid vs pack)
+3. Add support for more complex UI patterns
+4. Consider integrating actual LLM API calls
+
+### Enhancing Watch Mode
+
+The `pygubu-ai-workflow` tool currently detects changes via file hashing. Improvements:
+
+1. Parse XML to detect specific widget changes
+2. Generate more specific AI prompts
+3. Auto-suggest code modifications
+4. Integrate with version control
 
 ## Code Style
 
 - Follow PEP 8
-- Use type hints where appropriate
-- Keep functions focused and minimal
-- Add docstrings to public functions
+- Use meaningful variable names
+- Add docstrings to functions
+- Keep functions focused and small
 
-## Adding New Features
+## Testing
 
-1. Create tests first (TDD approach)
-2. Implement minimal code to pass tests
-3. Update documentation
-4. Add examples if applicable
+Before submitting:
 
-## Areas for Contribution
+```bash
+# Test all commands
+./pygubu-create test1 'simple app with button'
+./pygubu-register scan .
+./pygubu-register active test1
+./pygubu-ai-workflow watch test1  # Ctrl+C to stop
+```
 
-- Enhanced CLI features
-- Additional widget detection
-- Better error messages
-- More comprehensive tests
-- Documentation improvements
-- Example projects
-- Bug fixes
+## Documentation
+
+- Update README.md for user-facing changes
+- Update PYGUBUAI.md for detailed documentation
+- Add examples for new features
 
 ## Questions?
 

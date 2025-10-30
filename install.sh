@@ -12,8 +12,16 @@ else
     
     # Add to PATH if not already there
     if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
-        echo "export PATH=\"\$HOME/bin:\$PATH\"" >> "$HOME/.bashrc"
-        echo "⚠️  Added $HOME/bin to PATH. Run: source ~/.bashrc"
+        # Detect shell and update appropriate config
+        SHELL_CONFIG="$HOME/.bashrc"
+        if [ -n "$ZSH_VERSION" ]; then
+            SHELL_CONFIG="$HOME/.zshrc"
+        elif [ -n "$BASH_VERSION" ]; then
+            SHELL_CONFIG="$HOME/.bashrc"
+        fi
+        echo "export PATH=\"\$HOME/bin:\$PATH\"" >> "$SHELL_CONFIG"
+        echo "⚠️  Added $HOME/bin to PATH in $SHELL_CONFIG"
+        echo "   Run: source $SHELL_CONFIG"
     fi
 fi
 
@@ -44,8 +52,12 @@ chmod +x "$INSTALL_DIR/pygubu-ai-workflow"
 chmod +x "$INSTALL_DIR/tkinter-to-pygubu"
 chmod +x "$INSTALL_DIR/pygubu-quickstart.py"
 
-# Create AI context directory
+# Create AI context directory and copy context file
 mkdir -p "$HOME/.amazonq/prompts"
+if [ -f ".amazonq/prompts/pygubu-context.md" ]; then
+    cp .amazonq/prompts/pygubu-context.md "$HOME/.amazonq/prompts/"
+    echo "✅ AI context installed to ~/.amazonq/prompts/"
+fi
 
 # Copy documentation
 cp PYGUBUAI.md "$HOME/"

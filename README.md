@@ -145,6 +145,9 @@ pygubu-designer myapp/myapp.ui
 
 Contributions welcome! This project extends Pygubu with AI workflow tools.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+
+Quick start:
 1. Fork the repo
 2. Create feature branch
 3. Add your tool/enhancement
