@@ -11,7 +11,7 @@ from .errors import ProjectNotFoundError, InvalidProjectError
 
 logger = logging.getLogger(__name__)
 
-def register_project(path: str) -> None:
+def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
     """Register a pygubu project"""
     project_path = pathlib.Path(path).resolve()
     if not project_path.exists():
@@ -24,7 +24,7 @@ def register_project(path: str) -> None:
     registry = Registry()
     project_name = project_path.name
     
-    registry.add_project(project_name, str(project_path))
+    registry.add_project(project_name, str(project_path), description=description, tags=tags or [])
     
     print(f"[SUCCESS] Registered: {project_name}")
     print(f"  Path: {project_path}")
@@ -42,10 +42,10 @@ def set_active(project_name: str) -> None:
     registry.set_active(project_name)
     print(f"[SUCCESS] Active project: {project_name}")
 
-def list_projects() -> None:
+def list_projects(show_metadata: bool = False) -> None:
     """List all registered projects"""
     registry = Registry()
-    projects = registry.list_projects()
+    projects = registry.list_projects_with_metadata() if show_metadata else registry.list_projects()
     active = registry.get_active()
     
     if not projects:
@@ -55,13 +55,32 @@ def list_projects() -> None:
         return
     
     print("Registered Pygubu Projects:\n")
-    for name, path in projects.items():
+    for name, data in projects.items():
         active_marker = " [ACTIVE]" if name == active else ""
+        
+        if isinstance(data, dict):
+            path = data['path']
+            description = data.get('description', '')
+            tags = data.get('tags', [])
+            created = data.get('created', '')
+        else:
+            path = data
+            description = tags = created = ''
+        
         project_path = pathlib.Path(path)
         ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
+        
         print(f"  {name}{active_marker}")
         print(f"    Path: {path}")
         print(f"    UI files: {len(ui_files)}")
+        
+        if show_metadata:
+            if description:
+                print(f"    Description: {description}")
+            if tags:
+                print(f"    Tags: {', '.join(tags)}")
+            if created:
+                print(f"    Created: {created[:10]}")
         print()
 
 def get_active() -> Optional[str]:
@@ -109,9 +128,28 @@ def scan_directory(directory: str = ".") -> None:
     for proj_dir in found:
         name = proj_dir.name
         print(f"  {name} - {proj_dir}")
-        registry.add_project(name, str(proj_dir))
+        registry.add_project(name, str(proj_dir), description="Auto-discovered project")
     
     print(f"\n[SUCCESS] Registered {len(found)} project(s)")
+
+def search_projects(query: str) -> None:
+    """Search projects by name, description, or tags"""
+    registry = Registry()
+    results = registry.search_projects(query)
+    
+    if not results:
+        print(f"No projects found matching '{query}'")
+        return
+    
+    print(f"Found {len(results)} project(s) matching '{query}':\n")
+    for name, metadata in results.items():
+        print(f"  {name}")
+        print(f"    Path: {metadata['path']}")
+        if metadata.get('description'):
+            print(f"    Description: {metadata['description']}")
+        if metadata.get('tags'):
+            print(f"    Tags: {', '.join(metadata['tags'])}")
+        print()
 
 def main():
     """Main CLI entry point"""
@@ -137,25 +175,38 @@ def main():
     active_parser = subparsers.add_parser('active', help='Set active project')
     active_parser.add_argument('name', help='Name of the project to set as active')
     
-    subparsers.add_parser('list', help='List all registered projects')
+    list_parser = subparsers.add_parser('list', help='List all registered projects')
+    list_parser.add_argument('--metadata', '-m', action='store_true', help='Show full metadata')
+    
     subparsers.add_parser('info', help='Show active project information')
     
     scan_parser = subparsers.add_parser('scan', help='Auto-scan directory for projects')
     scan_parser.add_argument('directory', nargs='?', default='.', help='Directory to scan (default: current directory)')
     
+    search_parser = subparsers.add_parser('search', help='Search projects by name, description, or tags')
+    search_parser.add_argument('query', help='Search query')
+    
+    add_parser.add_argument('--description', '-d', help='Project description')
+    add_parser.add_argument('--tags', '-t', help='Comma-separated tags')
+    
     args = parser.parse_args()
     
     try:
         if args.command == 'add':
-            register_project(args.path)
+            tags = [t.strip() for t in args.tags.split(',')] if hasattr(args, 'tags') and args.tags else None
+            description = args.description if hasattr(args, 'description') else ""
+            register_project(args.path, description=description, tags=tags)
         elif args.command == 'active':
             set_active(args.name)
         elif args.command == 'list':
-            list_projects()
+            show_metadata = args.metadata if hasattr(args, 'metadata') else False
+            list_projects(show_metadata=show_metadata)
         elif args.command == 'info':
             get_active()
         elif args.command == 'scan':
             scan_directory(args.directory)
+        elif args.command == 'search':
+            search_projects(args.query)
         else:
             parser.print_help()
     except (ProjectNotFoundError, InvalidProjectError) as e:
