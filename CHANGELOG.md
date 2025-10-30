@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Package Structure**: Proper Python package with src layout
 - **Error Handling**: Custom exception hierarchy with helpful messages
-- **Thread Safety**: File locking for registry operations
+- **Thread Safety**: Cross-platform file locking (Unix/Windows/macOS)
 - **Logging**: Python logging framework throughout
 - **Version Management**: `--version` flag for all CLI commands
 - **Help System**: `--help` flag for all CLI commands
@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Development Tools**: CONTRIBUTING.md, .editorconfig
 - **New Modules**: register.py, workflow.py in package
 - **Additional Tests**: test_register.py, test_workflow.py
+- **CI/CD**: Multi-platform testing (Ubuntu, Windows, macOS)
+- **CI/CD**: Automated linting, type checking, and coverage
 
 ### Changed
 - Migrated `pygubu-register` to package module
@@ -27,14 +29,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced error messages with suggestions
 - Improved input validation and sanitization
 
+### Fixed
+- **Windows Compatibility**: Replaced Unix-only fcntl with cross-platform locking (msvcrt on Windows)
+- **CI Pipeline**: Added type checking and linting to all pull requests
+- **CI Pipeline**: Multi-OS testing matrix for better compatibility
+
 ### Technical
-- Thread-safe Registry class with fcntl locking
+- Thread-safe Registry class with platform-specific locking (fcntl/msvcrt)
 - Custom exception classes (ProjectNotFoundError, InvalidProjectError)
 - Proper package entry points in pyproject.toml
 - Development dependencies in optional [dev] group
 - Comprehensive test coverage for new modules
+- GitHub Actions CI runs on Ubuntu, Windows, and macOS
 
-## [0.1.0] - 2025-01-XX
+## [0.1.0] - 2024-10-30
 
 ### Added
 - **Testing Framework**: 23 automated tests across 6 modules

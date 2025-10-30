@@ -139,6 +139,7 @@ pip uninstall pygubuai  # For pip install (recommended)
 - **[User Guide](docs/USER_GUIDE.md)** - Complete guide for using PygubuAI
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture, API reference, contributing
 - **[New Features Guide](docs/NEW_FEATURES.md)** - Recent improvements and new capabilities
+- **[Project History](docs/PROJECT_HISTORY.md)** - Development milestones and architectural decisions
 - [Examples](examples/) - Sample projects
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - Contribution guidelines
