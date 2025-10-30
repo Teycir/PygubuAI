@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pygubuai"
-version = "0.4.0"
+version = "0.5.0"
 description = "AI-powered workflow tools for Pygubu - Build Tkinter UIs with natural language"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -52,6 +52,17 @@ pygubu-register = "pygubuai.register:main"
 pygubu-template = "pygubuai.template:main"
 pygubu-ai-workflow = "pygubuai.workflow:main"
 tkinter-to-pygubu = "pygubuai.converter:main"
+# New v0.5.0 features
+pygubu-status = "pygubuai.status:main"
+pygubu-widgets = "pygubuai.widgets:main"
+pygubu-theme = "pygubuai.theme:main"
+pygubu-preview = "pygubuai.preview:main"
+pygubu-validate = "pygubuai.validate_project:main"
+pygubu-inspect = "pygubuai.inspect:main"
+pygubu-snippet = "pygubuai.snippet:main"
+pygubu-prompt = "pygubuai.prompt:main"
+pygubu-batch = "pygubuai.batch:main"
+pygubu-export = "pygubuai.export:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pygubuai"]

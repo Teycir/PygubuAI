@@ -1,5 +1,6 @@
-"""Widget detection and generation"""
-from typing import List, Tuple, Dict, Any
+"""Widget detection, generation, and library browser"""
+from typing import List, Tuple, Dict, Any, Optional
+from .widget_data import WIDGET_LIBRARY, CATEGORIES
 
 WIDGET_PATTERNS = {
     "label": {"keywords": ["label", "title", "heading"], "class": "ttk.Label", "properties": {"text": "Label"}},
@@ -55,3 +56,99 @@ def get_callbacks(widgets):
         if "command" in config.get("properties", {}):
             callbacks.add(config["properties"]["command"])
     return list(callbacks)
+
+def list_widgets(category: Optional[str] = None) -> Dict[str, Dict]:
+    """List all widgets, optionally filtered by category"""
+    if category:
+        return {name: info for name, info in WIDGET_LIBRARY.items() if info["category"] == category}
+    return WIDGET_LIBRARY
+
+def search_widgets(query: str) -> Dict[str, Dict]:
+    """Search widgets by name or description"""
+    query_lower = query.lower()
+    results = {}
+    for name, info in WIDGET_LIBRARY.items():
+        if query_lower in name.lower() or query_lower in info["description"].lower():
+            results[name] = info
+    return results
+
+def get_widget_info(widget_name: str) -> Optional[Dict]:
+    """Get detailed info about a specific widget"""
+    return WIDGET_LIBRARY.get(widget_name)
+
+def main():
+    """CLI entry point for widget browser"""
+    import sys
+    
+    if len(sys.argv) < 2:
+        print("Usage: pygubu-widgets <command> [args]")
+        print("Commands:")
+        print("  list [--category <cat>]  - List all widgets")
+        print("  search <query>           - Search widgets")
+        print("  info <widget>            - Show widget details")
+        print("  categories               - List all categories")
+        sys.exit(1)
+    
+    command = sys.argv[1]
+    
+    if command == "list":
+        category = None
+        if len(sys.argv) > 2 and sys.argv[2] == "--category" and len(sys.argv) > 3:
+            category = sys.argv[3]
+        
+        widgets = list_widgets(category)
+        if category:
+            print(f"\n{CATEGORIES.get(category, category)} Widgets:\n")
+        else:
+            print("\nAll Available Widgets:\n")
+        
+        for name, info in sorted(widgets.items()):
+            print(f"  {name:20} - {info['description']}")
+        print(f"\nTotal: {len(widgets)} widgets")
+    
+    elif command == "search":
+        if len(sys.argv) < 3:
+            print("Usage: pygubu-widgets search <query>")
+            sys.exit(1)
+        
+        query = sys.argv[2]
+        results = search_widgets(query)
+        
+        print(f"\nSearch results for '{query}':\n")
+        for name, info in sorted(results.items()):
+            print(f"  {name:20} - {info['description']}")
+        print(f"\nFound: {len(results)} widgets")
+    
+    elif command == "info":
+        if len(sys.argv) < 3:
+            print("Usage: pygubu-widgets info <widget_name>")
+            sys.exit(1)
+        
+        widget_name = sys.argv[2]
+        info = get_widget_info(widget_name)
+        
+        if not info:
+            print(f"Widget '{widget_name}' not found")
+            sys.exit(1)
+        
+        print(f"\n{widget_name}")
+        print("=" * len(widget_name))
+        print(f"Category: {info['category']}")
+        print(f"Description: {info['description']}")
+        print(f"\nProperties: {', '.join(info['properties'])}")
+        print(f"\nCommon Use Cases:")
+        for use_case in info['use_cases']:
+            print(f"  • {use_case}")
+    
+    elif command == "categories":
+        print("\nWidget Categories:\n")
+        for cat, desc in CATEGORIES.items():
+            count = len([w for w in WIDGET_LIBRARY.values() if w['category'] == cat])
+            print(f"  {cat:12} - {desc} ({count} widgets)")
+    
+    else:
+        print(f"Unknown command: {command}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

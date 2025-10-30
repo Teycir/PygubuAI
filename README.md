@@ -127,20 +127,34 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ## Commands
 
+### Core Commands
 | Command | Description |
 |---------|-------------|
 | `pygubu-create <name> '<desc>' [--dry-run]` | Create new project from description |
 | `pygubu-template <name> <template>` | Create from template (login, crud, etc.) |
-| `pygubu-template list` | List all available templates |
 | `pygubu-register list` | Show all registered projects |
 | `pygubu-register active <name>` | Set active project |
-| `pygubu-register scan <dir>` | Auto-discover projects |
 | `tkinter-to-pygubu <file>.py` | Convert tkinter to pygubu |
 | `pygubu-ai-workflow watch <proj>` | Watch for UI changes |
-| `python3 run_tests.py` | Run test suite |
+
+### New in v0.5.0 🎉
+| Command | Description |
+|---------|-------------|
+| `pygubu-status [project]` | Check UI/code sync status |
+| `pygubu-widgets list [--category]` | Browse widget library |
+| `pygubu-theme <project> <theme>` | Apply ttk theme |
+| `pygubu-preview <project> [--watch]` | Quick UI preview |
+| `pygubu-validate <project>` | Check for issues |
+| `pygubu-inspect <project> [--widget]` | Examine UI structure |
+| `pygubu-snippet <widget> [text]` | Generate XML snippets |
+| `pygubu-prompt <template> [project]` | AI prompt templates |
+| `pygubu-batch <command> [args]` | Batch operations |
+| `pygubu-export <project>` | Export to standalone file |
 
 ## Documentation
 
+- **[Feature Showcase](FEATURE_SHOWCASE.md)** - ⭐ NEW! v0.5.0 features with examples
+- **[Roadmap](ROADMAP.md)** - Development roadmap and plans
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
 - **[Architecture](ARCHITECTURE.md)** - System design and module structure
@@ -148,6 +162,23 @@ pip uninstall pygubuai  # For pip install (recommended)
 - [Examples](examples/) - Sample projects
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - How to contribute
+
+## What's New in v0.5.0 🚀
+
+### 10 High-Value Productivity Features
+
+1. **Project Status** - Check UI/code sync status instantly
+2. **Widget Browser** - Discover 20+ widgets with categories
+3. **Theme Switcher** - Apply ttk themes with one command
+4. **Quick Preview** - View UI without running full app
+5. **Project Validator** - Find issues before they break
+6. **Widget Inspector** - Examine UI structure and properties
+7. **Snippet Generator** - Generate XML for quick insertion
+8. **AI Prompts** - Pre-written templates for common tasks
+9. **Batch Operations** - Manage multiple projects efficiently
+10. **Standalone Export** - Bundle UI into single Python file
+
+**See [FEATURE_SHOWCASE.md](FEATURE_SHOWCASE.md) for detailed examples!**
 
 ## Recent Improvements (v0.4.0)
 
