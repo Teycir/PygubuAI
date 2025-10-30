@@ -2,25 +2,29 @@
 
 Thank you for your interest in contributing to PygubuAI! This document provides guidelines and instructions for contributing.
 
-## Development Setup
+## Quick Start
 
-### Prerequisites
-- Python 3.9+
-- Git
-- pygubu and pygubu-designer
+For detailed technical documentation, see the **[Developer Guide](docs/DEVELOPER_GUIDE.md)**.
 
-### Quick Start
+### Automated Setup
 
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/pygubuai.git
 cd pygubuai
 
+# Run automated setup
+./setup-dev.sh
+```
+
+### Manual Setup
+
+```bash
 # Install in development mode with dev dependencies
 pip install -e ".[dev]"
 
-# Or use make
-make dev
+# Install pre-commit hooks
+make pre-commit-install
 
 # Run tests
 make test
@@ -154,16 +158,33 @@ Then create a Pull Request on GitHub with:
 ### Python Style
 - Follow PEP 8
 - Use 4 spaces for indentation
-- Maximum line length: 100 characters
+- Maximum line length: 120 characters (configured in pyproject.toml)
 - Use double quotes for strings
 
 ### Formatting
 ```bash
 # Format code with black
-black src/ tests/
+make format
 
-# Check with flake8
-flake8 src/ tests/
+# Check linting
+make lint
+
+# Type checking
+make typecheck
+
+# Run all checks
+make lint && make typecheck && make test
+```
+
+### Pre-commit Hooks
+
+Pre-commit hooks automatically run on every commit:
+```bash
+# Install hooks
+make pre-commit-install
+
+# Run manually
+pre-commit run --all-files
 ```
 
 ### Type Hints
@@ -256,12 +277,18 @@ def find_project(name: str) -> Dict:
 4. Create git tag: `git tag v0.2.0`
 5. Push: `git push --tags`
 
+## Documentation
+
+For comprehensive technical documentation:
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture, API reference, testing
+- **[User Guide](docs/USER_GUIDE.md)** - User-facing documentation
+
 ## Getting Help
 
 - Open an issue for bugs or feature requests
 - Check existing issues before creating new ones
 - Join discussions in GitHub Discussions
-- Read the documentation in docs/
+- Read the [Developer Guide](docs/DEVELOPER_GUIDE.md)
 
 ## Code of Conduct
 
