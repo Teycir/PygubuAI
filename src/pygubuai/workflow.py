@@ -25,10 +25,11 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
     """Load workflow tracking file"""
+    default_workflow = {"file_hashes": {}, "last_sync": None, "changes": []}
     workflow_file = project_path / ".pygubu-workflow.json"
     
     if not workflow_file.exists():
-        return {"file_hashes": {}, "last_sync": None, "changes": []}
+        return default_workflow
     
     try:
         data = json.loads(workflow_file.read_text())
@@ -41,7 +42,7 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
         return data
     except Exception as e:
         logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
-        return {"file_hashes": {}, "last_sync": None, "changes": []}
+        return default_workflow
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking"""
@@ -115,13 +116,12 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
                 # Rescan files in each loop to detect new/deleted files
                 current_files = {f for p in patterns for f in project_path.glob(p)}
                 _check_ui_changes(list(current_files), workflow, project_path, project_name)
-                time.sleep(interval)
             except KeyboardInterrupt:
                 raise
             except Exception as e:
                 logger.error(f"Error during watch cycle: {e}", exc_info=True)
                 workflow = load_workflow(project_path)
-                time.sleep(interval)
+            time.sleep(interval)
     except KeyboardInterrupt:
         print("\n\n✓ Stopped watching")
 
