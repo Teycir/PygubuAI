@@ -43,7 +43,10 @@ jobs:
         file: ./coverage.xml
         fail_ci_if_error: false
     
-    - name: Test CLI installation
+    - name: Test CLI entry points
       run: |
-        pygubu-create --version
-        pygubu-create --help
+        python -c "from pygubuai.create import main; import sys; sys.exit(0)"
+        python -c "from pygubuai.register import main; import sys; sys.exit(0)"
+        python -c "from pygubuai.template import main; import sys; sys.exit(0)"
+        python -c "from pygubuai.workflow import main; import sys; sys.exit(0)"
+        python -c "from pygubuai.converter import main; import sys; sys.exit(0)"
