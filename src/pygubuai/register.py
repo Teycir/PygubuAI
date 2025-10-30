@@ -13,11 +13,13 @@ from .progress import ProgressBar
 logger = logging.getLogger(__name__)
 
 def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
-    """Register a pygubu project"""
-    project_path = pathlib.Path(path)
-    if not project_path.exists():
-        raise InvalidProjectError(str(path), "path does not exist")
-    project_path = project_path.resolve()
+    """Register a pygubu project with path validation"""
+    from .utils import validate_path
+    
+    try:
+        project_path = validate_path(path, must_exist=True, must_be_dir=True)
+    except ValueError as e:
+        raise InvalidProjectError(str(path), str(e))
     
     ui_files = list(project_path.glob("*.ui"))
     if not ui_files:
@@ -109,10 +111,13 @@ def get_active() -> Optional[str]:
     return project_path
 
 def scan_directory(directory: str = ".", show_progress: bool = True) -> None:
-    """Auto-scan directory for pygubu projects"""
-    base = pathlib.Path(directory).resolve()
-    if not base.exists():
-        raise InvalidProjectError(str(directory), "directory does not exist")
+    """Auto-scan directory for pygubu projects with validation"""
+    from .utils import validate_path
+    
+    try:
+        base = validate_path(directory, must_exist=True, must_be_dir=True)
+    except ValueError as e:
+        raise InvalidProjectError(str(directory), str(e))
     
     print(f"Scanning {directory}...")
     found = []

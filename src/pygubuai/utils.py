@@ -48,3 +48,34 @@ def find_pygubu_designer() -> str:
     import shutil
     designer = shutil.which("pygubu-designer")
     return designer if designer else "pygubu-designer"
+
+def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False) -> Path:
+    """Validate and sanitize file paths to prevent security issues.
+    
+    Args:
+        path: Path string to validate
+        must_exist: Require path to exist
+        must_be_dir: Require path to be a directory
+        
+    Returns:
+        Validated Path object
+        
+    Raises:
+        ValueError: If path is invalid, unsafe, or doesn't meet requirements
+    """
+    try:
+        p = Path(path).resolve()
+    except (ValueError, RuntimeError, OSError) as e:
+        raise ValueError(f"Invalid path '{path}': {e}")
+    
+    # Prevent directory traversal attacks
+    if ".." in Path(path).parts:
+        raise ValueError(f"Path traversal not allowed: {path}")
+    
+    if must_exist and not p.exists():
+        raise ValueError(f"Path does not exist: {p}")
+    
+    if must_be_dir and p.exists() and not p.is_dir():
+        raise ValueError(f"Path is not a directory: {p}")
+    
+    return p

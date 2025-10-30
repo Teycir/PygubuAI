@@ -35,20 +35,35 @@ class Registry:
     
     @contextmanager
     def _lock(self, mode='r'):
-        """Cross-platform file locking context manager"""
-        if FileLock:
-            lock = FileLock(str(self.registry_path) + '.lock', timeout=10)
-            lock.acquire()
-            try:
-                with open(self.registry_path, mode) as f:
-                    yield f
-            finally:
-                lock.release()
-        else:
-            # Fallback without locking if filelock not available
-            logger.warning("filelock not installed, registry operations not thread-safe")
-            with open(self.registry_path, mode) as f:
-                yield f
+        """Cross-platform file locking with proper cleanup order"""
+        lock_file = None
+        file_handle = None
+        
+        try:
+            if FileLock:
+                lock_file = FileLock(str(self.registry_path) + '.lock', timeout=10)
+                lock_file.acquire()
+            else:
+                logger.warning("filelock not installed, registry operations not thread-safe")
+            
+            # Open file after acquiring lock
+            file_handle = open(self.registry_path, mode)
+            yield file_handle
+            
+        finally:
+            # Ensure file is closed before releasing lock (proper order)
+            if file_handle:
+                try:
+                    file_handle.close()
+                except Exception as e:
+                    logger.debug(f"Error closing file: {e}")
+            
+            # Release lock last
+            if lock_file:
+                try:
+                    lock_file.release()
+                except Exception as e:
+                    logger.debug(f"Error releasing lock: {e}")
     
     def _read(self) -> Dict:
         """Read with lock"""

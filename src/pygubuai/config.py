@@ -35,11 +35,14 @@ class Config:
         self.config = self._load()
     
     def _load(self) -> Dict[str, Any]:
-        """Load and merge configuration from all sources.
+        """Load and merge configuration from all sources with error reporting.
         
         Returns:
             Merged configuration dictionary
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        
         with self._lock:
             config = self.DEFAULT.copy()
             
@@ -47,9 +50,17 @@ class Config:
             if self.config_path.exists():
                 try:
                     user_config = json.loads(self.config_path.read_text())
-                    config.update(user_config)
-                except (json.JSONDecodeError, OSError):
-                    pass
+                    if not isinstance(user_config, dict):
+                        logger.warning(f"Invalid config format in {self.config_path}, using defaults")
+                    else:
+                        config.update(user_config)
+                        logger.debug(f"Loaded user config from {self.config_path}")
+                        
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Config file corrupted at line {e.lineno}: {e.msg}. "
+                                 f"Using defaults. Fix or delete: {self.config_path}")
+                except OSError as e:
+                    logger.warning(f"Cannot read config file: {e}. Using defaults.")
             
             # Override with environment variables
             config = self._apply_env_overrides(config)
@@ -90,12 +101,29 @@ class Config:
     
     @property
     def registry_path(self) -> pathlib.Path:
-        """Get registry file path.
+        """Get registry file path with validation.
         
         Returns:
-            Expanded path to registry file
+            Validated and expanded path to registry file
         """
-        return pathlib.Path(self.config["registry_path"]).expanduser()
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        path_str = self.config["registry_path"]
+        try:
+            # Expand user home directory
+            expanded = pathlib.Path(path_str).expanduser()
+            
+            # Basic validation: no directory traversal in unexpanded path
+            if ".." in pathlib.Path(path_str).parts:
+                logger.warning(f"Suspicious path in config: {path_str}, using default")
+                return pathlib.Path.home() / ".pygubu-registry.json"
+            
+            return expanded
+            
+        except (ValueError, RuntimeError) as e:
+            logger.warning(f"Invalid registry path '{path_str}': {e}, using default")
+            return pathlib.Path.home() / ".pygubu-registry.json"
     
     def save(self) -> None:
         """Save current configuration to user config file.

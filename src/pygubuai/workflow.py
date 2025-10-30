@@ -44,16 +44,42 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
         return {"file_hashes": {}, "last_sync": None, "changes": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
-    """Save workflow tracking"""
+    """Save workflow tracking with atomic write to prevent corruption."""
+    import tempfile
+    import shutil
+    
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now(timezone.utc).isoformat()
     # Limit changes history to last 100 entries
     if "changes" in data and len(data["changes"]) > 100:
         data["changes"] = data["changes"][-100:]
+    
+    tmp_path = None
     try:
-        workflow_file.write_text(json.dumps(data, indent=2))
+        # Write to temporary file first (atomic operation)
+        with tempfile.NamedTemporaryFile(
+            mode='w',
+            dir=project_path,
+            prefix='.pygubu-workflow-',
+            suffix='.tmp',
+            delete=False
+        ) as tmp:
+            tmp_path = tmp.name
+            json.dump(data, tmp, indent=2)
+        
+        # Atomic rename (POSIX guarantees atomicity)
+        shutil.move(tmp_path, workflow_file)
+        tmp_path = None  # Successfully moved, don't clean up
+        
     except Exception as e:
+        # Clean up temp file on error
+        if tmp_path and pathlib.Path(tmp_path).exists():
+            try:
+                pathlib.Path(tmp_path).unlink()
+            except Exception as cleanup_err:
+                logger.debug(f"Failed to clean up temp file: {cleanup_err}")
         logger.error(f"Failed to save workflow file: {e}")
+        raise
 
 def get_watch_interval(config: Optional[Config] = None) -> float:
     """Get watch interval from config or default to 2.0s"""
@@ -76,7 +102,7 @@ def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     return ["*.ui"]
 
 def watch_project(project_name: str, interval: Optional[float] = None) -> None:
-    """Watch project for UI changes"""
+    """Watch project for UI changes with error recovery and circuit breaker."""
     registry = Registry()
     projects = registry.list_projects()
     
@@ -92,8 +118,12 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
     interval = interval if interval is not None else get_watch_interval(config)
     patterns = get_file_patterns(config)
     
+    MAX_FILES = 1000  # Resource limit
     try:
         all_files = [f for pattern in patterns for f in project_path.glob(pattern)]
+        if len(all_files) > MAX_FILES:
+            logger.warning(f"Project has {len(all_files)} files, limiting to {MAX_FILES}")
+            all_files = all_files[:MAX_FILES]
     except Exception as e:
         logger.error(f"Failed to scan project directory: {e}")
         raise RuntimeError(f"Cannot access project directory: {e}") from e
@@ -108,6 +138,8 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
     print("\nPress Ctrl+C to stop\n")
     
     workflow = load_workflow(project_path)
+    error_count = 0
+    MAX_ERRORS = 5  # Circuit breaker threshold
     
     try:
         while True:
@@ -115,13 +147,35 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
                 # Rescan files in each loop to detect new/deleted files
                 current_files = {f for p in patterns for f in project_path.glob(p)}
                 _check_ui_changes(list(current_files), workflow, project_path, project_name)
+                
+                # Reset error count on success
+                error_count = 0
                 time.sleep(interval)
+                
             except KeyboardInterrupt:
                 raise
+                
             except Exception as e:
-                logger.error(f"Error during watch cycle: {e}", exc_info=True)
-                workflow = load_workflow(project_path)
+                error_count += 1
+                logger.error(f"Error during watch cycle ({error_count}/{MAX_ERRORS}): {e}", 
+                           exc_info=True)
+                
+                # Circuit breaker: stop after too many consecutive errors
+                if error_count >= MAX_ERRORS:
+                    logger.error(f"Too many consecutive errors ({MAX_ERRORS}), stopping watch")
+                    print(f"\n Watch stopped after {MAX_ERRORS} consecutive errors")
+                    print("Check logs for details")
+                    sys.exit(1)
+                
+                # Try to recover workflow state
+                try:
+                    workflow = load_workflow(project_path)
+                except Exception as load_err:
+                    logger.error(f"Failed to reload workflow: {load_err}")
+                    # Continue with existing workflow
+                
                 time.sleep(interval)
+                
     except KeyboardInterrupt:
         print("\n\n✓ Stopped watching")
 
@@ -156,7 +210,7 @@ def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict,
 
 def _notify_ui_change(ui_file: pathlib.Path, project_name: str) -> None:
     """Print notification when UI file changes"""
-    print(f"🔄 UI changed: {ui_file.name}")
+    print(f" UI changed: {ui_file.name}")
     print(f"   Time: {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
     print("\n💡 Suggested action:")
     print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
