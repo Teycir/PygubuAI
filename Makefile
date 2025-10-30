@@ -21,10 +21,10 @@ uninstall:
 	./uninstall.sh
 
 test:
-	pytest -v
+	@command -v pytest >/dev/null 2>&1 && pytest -v || python3 run_tests.py
 
 coverage:
-	pytest --cov=src/pygubuai --cov-report=html --cov-report=term-missing
+	@command -v pytest >/dev/null 2>&1 && pytest --cov=src/pygubuai --cov-report=html --cov-report=term-missing || ./run_coverage.sh
 	@echo "Coverage report: htmlcov/index.html"
 
 clean:

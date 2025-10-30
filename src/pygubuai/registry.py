@@ -12,10 +12,14 @@ logger = logging.getLogger(__name__)
 
 class Registry:
     """Thread-safe registry with file locking"""
+    REGISTRY_FILE = None  # For testing override
     
     def __init__(self):
-        self.config = Config()
-        self.registry_path = self.config.registry_path
+        if self.REGISTRY_FILE:
+            self.registry_path = self.REGISTRY_FILE
+        else:
+            self.config = Config()
+            self.registry_path = self.config.registry_path
         self._ensure_registry()
     
     def _ensure_registry(self):
