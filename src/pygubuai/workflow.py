@@ -55,17 +55,19 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     except Exception as e:
         logger.error(f"Failed to save workflow file: {e}")
 
-def get_watch_interval() -> float:
+def get_watch_interval(config: Optional[Config] = None) -> float:
     """Get watch interval from config or default to 2.0s"""
+    config = config or Config()
     try:
-        interval = float(Config().get("watch_interval", 2.0))
+        interval = float(config.get("watch_interval", 2.0))
         return interval if interval > 0 else 2.0
     except (ValueError, TypeError):
         return 2.0
 
-def get_file_patterns() -> List[str]:
+def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     """Get file patterns to watch from config or default to ['*.ui']"""
-    patterns_str = Config().get("watch_patterns", "*.ui")
+    config = config or Config()
+    patterns_str = config.get("watch_patterns", "*.ui")
     if isinstance(patterns_str, str):
         patterns = [p.strip() for p in patterns_str.split(',') if p.strip()]
         return patterns if patterns else ["*.ui"]
@@ -86,8 +88,9 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
     if not project_path.exists() or not project_path.is_dir():
         raise ProjectNotFoundError(project_name, f"Invalid project path: {project_path}")
     
-    interval = interval if interval is not None else get_watch_interval()
-    patterns = get_file_patterns()
+    config = Config()
+    interval = interval if interval is not None else get_watch_interval(config)
+    patterns = get_file_patterns(config)
     
     try:
         all_files = [f for pattern in patterns for f in project_path.glob(pattern)]
@@ -142,7 +145,7 @@ def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict,
         elif current_hash != prev_hash:
             _notify_ui_change(ui_file, project_name)
             workflow["file_hashes"][file_key] = current_hash
-            workflow.setdefault("changes", []).append({
+            workflow["changes"].append({
                 "file": ui_file.name,
                 "timestamp": datetime.now(timezone.utc).isoformat()
             })
