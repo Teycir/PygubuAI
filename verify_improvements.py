@@ -86,8 +86,8 @@ def test_enhanced_docstrings():
         assert module.__doc__ is not None
         print(f"  - {module.__name__}: {len(module.__doc__)} chars")
     
-    # Check specific function docstrings
-    from pygubuai.workflow import get_file_hash
+    # Check specific function docstrings (now in utils)
+    from pygubuai.utils import get_file_hash
     assert get_file_hash.__doc__ is not None
     assert "Args:" in get_file_hash.__doc__
     assert "Returns:" in get_file_hash.__doc__
@@ -131,10 +131,7 @@ def main():
         print("  4. ✓ Enhanced documentation (95% coverage)")
         print("  5. ✓ Better error handling with context")
         print("\nTest Coverage: 90% (81 tests passing)")
-        print("\nFor more details, see:")
-        print("  - docs/NEW_FEATURES.md")
-        print("  - IMPROVEMENTS_SUMMARY.md")
-        print("  - IMPROVEMENT_PLAN.md")
+        print("\nFor more details, see docs/NEW_FEATURES.md")
         
         return 0
         

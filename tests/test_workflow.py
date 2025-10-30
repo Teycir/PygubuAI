@@ -8,7 +8,8 @@ import json
 from unittest.mock import patch
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
-from pygubuai.workflow import get_file_hash, load_workflow, save_workflow, watch_project
+from pygubuai.workflow import load_workflow, save_workflow, watch_project
+from pygubuai.utils import get_file_hash
 from pygubuai.registry import Registry
 from pygubuai.errors import ProjectNotFoundError
 

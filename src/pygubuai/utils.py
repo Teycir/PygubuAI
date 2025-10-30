@@ -1,9 +1,28 @@
 """Utility functions"""
 import re
+import hashlib
 import logging
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+def get_file_hash(filepath: Path) -> str:
+    """Calculate MD5 hash of file contents.
+    
+    Args:
+        filepath: Path to file to hash
+        
+    Returns:
+        32-character hexadecimal MD5 hash
+        
+    Raises:
+        OSError: If file cannot be read
+    """
+    try:
+        return hashlib.md5(filepath.read_bytes()).hexdigest()
+    except OSError as e:
+        logger.error(f"Failed to read file {filepath}: {e}")
+        raise
 
 def validate_project_name(name: str) -> str:
     """Validate and sanitize project name"""

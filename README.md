@@ -136,17 +136,12 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ## Documentation
 
-### User Documentation
 - **[User Guide](docs/USER_GUIDE.md)** - Complete guide for using PygubuAI
-- [Quick Reference](pygubuai-quickref.txt) - Command cheat sheet
-- [Examples](examples/) - Sample projects
-
-### Developer Documentation
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture, API reference, contributing
 - **[New Features Guide](docs/NEW_FEATURES.md)** - Recent improvements and new capabilities
+- [Examples](examples/) - Sample projects
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - Contribution guidelines
-- [Improvements Summary](IMPROVEMENTS_SUMMARY.md) - Detailed improvement documentation
 
 ### Development Commands
 ```bash
@@ -247,7 +242,6 @@ PygubuAI is built on top of [Pygubu](https://github.com/alejandroautalan/pygubu)
 
 - [Pygubu](https://github.com/alejandroautalan/pygubu)
 - [Pygubu Designer](https://github.com/alejandroautalan/pygubu-designer)
-- [Documentation](PYGUBUAI.md)
 
 ---
 

@@ -4,33 +4,16 @@ import sys
 import json
 import time
 import pathlib
-import hashlib
 import logging
+import argparse
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict
 from .registry import Registry
 from .errors import ProjectNotFoundError
 from .logging_config import get_logger
+from .utils import get_file_hash
 
 logger = get_logger(__name__)
-
-def get_file_hash(filepath: pathlib.Path) -> str:
-    """Calculate MD5 hash of file contents.
-    
-    Args:
-        filepath: Path to file to hash
-        
-    Returns:
-        32-character hexadecimal MD5 hash
-        
-    Raises:
-        OSError: If file cannot be read
-    """
-    try:
-        return hashlib.md5(filepath.read_bytes()).hexdigest()
-    except OSError as e:
-        logger.error(f"Failed to read file {filepath}: {e}")
-        raise
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
     """Load workflow tracking data from project directory.
@@ -146,20 +129,25 @@ def main():
     from . import __version__
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     
-    if '--version' in sys.argv:
-        print(f"pygubu-ai-workflow {__version__}")
-        return
+    parser = argparse.ArgumentParser(
+        description="Watch a pygubu project for UI changes and suggest AI sync actions.",
+        epilog="Example:\n"
+               "  pygubu-ai-workflow watch myapp",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        '--version', action='version', version=f"pygubu-ai-workflow {__version__}"
+    )
+    subparsers = parser.add_subparsers(dest='command', required=True, help='Sub-command help')
     
-    if '--help' in sys.argv or len(sys.argv) < 3 or sys.argv[1] != "watch":
-        print(f"pygubu-ai-workflow {__version__}")
-        print("\nUsage: pygubu-ai-workflow watch <project_name>")
-        print("\nExample:")
-        print("  pygubu-ai-workflow watch myapp")
-        print("\nThis monitors .ui file changes and suggests AI sync actions")
-        sys.exit(0 if '--help' in sys.argv else 1)
+    watch_parser = subparsers.add_parser('watch', help='Watch a project for UI changes')
+    watch_parser.add_argument('project_name', help='Name of the project to watch.')
+    
+    args = parser.parse_args()
     
     try:
-        watch_project(sys.argv[2])
+        if args.command == 'watch':
+            watch_project(args.project_name)
     except ProjectNotFoundError as e:
         logger.error(str(e))
         sys.exit(1)
