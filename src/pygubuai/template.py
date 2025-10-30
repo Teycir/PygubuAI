@@ -10,10 +10,10 @@ from .utils import validate_project_name, ensure_directory
 from .templates import get_template, list_templates, get_template_widgets_and_callbacks
 from .generator import generate_base_ui_xml_structure, generate_python_app_structure, generate_readme_content
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
-def create_from_template(name: str, template_name: str, skip_validation: bool = False):
+def create_from_template(name: str, template_name: str, skip_validation: bool = False,
+                        dry_run: bool = False, init_git: bool = False):
     """Create project from template"""
     try:
         if not skip_validation:
@@ -27,7 +27,18 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
             )
         
         name = validate_project_name(name)
-        base = ensure_directory(Path.cwd() / name)
+        base = Path.cwd() / name
+        
+        if dry_run:
+            logger.info("[DRY RUN] Would create from template:")
+            logger.info(f"  Template: {template_name}")
+            logger.info(f"  Directory: {base}/")
+            logger.info(f"  Files: {name}.ui, {name}.py, README.md")
+            if init_git:
+                logger.info(f"  Git: Initialize repository with .gitignore")
+            return
+        
+        base = ensure_directory(base)
         
         template_widgets, template_callbacks_code = get_template_widgets_and_callbacks(template_name)
         
@@ -40,6 +51,12 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
         
         readme = base / "README.md"
         readme.write_text(generate_readme_content(name, template["description"], f"{name}.ui", template_name=template_name))
+        
+        # Initialize git if requested
+        if init_git:
+            from .git_integration import init_git_repo
+            if init_git_repo(base):
+                logger.info("  Git: Initialized repository")
         
         logger.info(f"[SUCCESS] Created from '{template_name}' template: {base}/")
         logger.info(f"  Files: {name}.ui, {name}.py, README.md")
@@ -54,6 +71,7 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
 
 def main(args=None):
     """CLI entry point"""
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
     parser = argparse.ArgumentParser(
         prog='pygubu-template',
         description='Create pygubu projects from templates'

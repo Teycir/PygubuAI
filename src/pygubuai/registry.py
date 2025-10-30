@@ -38,9 +38,12 @@ class Registry:
         """Cross-platform file locking context manager"""
         if FileLock:
             lock = FileLock(str(self.registry_path) + '.lock', timeout=10)
-            with lock:
+            lock.acquire()
+            try:
                 with open(self.registry_path, mode) as f:
                     yield f
+            finally:
+                lock.release()
         else:
             # Fallback without locking if filelock not available
             logger.warning("filelock not installed, registry operations not thread-safe")

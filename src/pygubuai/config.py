@@ -2,6 +2,7 @@
 import json
 import os
 import pathlib
+import threading
 from typing import Dict, Any, Optional
 
 class Config:
@@ -26,6 +27,7 @@ class Config:
     }
     
     ENV_PREFIX = "PYGUBUAI_"
+    _lock = threading.Lock()
     
     def __init__(self):
         """Initialize configuration with merged sources."""
@@ -38,19 +40,20 @@ class Config:
         Returns:
             Merged configuration dictionary
         """
-        config = self.DEFAULT.copy()
-        
-        # Load user config file if exists
-        if self.config_path.exists():
-            try:
-                user_config = json.loads(self.config_path.read_text())
-                config.update(user_config)
-            except (json.JSONDecodeError, OSError):
-                pass
-        
-        # Override with environment variables
-        config = self._apply_env_overrides(config)
-        return config
+        with self._lock:
+            config = self.DEFAULT.copy()
+            
+            # Load user config file if exists
+            if self.config_path.exists():
+                try:
+                    user_config = json.loads(self.config_path.read_text())
+                    config.update(user_config)
+                except (json.JSONDecodeError, OSError):
+                    pass
+            
+            # Override with environment variables
+            config = self._apply_env_overrides(config)
+            return config
     
     def _apply_env_overrides(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """Apply environment variable overrides to config.
@@ -100,5 +103,6 @@ class Config:
         Raises:
             OSError: If unable to write config file
         """
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        self.config_path.write_text(json.dumps(self.config, indent=2))
+        with self._lock:
+            self.config_path.parent.mkdir(parents=True, exist_ok=True)
+            self.config_path.write_text(json.dumps(self.config, indent=2))

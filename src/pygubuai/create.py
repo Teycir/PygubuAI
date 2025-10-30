@@ -14,7 +14,6 @@ from .git_integration import init_git_repo
 from .interactive import interactive_create
 from .registry import Registry
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
 def create_project(name: str, description: str, skip_validation: bool = False, 
@@ -81,6 +80,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
 
 def main(args=None):
     """CLI entry point"""
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
     parser = argparse.ArgumentParser(
         description="Create a new pygubu project from a natural language description.",
         epilog="Examples:\n"
@@ -109,14 +109,14 @@ def main(args=None):
             config['name'], 
             config['description'], 
             dry_run=parsed_args.dry_run,
-            init_git=config['git'],
-            template=config['template']
+            init_git=config.get('git', False),
+            template=config.get('template')
         )
     else:
         if not parsed_args.name or not parsed_args.description:
             parser.error("name and description are required (or use --interactive)")
         
-        tags = [t.strip() for t in parsed_args.tags.split(',')] if parsed_args.tags else None
+        tags = [t.strip() for t in parsed_args.tags.split(',') if t.strip()] if parsed_args.tags else None
         create_project(
             parsed_args.name, 
             parsed_args.description,
