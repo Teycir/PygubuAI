@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""AI-powered pygubu project creator"""
+import sys
+import pathlib
+
+def parse_description(description):
+    """Extract widgets and features from description"""
+    desc_lower = description.lower()
+    widgets = []
+    
+    # Detect widgets
+    if any(w in desc_lower for w in ['label', 'title', 'heading']):
+        widgets.append(('label', 'Label'))
+    if any(w in desc_lower for w in ['entry', 'input', 'field', 'textbox']):
+        widgets.append(('entry', 'Entry'))
+    if any(w in desc_lower for w in ['button', 'submit', 'click']):
+        widgets.append(('button', 'Button'))
+    if any(w in desc_lower for w in ['list', 'table', 'tree']):
+        widgets.append(('treeview', 'List'))
+    if any(w in desc_lower for w in ['text area', 'textarea', 'multiline']):
+        widgets.append(('text', 'Text Area'))
+    
+    return widgets
+
+def generate_ui(name, description):
+    """Generate UI XML from description"""
+    widgets = parse_description(description)
+    
+    xml = [
+        "<?xml version='1.0' encoding='utf-8'?>",
+        '<interface version="1.2">',
+        '  <object class="tk.Toplevel" id="mainwindow">',
+        f'    <property name="title">{name.replace("_", " ").title()}</property>',
+        '    <property name="height">400</property>',
+        '    <property name="width">600</property>',
+        '    <child>',
+        '      <object class="ttk.Frame" id="mainframe">',
+        '        <property name="padding">20</property>',
+        '        <layout manager="pack">',
+        '          <property name="expand">true</property>',
+        '          <property name="fill">both</property>',
+        '        </layout>',
+    ]
+    
+    for i, (widget_type, label) in enumerate(widgets, 1):
+        if widget_type == 'label':
+            xml.extend([
+                '        <child>',
+                f'          <object class="ttk.Label" id="label{i}">',
+                f'            <property name="text">{label}</property>',
+                '            <layout manager="pack"><property name="pady">5</property></layout>',
+                '          </object>',
+                '        </child>',
+            ])
+        elif widget_type == 'entry':
+            xml.extend([
+                '        <child>',
+                f'          <object class="ttk.Entry" id="entry{i}">',
+                '            <layout manager="pack"><property name="pady">5</property></layout>',
+                '          </object>',
+                '        </child>',
+            ])
+        elif widget_type == 'button':
+            xml.extend([
+                '        <child>',
+                f'          <object class="ttk.Button" id="button{i}">',
+                '            <property name="text">Submit</property>',
+                '            <property name="command">on_button_click</property>',
+                '            <layout manager="pack"><property name="pady">10</property></layout>',
+                '          </object>',
+                '        </child>',
+            ])
+        elif widget_type == 'treeview':
+            xml.extend([
+                '        <child>',
+                f'          <object class="ttk.Treeview" id="treeview{i}">',
+                '            <layout manager="pack">',
+                '              <property name="expand">true</property>',
+                '              <property name="fill">both</property>',
+                '            </layout>',
+                '          </object>',
+                '        </child>',
+            ])
+        elif widget_type == 'text':
+            xml.extend([
+                '        <child>',
+                f'          <object class="tk.Text" id="text{i}">',
+                '            <property name="height">10</property>',
+                '            <layout manager="pack">',
+                '              <property name="expand">true</property>',
+                '              <property name="fill">both</property>',
+                '            </layout>',
+                '          </object>',
+                '        </child>',
+            ])
+    
+    xml.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
+    return '\n'.join(xml)
+
+def generate_python(name, has_button):
+    """Generate Python application code"""
+    class_name = name.replace('_', ' ').title().replace(' ', '')
+    
+    code = f'''#!/usr/bin/env python3
+import pathlib
+import tkinter as tk
+import pygubu
+
+PROJECT_PATH = pathlib.Path(__file__).parent
+PROJECT_UI = PROJECT_PATH / "{name}.ui"
+
+class {class_name}App:
+    def __init__(self, master=None):
+        self.builder = pygubu.Builder()
+        self.builder.add_from_file(PROJECT_UI)
+        self.mainwindow = self.builder.get_object('mainwindow', master)
+        self.builder.connect_callbacks(self)
+'''
+    
+    if has_button:
+        code += '''
+    def on_button_click(self):
+        """Handle button click"""
+        print("Button clicked!")
+'''
+    
+    code += f'''
+    def run(self):
+        self.mainwindow.mainloop()
+
+if __name__ == '__main__':
+    app = {class_name}App()
+    app.run()
+'''
+    return code
+
+def create_project(name, description):
+    """Create complete pygubu project from description"""
+    base = pathlib.Path.cwd() / name
+    base.mkdir(exist_ok=True)
+    
+    # Generate UI
+    ui_content = generate_ui(name, description)
+    ui_file = base / f"{name}.ui"
+    ui_file.write_text(ui_content)
+    
+    # Generate Python
+    has_button = 'button' in description.lower()
+    py_content = generate_python(name, has_button)
+    py_file = base / f"{name}.py"
+    py_file.write_text(py_content)
+    py_file.chmod(0o755)
+    
+    # Create README
+    readme = base / "README.md"
+    readme.write_text(f'''# {name.replace("_", " ").title()}
+
+{description}
+
+## Run
+```bash
+python {name}.py
+```
+
+## Edit UI
+```bash
+~/pygubu-designer {name}.ui
+```
+''')
+    
+    print(f"✓ Created project: {base}/")
+    print(f"  Description: {description}")
+    print(f"\n📁 Files created:")
+    print(f"  - {name}.ui")
+    print(f"  - {name}.py")
+    print(f"  - README.md")
+    print(f"\n🚀 Next steps:")
+    print(f"  cd {name}")
+    print(f"  python {name}.py              # Run app")
+    print(f"  ~/pygubu-designer {name}.ui   # Edit UI")
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print("Usage: pygubu-create <project_name> '<description>'")
+        print("\nExamples:")
+        print("  pygubu-create login 'login form with username, password, and button'")
+        print("  pygubu-create todo 'todo app with entry, button, and list'")
+        print("  pygubu-create notes 'note taking app with text area and buttons'")
+        sys.exit(1)
+    
+    create_project(sys.argv[1], sys.argv[2])

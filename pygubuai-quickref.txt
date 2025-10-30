@@ -1,0 +1,32 @@
+╔══════════════════════════════════════════════════════════════╗
+║                    PygubuAI Quick Reference                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 CREATE
+  ~/pygubu-create <name> '<description>'
+
+🔧 MANAGE
+  ~/pygubu-register list              # Show all projects
+  ~/pygubu-register active <name>     # Set active project
+  ~/pygubu-register scan ~/dir        # Find projects
+  ~/pygubu-register info              # Show active
+
+🎨 DESIGN
+  ~/pygubu-designer <file>.ui         # Open designer
+
+🔄 CONVERT
+  ~/tkinter-to-pygubu <file>.py       # Convert to pygubu
+
+🤖 AI CHAT (in any conversation)
+  "Show my pygubu projects"
+  "Add a button to my project"
+  "Change the UI colors"
+  "Open the designer"
+  
+  Or use: @pygubu-context
+
+📖 DOCS
+  ~/PYGUBUAI.md
+
+🎯 ACTIVE PROJECT
+  Run: ~/pygubu-register info
