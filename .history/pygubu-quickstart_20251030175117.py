@@ -37,7 +37,7 @@ import pygubu
 PROJECT_PATH = pathlib.Path(__file__).parent
 PROJECT_UI = PROJECT_PATH / "{name}.ui"
 
-class {''.join(word.capitalize() for word in name.split('_'))}App:
+class {name.title().replace('_', '')}App:
     def __init__(self, master=None):
         self.builder = pygubu.Builder()
         self.builder.add_from_file(PROJECT_UI)
@@ -48,7 +48,7 @@ class {''.join(word.capitalize() for word in name.split('_'))}App:
         self.mainwindow.mainloop()
 
 if __name__ == '__main__':
-    app = {''.join(word.capitalize() for word in name.split('_'))}App()
+    app = {name.title().replace('_', '')}App()
     app.run()
 ''')
     py_file.chmod(0o755)

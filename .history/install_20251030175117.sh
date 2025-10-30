@@ -17,19 +17,6 @@ else
     fi
 fi
 
-# Check for pygubu and pygubu-designer
-echo "Checking for Pygubu and Pygubu Designer..."
-if ! python3 -c "import pygubu" &> /dev/null; then
-    echo "⚠️  Pygubu not found. Please install it: pip install pygubu"
-    exit 1
-fi
-if ! python3 -c "import pygubu_designer" &> /dev/null; then
-    echo "⚠️  Pygubu Designer not found. Please install it: pip install pygubu-designer"
-    exit 1
-fi
-echo "✅ Pygubu and Pygubu Designer found."
-
-
 # Copy tools
 cp pygubu-create "$INSTALL_DIR/"
 cp pygubu-register "$INSTALL_DIR/"
