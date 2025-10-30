@@ -1,10 +1,13 @@
 """Simple caching system for parsed UI files."""
 import json
 import hashlib
+import time
+import logging
 from pathlib import Path
 from typing import Any, Optional
 
 CACHE_DIR = Path.home() / ".pygubuai" / "cache"
+logger = logging.getLogger(__name__)
 
 
 def _get_file_hash(filepath: Path) -> str:
@@ -37,3 +40,26 @@ def clear_cache(filepath: Optional[Path] = None) -> None:
     else:
         for f in CACHE_DIR.glob("*.json"):
             f.unlink()
+
+def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
+    """Remove old or excess cache files to prevent bloat."""
+    if not CACHE_DIR.exists():
+        return
+    
+    try:
+        files = sorted(CACHE_DIR.glob("*.json"), key=lambda f: f.stat().st_mtime)
+        cutoff = time.time() - (max_age_days * 86400)
+        
+        for f in files:
+            if f.stat().st_mtime < cutoff or len(files) > max_files:
+                f.unlink()
+                files.remove(f)
+                logger.debug(f"Cleaned up cache file: {f.name}")
+    except Exception as e:
+        logger.warning(f"Cache cleanup failed: {e}")
+
+# Auto-cleanup on module import
+try:
+    cleanup_old_cache()
+except Exception:
+    pass  # Silent fail on cleanup

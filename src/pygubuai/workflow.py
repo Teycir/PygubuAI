@@ -23,12 +23,26 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
         logger.error(f"Failed to read file {filepath}: {e}")
         return None
 
+def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], 
+                            prev_mtime: Optional[float]) -> tuple:
+    """Get hash only if mtime changed (optimization)"""
+    try:
+        stat = filepath.stat()
+        if prev_mtime and stat.st_mtime == prev_mtime:
+            return prev_hash, prev_mtime  # Skip hashing
+        
+        hash_val = hashlib.sha256(filepath.read_bytes()).hexdigest()
+        return hash_val, stat.st_mtime
+    except Exception as e:
+        logger.error(f"Failed to read file {filepath}: {e}")
+        return None, None
+
 def load_workflow(project_path: pathlib.Path) -> Dict:
     """Load workflow tracking file"""
     workflow_file = project_path / ".pygubu-workflow.json"
     
     if not workflow_file.exists():
-        return {"file_hashes": {}, "last_sync": None, "changes": []}
+        return {"file_hashes": {}, "file_mtimes": {}, "last_sync": None, "changes": []}
     
     try:
         data = json.loads(workflow_file.read_text())
@@ -36,12 +50,13 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
             data = {}
         # Ensure required keys exist
         data.setdefault("file_hashes", {})
+        data.setdefault("file_mtimes", {})  # For mtime optimization
         data.setdefault("last_sync", None)
         data.setdefault("changes", [])
         return data
     except Exception as e:
         logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
-        return {"file_hashes": {}, "last_sync": None, "changes": []}
+        return {"file_hashes": {}, "file_mtimes": {}, "last_sync": None, "changes": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking with atomic write to prevent corruption."""
@@ -186,19 +201,23 @@ def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict,
         if not ui_file.exists():
             continue
         
-        current_hash = get_file_hash(ui_file)
+        file_key = ui_file.name
+        prev_hash = workflow["file_hashes"].get(file_key)
+        prev_mtime = workflow.get("file_mtimes", {}).get(file_key)
+        
+        # Use mtime optimization
+        current_hash, current_mtime = get_file_hash_if_changed(ui_file, prev_hash, prev_mtime)
         if current_hash is None:
             continue
         
-        file_key = ui_file.name
-        prev_hash = workflow["file_hashes"].get(file_key)
-        
         if prev_hash is None:
             workflow["file_hashes"][file_key] = current_hash
+            workflow.setdefault("file_mtimes", {})[file_key] = current_mtime
             save_workflow(project_path, workflow)
         elif current_hash != prev_hash:
             _notify_ui_change(ui_file, project_name)
             workflow["file_hashes"][file_key] = current_hash
+            workflow.setdefault("file_mtimes", {})[file_key] = current_mtime
             # Trim changes array before appending to maintain exactly 100 entries
             if len(workflow["changes"]) >= 99:
                 workflow["changes"] = workflow["changes"][-98:]

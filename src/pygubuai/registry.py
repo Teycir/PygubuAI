@@ -1,6 +1,7 @@
 """Thread-safe project registry"""
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Dict, Optional, List
 from contextlib import contextmanager
@@ -26,6 +27,10 @@ class Registry:
             self.config = Config()
             self.registry_path = self.config.registry_path
         self._ensure_registry()
+        # Lazy loading cache
+        self._cache = None
+        self._cache_time = None
+        self._cache_ttl = 5.0  # seconds
     
     def _ensure_registry(self):
         """Initialize registry if missing"""
@@ -66,18 +71,29 @@ class Registry:
                     logger.debug(f"Error releasing lock: {e}")
     
     def _read(self) -> Dict:
-        """Read with lock"""
+        """Read with lock and caching"""
+        # Return cached data if still valid
+        now = time.time()
+        if self._cache and self._cache_time and (now - self._cache_time) < self._cache_ttl:
+            return self._cache
+        
         try:
             with self._lock('r') as f:
-                return json.load(f)
+                data = json.load(f)
+                self._cache = data
+                self._cache_time = now
+                return data
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Registry read error: {e}, reinitializing")
             return {"projects": {}, "active_project": None}
     
     def _write(self, data: Dict):
-        """Write with lock"""
+        """Write with lock and invalidate cache"""
         with self._lock('w') as f:
             json.dump(data, f, indent=2)
+        # Invalidate cache on write
+        self._cache = None
+        self._cache_time = None
     
     def add_project(self, name: str, path: str, description: str = "", tags: List[str] = None):
         """Add project with metadata"""
