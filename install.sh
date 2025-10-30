@@ -38,19 +38,11 @@ fi
 echo "✅ Pygubu and Pygubu Designer found."
 
 
-# Copy Python modules
-cp pygubuai_config.py "$INSTALL_DIR/"
-cp pygubuai_errors.py "$INSTALL_DIR/"
-cp pygubuai_interactive.py "$INSTALL_DIR/"
-cp pygubuai_widgets.py "$INSTALL_DIR/"
-cp pygubuai_templates.py "$INSTALL_DIR/"
-
-# Copy tools
+# Copy CLI wrapper scripts
 cp pygubu-create "$INSTALL_DIR/"
 cp pygubu-register "$INSTALL_DIR/"
 cp pygubu-ai-workflow "$INSTALL_DIR/"
 cp tkinter-to-pygubu "$INSTALL_DIR/"
-cp pygubu-quickstart.py "$INSTALL_DIR/"
 cp pygubu-template "$INSTALL_DIR/"
 
 # Make executable
@@ -58,7 +50,6 @@ chmod +x "$INSTALL_DIR/pygubu-create"
 chmod +x "$INSTALL_DIR/pygubu-register"
 chmod +x "$INSTALL_DIR/pygubu-ai-workflow"
 chmod +x "$INSTALL_DIR/tkinter-to-pygubu"
-chmod +x "$INSTALL_DIR/pygubu-quickstart.py"
 chmod +x "$INSTALL_DIR/pygubu-template"
 
 # Create AI context directory and copy context file
@@ -68,9 +59,13 @@ if [ -f ".amazonq/prompts/pygubu-context.md" ]; then
     echo "✅ AI context installed to ~/.amazonq/prompts/"
 fi
 
-# Copy documentation
-cp PYGUBUAI.md "$HOME/"
-cp pygubuai-quickref.txt "$HOME/"
+# Copy documentation if exists
+if [ -f "PYGUBUAI.md" ]; then
+    cp PYGUBUAI.md "$HOME/"
+fi
+if [ -f "pygubuai-quickref.txt" ]; then
+    cp pygubuai-quickref.txt "$HOME/"
+fi
 
 # Initialize registry
 if [ ! -f "$HOME/.pygubu-registry.json" ]; then

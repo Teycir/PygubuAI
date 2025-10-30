@@ -51,6 +51,7 @@ pygubu-create = "pygubuai.create:main"
 pygubu-register = "pygubuai.register:main"
 pygubu-template = "pygubuai.template:main"
 pygubu-ai-workflow = "pygubuai.workflow:main"
+tkinter-to-pygubu = "pygubuai.converter:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pygubuai"]
