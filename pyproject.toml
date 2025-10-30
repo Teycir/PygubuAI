@@ -52,7 +52,7 @@ pygubu-register = "pygubuai.register:main"
 pygubu-template = "pygubuai.template:main"
 pygubu-ai-workflow = "pygubuai.workflow:main"
 tkinter-to-pygubu = "pygubuai.converter:main"
-# New v0.5.0 features
+# v0.5.0 features
 pygubu-status = "pygubuai.status:main"
 pygubu-widgets = "pygubuai.widgets:main"
 pygubu-theme = "pygubuai.theme:main"
@@ -63,6 +63,9 @@ pygubu-snippet = "pygubuai.snippet:main"
 pygubu-prompt = "pygubuai.prompt:main"
 pygubu-batch = "pygubuai.batch:main"
 pygubu-export = "pygubuai.export:main"
+# v0.6.1+ features
+pygubu-data-export = "pygubuai.data_export:main"
+pygubu-db = "pygubuai.database:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pygubuai"]

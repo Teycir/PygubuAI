@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="title">Integration Test</property>
+    <property name="height">400</property>
+    <property name="width">600</property>
+    <child>
+      <object class="ttk.Frame" id="mainframe">
+        <property name="padding">20</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="name_label">
+            <property name="text">Name:</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="name_entry">
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="add_button">
+            <property name="text">Add</property>
+            <property name="command">on_add</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="update_button">
+            <property name="text">Update</property>
+            <property name="command">on_update</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="delete_button">
+            <property name="text">Delete</property>
+            <property name="command">on_delete</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Treeview" id="data_table">
+            <property name="columns">['id', 'name']</property>
+            <layout manager="pack"><property name="pady">5</property></layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
