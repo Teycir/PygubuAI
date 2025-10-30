@@ -42,9 +42,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/pygubuai"
-Documentation = "https://github.com/yourusername/pygubuai/blob/main/PYGUBUAI.md"
-Repository = "https://github.com/yourusername/pygubuai"
+Homepage = "https://github.com/Teycir/PygubuAI"
+Documentation = "https://github.com/Teycir/PygubuAI/blob/main/README.md"
+Repository = "https://github.com/Teycir/PygubuAI"
 
 [project.scripts]
 pygubu-create = "pygubuai.create:main"

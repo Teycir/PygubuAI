@@ -16,8 +16,8 @@ Complete guide for using PygubuAI - AI-powered workflow tools for Pygubu.
 ### Recommended: pip install (Preferred)
 
 ```bash
-git clone https://github.com/yourusername/pygubuai.git
-cd pygubuai
+git clone https://github.com/Teycir/PygubuAI.git
+cd PygubuAI
 pip install -e .
 ```
 

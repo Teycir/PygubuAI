@@ -1,7 +1,7 @@
 # PygubuAI
 
-[![CI](https://github.com/yourusername/pygubuai/workflows/CI/badge.svg)](https://github.com/yourusername/pygubuai/actions)
-[![codecov](https://codecov.io/gh/yourusername/pygubuai/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/pygubuai)
+[![CI](https://github.com/Teycir/PygubuAI/workflows/CI/badge.svg)](https://github.com/Teycir/PygubuAI/actions)
+[![codecov](https://codecov.io/gh/Teycir/PygubuAI/branch/main/graph/badge.svg)](https://codecov.io/gh/Teycir/PygubuAI)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -20,8 +20,8 @@ PygubuAI adds AI-assisted development tools on top of Pygubu, enabling:
 
 ```bash
 # Clone
-git clone https://github.com/yourusername/pygubuai.git
-cd pygubuai
+git clone https://github.com/Teycir/PygubuAI.git
+cd PygubuAI
 
 # Install
 ./install.sh
@@ -86,8 +86,8 @@ Auto-detects UI changes and prompts for code sync.
 **This is the preferred installation method:**
 
 ```bash
-git clone https://github.com/yourusername/pygubuai.git
-cd pygubuai
+git clone https://github.com/Teycir/PygubuAI.git
+cd PygubuAI
 pip install -e .
 ```
 

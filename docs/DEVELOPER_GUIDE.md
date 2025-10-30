@@ -102,8 +102,8 @@ Technical documentation for contributing to PygubuAI.
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/pygubuai.git
-cd pygubuai
+git clone https://github.com/Teycir/PygubuAI.git
+cd PygubuAI
 
 # Install in development mode
 pip install -e ".[dev]"

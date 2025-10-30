@@ -10,8 +10,8 @@ For detailed technical documentation, see the **[Developer Guide](docs/DEVELOPER
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/pygubuai.git
-cd pygubuai
+git clone https://github.com/Teycir/PygubuAI.git
+cd PygubuAI
 
 # Run automated setup
 ./setup-dev.sh

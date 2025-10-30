@@ -289,9 +289,9 @@ MIT License - See LICENSE file
 
 ## 🔗 Links
 
-- **Repository:** https://github.com/yourusername/pygubuai
+- **Repository:** https://github.com/Teycir/PygubuAI
 - **Documentation:** docs/
-- **Issues:** https://github.com/yourusername/pygubuai/issues
+- **Issues:** https://github.com/Teycir/PygubuAI/issues
 - **Pygubu:** https://github.com/alejandroautalan/pygubu
 
 ---
@@ -310,7 +310,7 @@ MIT License - See LICENSE file
 
 ---
 
-*Released: 2024-01-15*  
+*Released: 2025-01-20*  
 *Version: 0.3.0*  
 *Tests: 160 (all passing)*  
 *Coverage: 95%+*
