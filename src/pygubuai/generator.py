@@ -7,12 +7,13 @@ from pathlib import Path
 def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[str, Dict[str, Any]]]) -> str:
     """Generate base UI XML structure with widgets."""
     from .widgets import generate_widget_xml
+    from .utils import safe_xml_text
     
     xml_parts = [
         "<?xml version='1.0' encoding='utf-8'?>",
         '<interface version="1.2">',
         '  <object class="tk.Toplevel" id="mainwindow">',
-        f'    <property name="title">{project_name.replace("_", " ").title()}</property>',
+        f'    <property name="title">{safe_xml_text(project_name.replace("_", " ").title())}</property>',
         '    <property name="height">400</property>',
         '    <property name="width">600</property>',
         '    <child>',
@@ -75,13 +76,15 @@ if __name__ == '__main__':
 def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: str = None) -> str:
     """Generate README.md content."""
     from .utils import find_pygubu_designer
+    import html
     
-    title = project_name.replace("_", " ").title()
-    template_info = f"\nTemplate: {template_name}" if template_name else ""
+    title = html.escape(project_name.replace("_", " ").title())
+    template_info = f"\nTemplate: {html.escape(template_name)}" if template_name else ""
+    description_safe = html.escape(description)
     
     return f'''# {title}
 {template_info}
-{description}
+{description_safe}
 
 ## Run
 ```bash

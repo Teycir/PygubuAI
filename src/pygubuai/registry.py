@@ -29,8 +29,9 @@ class Registry:
     REGISTRY_FILE = None  # For testing override
     
     def __init__(self, registry_path: Optional[Path] = None):
+        from .utils import validate_safe_path
         if registry_path:
-            self.registry_path = Path(registry_path)
+            self.registry_path = validate_safe_path(str(registry_path))
         elif self.REGISTRY_FILE:
             self.registry_path = self.REGISTRY_FILE
         else:
@@ -133,9 +134,11 @@ class Registry:
     
     def add_project(self, name: str, path: str, description: str = "", tags: List[str] = None):
         """Add project with metadata"""
+        from .utils import validate_safe_path
         data = self._read()
+        safe_path = validate_safe_path(path)
         data["projects"][name] = {
-            "path": str(Path(path).resolve()),
+            "path": str(safe_path),
             "created": datetime.now(timezone.utc).isoformat(),
             "modified": datetime.now(timezone.utc).isoformat(),
             "description": description,

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def is_git_available() -> bool:
     """Check if git is installed"""
     try:
-        subprocess.run(['git', '--version'], capture_output=True, check=True)
+        subprocess.run(['git', '--version'], shell=False, capture_output=True, check=True)
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
@@ -23,7 +23,7 @@ def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
         return False
     
     try:
-        subprocess.run(['git', 'init'], cwd=project_path, capture_output=True, check=True)
+        subprocess.run(['git', 'init'], shell=False, cwd=str(project_path), capture_output=True, check=True)
         logger.info(f"Initialized git repository in {project_path}")
         
         # Create .gitignore
@@ -31,10 +31,11 @@ def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
         gitignore.write_text(generate_gitignore())
         
         if initial_commit:
-            subprocess.run(['git', 'add', '.'], cwd=project_path, capture_output=True, check=True)
+            subprocess.run(['git', 'add', '.'], shell=False, cwd=str(project_path), capture_output=True, check=True)
             subprocess.run(
                 ['git', 'commit', '-m', 'Initial commit: PygubuAI project'],
-                cwd=project_path,
+                shell=False,
+                cwd=str(project_path),
                 capture_output=True,
                 check=True
             )
@@ -96,13 +97,14 @@ def git_commit(project_path: Path, message: str, files: Optional[list] = None) -
     
     try:
         if files:
-            subprocess.run(['git', 'add'] + files, cwd=project_path, capture_output=True, check=True)
+            subprocess.run(['git', 'add'] + files, shell=False, cwd=str(project_path), capture_output=True, check=True)
         else:
-            subprocess.run(['git', 'add', '.'], cwd=project_path, capture_output=True, check=True)
+            subprocess.run(['git', 'add', '.'], shell=False, cwd=str(project_path), capture_output=True, check=True)
         
         subprocess.run(
             ['git', 'commit', '-m', message],
-            cwd=project_path,
+            shell=False,
+            cwd=str(project_path),
             capture_output=True,
             check=True
         )

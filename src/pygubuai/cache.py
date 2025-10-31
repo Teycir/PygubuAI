@@ -11,14 +11,16 @@ logger = logging.getLogger(__name__)
 
 
 def _get_file_hash(filepath: Path) -> str:
-    """Get MD5 hash of file contents."""
-    return hashlib.md5(filepath.read_bytes()).hexdigest()
+    """Get SHA-256 hash of file contents."""
+    return hashlib.sha256(filepath.read_bytes()).hexdigest()
 
 
 def get_cached(filepath: Path) -> Optional[dict]:
     """Get cached parsed UI data if valid."""
+    from .utils import validate_safe_path
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = CACHE_DIR / f"{filepath.stem}_{_get_file_hash(filepath)}.json"
+    safe_filepath = validate_safe_path(str(filepath), must_exist=True)
+    cache_file = CACHE_DIR / f"{safe_filepath.stem}_{_get_file_hash(safe_filepath)}.json"
     
     if cache_file.exists():
         return json.loads(cache_file.read_text())
@@ -55,11 +57,11 @@ def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
                 f.unlink()
                 files.remove(f)
                 logger.debug(f"Cleaned up cache file: {f.name}")
-    except Exception as e:
+    except (OSError, PermissionError) as e:
         logger.warning(f"Cache cleanup failed: {e}")
 
 # Auto-cleanup on module import
 try:
     cleanup_old_cache()
-except Exception:
+except (OSError, PermissionError):
     pass  # Silent fail on cleanup
