@@ -186,7 +186,7 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
         logger.warning(f"No files matching patterns {patterns} in {project_name}")
         return
     
-    print(f"👁️  Watching {project_name}...")
+    print(f"Watching {project_name}...")
     print(f"   Path: {project_path}")
     print(f"   Files: {len(all_files)} matching {patterns}")
     print("\nPress Ctrl+C to stop\n")
@@ -231,7 +231,7 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
                 time.sleep(interval)
                 
     except KeyboardInterrupt:
-        print("\n\n✓ Stopped watching")
+        print("\n\nStopped watching")
 
 def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict, 
                       project_path: pathlib.Path, project_name: str) -> None:
@@ -274,7 +274,7 @@ def _notify_ui_change(ui_file: pathlib.Path, project_name: str) -> None:
     """Print notification when UI file changes"""
     print(f" UI changed: {ui_file.name}")
     print(f"   Time: {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
-    print("\n💡 Suggested action:")
+    print("\nSuggested action:")
     print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
     print(f"   Or: 'Review changes in {project_name}'\n")
 

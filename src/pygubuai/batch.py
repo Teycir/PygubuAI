@@ -106,9 +106,9 @@ def main():
         new_id = sys.argv[4]
         
         if rename_widget(project, old_id, new_id):
-            print(f"✓ Renamed '{old_id}' to '{new_id}' in project '{project}'")
+            print(f"OK Renamed '{old_id}' to '{new_id}' in project '{project}'")
         else:
-            print(f"✗ Failed to rename widget in '{project}'")
+            print(f"FAILED Failed to rename widget in '{project}'")
             sys.exit(1)
     
     elif command == "update-theme":
@@ -132,7 +132,7 @@ def main():
             failed = len(results) - success
             
             for project, status in results.items():
-                symbol = "[green]✓[/green]" if status else "[red]✗[/red]"
+                symbol = "[green]OK[/green]" if status else "[red]FAILED[/red]"
                 console.print(f"  {symbol} {project}")
             
             console.print(f"\n[bold]Completed: {success} succeeded, {failed} failed[/bold]")
@@ -144,7 +144,7 @@ def main():
             failed = len(results) - success
             
             for project, status in results.items():
-                symbol = "✓" if status else "✗"
+                symbol = "OK" if status else "FAILED"
                 print(f"  {symbol} {project}")
             
             print(f"\nCompleted: {success} succeeded, {failed} failed")
@@ -166,9 +166,9 @@ def main():
                 warnings = sum(1 for i in issues if i.severity == "warning")
                 
                 if not issues:
-                    console.print(f"  [green]✓[/green] {project}: No issues")
+                    console.print(f"  [green]OK[/green] {project}: No issues")
                 else:
-                    console.print(f"  [yellow]⚠️[/yellow]  {project}: {errors} errors, {warnings} warnings")
+                    console.print(f"  [yellow]WARNING[/yellow]  {project}: {errors} errors, {warnings} warnings")
             
             total_issues = sum(len(issues) for issues in results.values())
             console.print(f"\n[bold]Total issues found: {total_issues}[/bold]")
@@ -181,9 +181,9 @@ def main():
                 warnings = sum(1 for i in issues if i.severity == "warning")
                 
                 if not issues:
-                    print(f"  ✓ {project}: No issues")
+                    print(f"  OK {project}: No issues")
                 else:
-                    print(f"  ⚠️  {project}: {errors} errors, {warnings} warnings")
+                    print(f"  WARNING  {project}: {errors} errors, {warnings} warnings")
             
             total_issues = sum(len(issues) for issues in results.values())
             print(f"\nTotal issues found: {total_issues}")

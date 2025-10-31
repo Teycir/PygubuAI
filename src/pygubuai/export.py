@@ -141,7 +141,7 @@ def main():
     
     try:
         output_path = export_standalone(project_name, output_file)
-        print(f"✓ Exported '{project_name}' to standalone file:")
+        print(f"OK Exported '{project_name}' to standalone file:")
         print(f"  {output_path}")
         print(f"\\n  Run with: python {output_path}")
     except Exception as e:

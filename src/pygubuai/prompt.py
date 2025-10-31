@@ -173,7 +173,7 @@ def main():
         # Offer to save
         if project_name:
             save_name = f"pygubu-{template_name}-{project_name}"
-            print(f"💡 Tip: Save this prompt with:")
+            print(f"TIP Tip: Save this prompt with:")
             print(f"   pygubu-prompt {template_name} {project_name} | save-as {save_name}")
     
     except Exception as e:

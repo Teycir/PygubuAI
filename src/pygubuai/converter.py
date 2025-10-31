@@ -15,7 +15,7 @@ def main():
         sys.exit(1)
     
     print(f"Converting {filepath.name} to Pygubu format...")
-    print("\n⚠️  This is a placeholder implementation.")
+    print("\nWARNING  This is a placeholder implementation.")
     print("Full conversion requires parsing tkinter widget creation code.")
     print("\nSuggested approach:")
     print("1. Manually recreate UI in pygubu-designer")

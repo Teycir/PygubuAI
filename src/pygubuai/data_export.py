@@ -148,7 +148,7 @@ def main():
         
         try:
             add_export_capability(project, formats)
-            print(f"✓ Added export capability to '{project}'")
+            print(f"OK Added export capability to '{project}'")
             print(f"  Formats: {', '.join(formats)}")
         except Exception as e:
             print(f"Error: {e}")
@@ -157,7 +157,7 @@ def main():
     elif command == "add-button":
         try:
             _add_export_button(project, project, ["csv"])
-            print(f"✓ Added export button to '{project}'")
+            print(f"OK Added export button to '{project}'")
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)

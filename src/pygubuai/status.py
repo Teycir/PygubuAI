@@ -97,7 +97,7 @@ def main():
         
         console.print(table)
         if "message" in status:
-            console.print(f"\n⚠️  [yellow]{status['message']}[/yellow]")
+            console.print(f"\nWARNING  [yellow]{status['message']}[/yellow]")
     else:
         print(f"Project: {status['project']}")
         print(f"Status: {status['sync_status']}")
@@ -105,7 +105,7 @@ def main():
         print(f"Code Modified: {status['py_modified']}")
         print(f"Last Sync: {status['last_sync']}")
         if "message" in status:
-            print(f"\n⚠️  {status['message']}")
+            print(f"\nWARNING  {status['message']}")
 
 if __name__ == "__main__":
     main()

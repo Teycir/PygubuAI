@@ -34,7 +34,7 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
         if "file_hashes" not in workflows[name]:
             workflows[name]["file_hashes"] = {}
     
-    print(f"👁️  Watching {len(projects_to_watch)} project(s)...")
+    print(f"️  Watching {len(projects_to_watch)} project(s)...")
     for name, path in projects_to_watch.items():
         ui_files = []
         for pattern in patterns:
@@ -49,7 +49,7 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
                 _check_project_changes(name, path, workflows[name], patterns)
             time.sleep(interval)
     except KeyboardInterrupt:
-        print("\n\n✓ Stopped watching")
+        print("\n\nOK Stopped watching")
 
 
 def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List[str]):
@@ -73,7 +73,7 @@ def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List
             workflow["file_hashes"][file_key] = current_hash
             save_workflow(path, workflow)
         elif current_hash != prev_hash:
-            print(f"🔄 [{name}] {ui_file.name} changed at {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
+            print(f" [{name}] {ui_file.name} changed at {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
             workflow["file_hashes"][file_key] = current_hash
             workflow["changes"].append({
                 "file": ui_file.name,

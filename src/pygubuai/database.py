@@ -30,7 +30,7 @@ def init_database():
         db_path.unlink()
     
     if init_db():
-        print(f"✓ Database initialized at {db_path}")
+        print(f"OK Database initialized at {db_path}")
         return True
     return False
 
@@ -61,7 +61,7 @@ def migrate_from_json():
             
             project = create_project(session, name, path, description)
             if project:
-                print(f"  ✓ {name}")
+                print(f"  OK {name}")
                 
                 # Migrate workflow events
                 project_path = Path(path)
@@ -79,7 +79,7 @@ def migrate_from_json():
                     except Exception as e:
                         print(f"    Warning: Could not migrate workflow: {e}")
         
-        print(f"\n✓ Migration complete: {len(projects)} projects")
+        print(f"\nOK Migration complete: {len(projects)} projects")
         return True
         
     except Exception as e:
@@ -142,7 +142,7 @@ def backup_database(output_file: str):
     
     output_path = Path(output_file)
     shutil.copy2(db_path, output_path)
-    print(f"✓ Database backed up to {output_path}")
+    print(f"OK Database backed up to {output_path}")
     return True
 
 def restore_database(backup_file: str):
@@ -163,7 +163,7 @@ def restore_database(backup_file: str):
             return False
     
     shutil.copy2(backup_path, db_path)
-    print(f"✓ Database restored from {backup_path}")
+    print(f"OK Database restored from {backup_path}")
     return True
 
 def main():

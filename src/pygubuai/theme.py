@@ -147,11 +147,11 @@ def main():
             # Try preset first
             if theme_name in THEME_PRESETS:
                 apply_preset_advanced(project_name, theme_name)
-                print(f"✓ Applied preset '{theme_name}' to project '{project_name}'")
+                print(f"OK Applied preset '{theme_name}' to project '{project_name}'")
             else:
                 # Try basic theme
                 apply_theme(project_name, theme_name)
-                print(f"✓ Applied theme '{theme_name}' to project '{project_name}'")
+                print(f"OK Applied theme '{theme_name}' to project '{project_name}'")
             print(f"  Backup saved as {project_name}.ui.bak")
         except Exception as e:
             print(f"Error: {e}")
@@ -191,7 +191,7 @@ def main():
         
         try:
             create_custom_theme(name, colors=colors)
-            print(f"✓ Theme '{name}' created")
+            print(f"OK Theme '{name}' created")
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)
@@ -201,7 +201,7 @@ def main():
         output = sys.argv[3] if len(sys.argv) > 3 else f"{name}.json"
         try:
             export_theme(name, output)
-            print(f"✓ Theme '{name}' exported to {output}")
+            print(f"OK Theme '{name}' exported to {output}")
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)
@@ -210,7 +210,7 @@ def main():
         source = sys.argv[2]
         try:
             name = import_theme(source)
-            print(f"✓ Theme '{name}' imported")
+            print(f"OK Theme '{name}' imported")
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)

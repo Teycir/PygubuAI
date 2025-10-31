@@ -52,7 +52,7 @@ def choose(message: str, options: List[str], default: Optional[str] = None) -> s
 
 def interactive_create() -> dict:
     """Interactive project creation wizard"""
-    print("\n🎨 PygubuAI Interactive Project Creator\n")
+    print("\n PygubuAI Interactive Project Creator\n")
     
     name = prompt("Project name", "myapp")
     description = prompt("Description (e.g., 'login form with username and password')")

@@ -107,9 +107,9 @@ def main():
     if not issues:
         if RICH_AVAILABLE:
             console = Console()
-            console.print(f"[green]✓ Project '{project_name}' validation passed - no issues found[/green]")
+            console.print(f"[green]OK Project '{project_name}' validation passed - no issues found[/green]")
         else:
-            print(f"✓ Project '{project_name}' validation passed - no issues found")
+            print(f"OK Project '{project_name}' validation passed - no issues found")
         sys.exit(0)
     
     # Group by severity
@@ -143,13 +143,13 @@ def main():
         if errors:
             print("ERRORS:")
             for issue in errors:
-                print(f"  ❌ {issue}")
+                print(f"  ERROR {issue}")
             print()
         
         if warnings:
             print("WARNINGS:")
             for issue in warnings:
-                print(f"  ⚠️  {issue}")
+                print(f"  WARNING  {issue}")
             print()
         
         if infos:

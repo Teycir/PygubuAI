@@ -119,9 +119,9 @@ def migrate_all() -> None:
     # Migrate registry
     print("1. Migrating registry...")
     if migrate_registry():
-        print("   ✓ Registry migrated\n")
+        print("   OK Registry migrated\n")
     else:
-        print("   ✗ Registry migration failed\n")
+        print("   FAILED Registry migration failed\n")
         return
     
     # Migrate workflows
@@ -139,9 +139,9 @@ def migrate_all() -> None:
         else:
             failed += 1
     
-    print(f"   ✓ {success} workflows migrated")
+    print(f"   OK {success} workflows migrated")
     if failed:
-        print(f"   ✗ {failed} workflows failed")
+        print(f"   FAILED {failed} workflows failed")
     
     print("\nMigration complete!")
 
