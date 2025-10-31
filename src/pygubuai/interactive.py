@@ -3,7 +3,6 @@ import sys
 from typing import Optional, List
 
 
-
 def prompt(message: str, default: Optional[str] = None) -> str:
     """Prompt user for input with optional default"""
     if default:
@@ -18,7 +17,6 @@ def prompt(message: str, default: Optional[str] = None) -> str:
         sys.exit(0)
 
 
-
 def confirm(message: str, default: bool = True) -> bool:
     """Ask yes/no question"""
     suffix = " [Y/n]" if default else " [y/N]"
@@ -27,7 +25,6 @@ def confirm(message: str, default: bool = True) -> bool:
     if not response:
         return default
     return response in ('y', 'yes')
-
 
 
 def choose(message: str, options: List[str], default: Optional[str] = None) -> str:
@@ -51,7 +48,6 @@ def choose(message: str, options: List[str], default: Optional[str] = None) -> s
             pass
 
         print("Invalid choice. Try again.")
-
 
 
 def interactive_create() -> dict:

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Project status checker"""
 import json
-from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict
 from .registry import Registry
@@ -114,5 +113,7 @@ def main():
 def check_project_status(project_name: Optional[str] = None) -> Dict:
     """Alias for get_project_status for backward compatibility"""
     return get_project_status(project_name)
+
+
 if __name__ == "__main__":
     main()

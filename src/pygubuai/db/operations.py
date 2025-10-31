@@ -1,7 +1,6 @@
 """Database CRUD operations"""
 from typing import List, Optional, Dict
 from datetime import datetime, timezone
-from pathlib import Path
 
 try:
     from sqlalchemy.orm import Session

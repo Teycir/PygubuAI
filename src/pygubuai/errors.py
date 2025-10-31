@@ -5,7 +5,6 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
-
 class PygubuAIError(Exception):
     """Base exception for all PygubuAI errors"""
     def __init__(self, message: str, suggestion: str = "", cause: Optional[Exception] = None):
@@ -23,14 +22,12 @@ class PygubuAIError(Exception):
         return error
 
 
-
 class ProjectNotFoundError(PygubuAIError):
     """Project not found in registry"""
     def __init__(self, project_name: str, suggestion: str = ""):
         if not suggestion:
             suggestion = "Use 'pygubu-register list' to see available projects"
         super().__init__(f"Project '{project_name}' not found", suggestion)
-
 
 
 class InvalidProjectError(PygubuAIError):
@@ -41,7 +38,6 @@ class InvalidProjectError(PygubuAIError):
         super().__init__(f"Invalid project at '{path}': {reason}", suggestion)
 
 
-
 class DependencyError(PygubuAIError):
     """Missing or incompatible dependency"""
     def __init__(self, dependency: str, suggestion: str = ""):
@@ -50,13 +46,11 @@ class DependencyError(PygubuAIError):
         super().__init__(f"Missing dependency: {dependency}", suggestion)
 
 
-
 class FileOperationError(PygubuAIError):
     """File operation failed"""
     def __init__(self, operation: str, path: str, cause: Exception):
         suggestion = "Check file permissions and disk space"
         super().__init__(f"Failed to {operation} '{path}'", suggestion, cause)
-
 
 
 class ValidationError(PygubuAIError):
@@ -67,13 +61,11 @@ class ValidationError(PygubuAIError):
         super().__init__(f"Invalid {field}: '{value}' - {reason}", suggestion)
 
 
-
 class RegistryError(PygubuAIError):
     """Registry operation failed"""
     def __init__(self, operation: str, reason: str, cause: Optional[Exception] = None):
         suggestion = "Try 'pygubu-register list' to check registry status"
         super().__init__(f"Registry {operation} failed: {reason}", suggestion, cause)
-
 
 
 class UIParseError(PygubuAIError):
@@ -83,13 +75,11 @@ class UIParseError(PygubuAIError):
         super().__init__(f"Failed to parse UI file '{file_path}': {reason}", suggestion, cause)
 
 
-
 class GitError(PygubuAIError):
     """Git operation failed"""
     def __init__(self, operation: str, reason: str):
         suggestion = "Ensure git is installed and repository is valid"
         super().__init__(f"Git {operation} failed: {reason}", suggestion)
-
 
 
 def validate_pygubu():
@@ -102,7 +92,6 @@ def validate_pygubu():
         raise DependencyError("pygubu", "pip install pygubu>=0.39") from e
 
 
-
 def validate_pygubu_designer():
     """Check pygubu-designer is available"""
     import shutil
@@ -111,7 +100,6 @@ def validate_pygubu_designer():
             "pygubu-designer",
             "pip install pygubu-designer>=0.42"
         )
-
 
 
 def handle_file_operation(operation: str, path: str, func, *args, **kwargs):

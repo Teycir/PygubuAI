@@ -18,6 +18,7 @@ UI_DEFINITION = """
 {ui_content}
 """
 
+
 class {class_name}:
     def __init__(self, master=None):
         self.builder = pygubu.Builder()
@@ -36,6 +37,7 @@ def main():
     root = tk.Tk()
     app = {class_name}(root)
     app.run()
+
 
 if __name__ == '__main__':
     main()
@@ -152,6 +154,7 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

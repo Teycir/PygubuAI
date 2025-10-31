@@ -12,9 +12,8 @@ def get_themes_dir() -> Path:
     return themes_dir
 
 
-
 def create_custom_theme(name: str, base: str = "clam", colors: dict = None,
-                       description: str = "") -> dict:
+                        description: str = "") -> bool:
     """Create custom theme"""
     theme_data = {
         "name": name,
@@ -30,7 +29,6 @@ def create_custom_theme(name: str, base: str = "clam", colors: dict = None,
     return theme_data
 
 
-
 def save_theme(name: str, theme_data: dict):
     """Save theme to user directory"""
     themes_dir = get_themes_dir()
@@ -38,7 +36,6 @@ def save_theme(name: str, theme_data: dict):
 
     with open(theme_file, 'w') as f:
         json.dump(theme_data, f, indent=2)
-
 
 
 def load_theme(name: str) -> Optional[dict]:
@@ -53,12 +50,10 @@ def load_theme(name: str) -> Optional[dict]:
         return json.load(f)
 
 
-
 def list_custom_themes() -> list:
     """List all custom themes"""
     themes_dir = get_themes_dir()
     return [f.stem for f in themes_dir.glob("*.json")]
-
 
 
 def export_theme(name: str, output_path: str = None) -> str:
@@ -74,7 +69,6 @@ def export_theme(name: str, output_path: str = None) -> str:
         json.dump(theme, f, indent=2)
 
     return output_path
-
 
 
 def import_theme(source: str):

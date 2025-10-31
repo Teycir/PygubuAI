@@ -59,7 +59,6 @@ WIDGET_MAP = {
 }
 
 
-
 def get_template(name: str) -> Dict[str, Any]:
     """Get template by name.
 
@@ -72,7 +71,6 @@ def get_template(name: str) -> Dict[str, Any]:
     return TEMPLATES.get(name)
 
 
-
 def list_templates() -> List[Tuple[str, str]]:
     """List all available templates.
 
@@ -80,7 +78,6 @@ def list_templates() -> List[Tuple[str, str]]:
         List of (name, description) tuples
     """
     return [(name, tmpl["description"]) for name, tmpl in TEMPLATES.items()]
-
 
 
 def validate_widget(widget: Dict[str, Any]) -> None:
@@ -98,7 +95,6 @@ def validate_widget(widget: Dict[str, Any]) -> None:
         raise ValueError(f"Unknown widget type: {widget['type']}")
     if "id" not in widget:
         raise ValueError(f"Widget missing 'id' field: {widget}")
-
 
 
 def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[str, Dict[str, Any]]], str]:

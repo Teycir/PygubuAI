@@ -38,7 +38,6 @@ CONTEXT_PATTERNS = {
 }
 
 
-
 def detect_widgets(description):
     """Detect widgets from description"""
     desc_lower = description.lower()
@@ -53,7 +52,6 @@ def detect_widgets(description):
             widgets.append((widget_type, config))
 
     return widgets if widgets else [("label", WIDGET_PATTERNS["label"]), ("button", WIDGET_PATTERNS["button"])]
-
 
 
 def generate_widget_xml(widget_type: str, widget_id: str, config: dict, index: int = 1) -> List[str]:
@@ -80,7 +78,6 @@ def generate_widget_xml(widget_type: str, widget_id: str, config: dict, index: i
     return xml
 
 
-
 def get_callbacks(widgets):
     """Extract callbacks"""
     callbacks = set()
@@ -90,13 +87,11 @@ def get_callbacks(widgets):
     return list(callbacks)
 
 
-
 def list_widgets(category: Optional[str] = None) -> Dict[str, Dict]:
     """List all widgets, optionally filtered by category"""
     if category:
         return {name: info for name, info in WIDGET_LIBRARY.items() if info["category"] == category}
     return WIDGET_LIBRARY
-
 
 
 def search_widgets(query: str) -> Dict[str, Dict]:
@@ -109,11 +104,9 @@ def search_widgets(query: str) -> Dict[str, Dict]:
     return results
 
 
-
 def get_widget_info(widget_name: str) -> Optional[Dict]:
     """Get detailed info about a specific widget"""
     return WIDGET_LIBRARY.get(widget_name)
-
 
 
 def main():

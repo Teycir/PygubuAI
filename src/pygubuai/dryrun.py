@@ -2,7 +2,6 @@
 from typing import List, Dict, Any
 
 
-
 class DryRunOperation:
     """Represents a dry-run operation."""
 
@@ -16,7 +15,6 @@ class DryRunOperation:
         for key, value in self.details.items():
             lines.append(f"  {key}: {value}")
         return "\n".join(lines)
-
 
 
 class DryRunContext:
@@ -54,11 +52,9 @@ class DryRunContext:
 _context = DryRunContext()
 
 
-
 def enable_dryrun():
     """Enable dry-run mode."""
     _context.enabled = True
-
 
 
 def disable_dryrun():
@@ -66,11 +62,9 @@ def disable_dryrun():
     _context.enabled = False
 
 
-
 def is_dryrun() -> bool:
     """Check if dry-run is enabled."""
     return _context.enabled
-
 
 
 def record_operation(action: str, target: str, **details):
@@ -78,11 +72,9 @@ def record_operation(action: str, target: str, **details):
     _context.record(action, target, **details)
 
 
-
 def get_preview() -> str:
     """Get preview of recorded operations."""
     return _context.preview()
-
 
 
 def clear_operations():

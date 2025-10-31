@@ -15,7 +15,6 @@ except ImportError:
     RICH_AVAILABLE = False
 
 
-
 def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     """Rename widget ID in project"""
     registry = Registry()
@@ -50,7 +49,6 @@ def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     return True
 
 
-
 def batch_update_theme(theme_name: str, projects: List[str] = None) -> Dict[str, bool]:
     """Apply theme to multiple projects"""
     registry = Registry()
@@ -69,7 +67,6 @@ def batch_update_theme(theme_name: str, projects: List[str] = None) -> Dict[str,
     return results
 
 
-
 def batch_validate(projects: List[str] = None) -> Dict[str, List]:
     """Validate multiple projects"""
     registry = Registry()
@@ -83,7 +80,6 @@ def batch_validate(projects: List[str] = None) -> Dict[str, List]:
         results[project] = issues
 
     return results
-
 
 
 def main():

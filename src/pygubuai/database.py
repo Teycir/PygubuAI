@@ -2,7 +2,6 @@
 """Database management CLI"""
 import sys
 import json
-from pathlib import Path
 from .utils import validate_path
 
 try:
@@ -11,7 +10,6 @@ try:
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
-
 
 
 def init_database():
@@ -36,7 +34,6 @@ def init_database():
         print(f"OK Database initialized at {db_path}")
         return True
     return False
-
 
 
 def migrate_from_json():
@@ -94,7 +91,6 @@ def migrate_from_json():
         session.close()
 
 
-
 def show_stats():
     """Show database statistics"""
     from .db import get_session, SQLALCHEMY_AVAILABLE
@@ -138,7 +134,6 @@ def show_stats():
         session.close()
 
 
-
 def backup_database(output_file: str):
     """Backup database"""
     import shutil
@@ -153,7 +148,6 @@ def backup_database(output_file: str):
     shutil.copy2(db_path, output_path)
     print(f"OK Database backed up to {output_path}")
     return True
-
 
 
 def restore_database(backup_file: str):
@@ -176,7 +170,6 @@ def restore_database(backup_file: str):
     shutil.copy2(backup_path, db_path)
     print(f"OK Database restored from {backup_path}")
     return True
-
 
 
 def main():
@@ -212,7 +205,6 @@ def main():
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
-
 
 
 def add_table(project_name: str, table_name: str, schema: dict):
@@ -255,11 +247,10 @@ def add_table(project_name: str, table_name: str, schema: dict):
         session.close()
 
 
-
 def _generate_table_code(project_path: str, project_name: str, table_name: str, schema: dict):
     """Generate table-related code for project"""
-    from pathlib import Path
 
+    from pathlib import Path
     py_file = Path(project_path) / f"{project_name}.py"
     if not py_file.exists():
         return

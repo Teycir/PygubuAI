@@ -45,7 +45,6 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
         temp_ui.unlink(missing_ok=True)
 
 
-
 def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
     """Show preview window"""
     root = tk.Tk()
@@ -58,7 +57,7 @@ def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
 
         # Add info label
         info = tk.Label(root, text=f"Preview Mode - Theme: {theme_name}",
-                       bg="yellow", fg="black")
+                        bg="yellow", fg="black")
         info.pack(side="top", fill="x")
 
         root.mainloop()

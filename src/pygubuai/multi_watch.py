@@ -12,7 +12,6 @@ from .errors import ProjectNotFoundError
 logger = logging.getLogger(__name__)
 
 
-
 def watch_multiple_projects(project_names: List[str], interval: float = None, patterns: List[str] = None):
     """Watch multiple projects simultaneously"""
     registry = Registry()
@@ -53,7 +52,6 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
         print("\n\nOK Stopped watching")
 
 
-
 def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List[str]):
     """Check single project for changes"""
     ui_files = []
@@ -82,7 +80,6 @@ def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List
                 "timestamp": datetime.now(timezone.utc).isoformat()
             })
             save_workflow(path, workflow)
-
 
 
 def watch_all_projects(interval: float = None, patterns: List[str] = None):

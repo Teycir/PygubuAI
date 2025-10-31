@@ -17,7 +17,6 @@ from .registry import Registry
 logger = logging.getLogger(__name__)
 
 
-
 def create_project(name: str, description: str, skip_validation: bool = False,
                    dry_run: bool = False, init_git: bool = False,
                    template: Optional[str] = None, tags: list = None) -> None:
@@ -79,7 +78,6 @@ def create_project(name: str, description: str, skip_validation: bool = False,
     except Exception as e:
         logger.error(f"[ERROR] Unexpected error: {e}")
         sys.exit(1)
-
 
 
 def main(args=None):

@@ -6,7 +6,6 @@ from typing import Dict
 from collections import Counter
 
 
-
 def analyze_project(project_name: str) -> Dict:
     """Analyze project structure and complexity"""
     from .registry import Registry
@@ -42,7 +41,6 @@ def analyze_project(project_name: str) -> Dict:
     return analysis
 
 
-
 def _analyze_ui(ui_file: Path, analysis: Dict):
     """Analyze UI file"""
     try:
@@ -76,7 +74,6 @@ def _analyze_ui(ui_file: Path, analysis: Dict):
         pass
 
 
-
 def _analyze_code(py_file: Path, analysis: Dict):
     """Analyze Python code"""
     try:
@@ -85,7 +82,6 @@ def _analyze_code(py_file: Path, analysis: Dict):
         analysis["has_docstrings"] = '"""' in content or "'''" in content
     except Exception:
         pass
-
 
 
 def _calculate_complexity(analysis: Dict):
@@ -97,7 +93,6 @@ def _calculate_complexity(analysis: Dict):
     score += len(analysis["layout_patterns"]) * 1.0
 
     analysis["complexity"] = round(score, 1)
-
 
 
 def _generate_suggestions(analysis: Dict):
@@ -117,7 +112,6 @@ def _generate_suggestions(analysis: Dict):
         suggestions.append("Add docstrings for better documentation")
 
     analysis["suggestions"] = suggestions
-
 
 
 def main():

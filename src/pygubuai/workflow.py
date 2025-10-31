@@ -25,7 +25,6 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-
 def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
     """Get SHA256 hash of file"""
     try:
@@ -33,7 +32,6 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
     except Exception as e:
         logger.error(f"Failed to read file {filepath}: {e}")
         return None
-
 
 
 def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], prev_mtime: Optional[float]) -> tuple:
@@ -52,7 +50,6 @@ def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], p
     except Exception as e:
         logger.error(f"Failed to read file {filepath}: {e}")
         return None, None
-
 
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
@@ -103,7 +100,6 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
         return {"project": project_path.name, "file_hashes": {}, "file_mtimes": {}, "last_sync": None, "history": []}
 
 
-
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
     """Save workflow tracking with atomic write and validation."""
     import tempfile
@@ -150,7 +146,6 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
         raise
 
 
-
 def get_watch_interval(config: Optional[Config] = None) -> float:
     """Get watch interval from config or default to 2.0s"""
     import os
@@ -169,7 +164,6 @@ def get_watch_interval(config: Optional[Config] = None) -> float:
         return 2.0
 
 
-
 def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     """Get file patterns to watch from config or default to ['*.ui']"""
     import os
@@ -186,7 +180,6 @@ def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     elif isinstance(patterns_str, list):
         return patterns_str if patterns_str else ["*.ui"]
     return ["*.ui"]
-
 
 
 def watch_project(project_name: str, interval: Optional[float] = None) -> None:
@@ -267,7 +260,6 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
         print("\n\nStopped watching")
 
 
-
 def _check_ui_changes(
     ui_files: List[pathlib.Path], workflow: Dict, project_path: pathlib.Path, project_name: str
 ) -> None:
@@ -309,7 +301,6 @@ def _check_ui_changes(
             save_workflow(project_path, workflow)
 
 
-
 def _notify_ui_change(ui_file: pathlib.Path, project_name: str) -> None:
     """Print notification when UI file changes"""
     print(f" UI changed: {ui_file.name}")
@@ -317,7 +308,6 @@ def _notify_ui_change(ui_file: pathlib.Path, project_name: str) -> None:
     print("\nSuggested action:")
     print(f"   Tell your AI: 'I updated {ui_file.name}, sync the Python code'")
     print(f"   Or: 'Review changes in {project_name}'\n")
-
 
 
 def main():
@@ -355,7 +345,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 class WorkflowTracker:

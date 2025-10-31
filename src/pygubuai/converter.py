@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 
 
-
 def main():
     """CLI entry point for tkinter-to-pygubu converter"""
     if len(sys.argv) != 2:

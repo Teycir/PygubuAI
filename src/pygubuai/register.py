@@ -4,8 +4,7 @@ import sys
 import pathlib
 import logging
 import argparse
-from datetime import datetime
-from typing import Optional, Dict, List
+from typing import Optional, List
 from .registry import Registry
 from .errors import ProjectNotFoundError, InvalidProjectError
 from .progress import ProgressBar
@@ -275,6 +274,7 @@ def main():
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

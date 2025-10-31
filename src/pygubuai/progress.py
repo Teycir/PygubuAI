@@ -4,7 +4,6 @@ import time
 from typing import Optional
 
 
-
 class ProgressBar:
     """Simple progress bar for CLI"""
 
@@ -29,8 +28,8 @@ class ProgressBar:
         filled = int(self.width * percent)
         bar = "=" * filled + ">" + " " * (self.width - filled - 1)
 
-        elapsed = time.time() - self.start_time
-        rate = self.current / elapsed if elapsed > 0 else 0
+        # elapsed = time.time() - self.start_time
+        # rate = self.current / elapsed if elapsed > 0 else 0
 
         sys.stdout.write(f"\r{self.prefix} [{bar}] {percent*100:.0f}% ({self.current}/{self.total})")
         sys.stdout.flush()
@@ -38,7 +37,6 @@ class ProgressBar:
         if self.current >= self.total:
             sys.stdout.write("\n")
             sys.stdout.flush()
-
 
 
 class Spinner:

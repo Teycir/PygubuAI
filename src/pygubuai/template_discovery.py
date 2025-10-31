@@ -3,10 +3,9 @@ import json
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from .logging_config import get_logger
-from .template_data import TEMPLATES, WIDGET_MAP, validate_widget
+from .template_data import TEMPLATES, validate_widget
 
 logger = get_logger(__name__)
-
 
 
 class TemplateRegistry:
@@ -141,9 +140,9 @@ class TemplateRegistry:
             logger.error(f"Failed to save template {name}: {e}")
             return False
 
+
 # Global registry instance
 _registry: Optional[TemplateRegistry] = None
-
 
 
 def get_template_registry() -> TemplateRegistry:

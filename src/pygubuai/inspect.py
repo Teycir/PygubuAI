@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """Widget inspector for UI files"""
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Optional, Dict, List
 from .registry import Registry
 from .utils import validate_path
 
 try:
     from rich.console import Console
-    from rich.tree import Tree
     from rich.table import Table
     RICH_AVAILABLE = True
 except ImportError:
@@ -214,6 +212,7 @@ def main():
     else:
         print("Invalid option")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

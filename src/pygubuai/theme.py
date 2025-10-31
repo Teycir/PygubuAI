@@ -18,11 +18,9 @@ AVAILABLE_THEMES = {
 }
 
 
-
 def list_themes():
     """List all available themes"""
     return AVAILABLE_THEMES
-
 
 
 def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool:
@@ -69,7 +67,6 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
     return True
 
 
-
 def get_current_theme(project_name: str) -> Optional[str]:
     """Get current theme from project"""
     registry = Registry()
@@ -90,7 +87,6 @@ def get_current_theme(project_name: str) -> Optional[str]:
         return theme_prop.text if theme_prop is not None else "default"
     except Exception:
         return None
-
 
 
 def main():

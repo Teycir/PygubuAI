@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """XML snippet generator for common widgets"""
-from typing import Dict, Optional
 
 SNIPPET_TEMPLATES = {
     "button": """    <object class="ttk.Button" id="{id}">
@@ -144,6 +143,7 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

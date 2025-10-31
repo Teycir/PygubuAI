@@ -14,7 +14,7 @@ except ImportError:
 
 try:
     from pydantic import ValidationError
-    from .models import RegistryData, ProjectConfig
+    from .models import RegistryData
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False

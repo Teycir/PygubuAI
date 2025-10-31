@@ -13,9 +13,8 @@ from .generator import generate_base_ui_xml_structure, generate_python_app_struc
 logger = logging.getLogger(__name__)
 
 
-
 def create_from_template(name: str, template_name: str, skip_validation: bool = False,
-                        dry_run: bool = False, init_git: bool = False):
+                         dry_run: bool = False, init_git: bool = False):
     """Create project from template"""
     try:
         if not skip_validation:
@@ -76,7 +75,6 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
         sys.exit(1)
 
 
-
 def main(args=None):
     """CLI entry point"""
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -115,6 +113,7 @@ def main(args=None):
         else:
             parser.print_help()
             sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

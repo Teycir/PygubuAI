@@ -15,7 +15,6 @@ WIDGET_COLOR_MAP = {
 }
 
 
-
 def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bool:
     """Apply theme preset to project"""
     from .theme_presets import get_preset
@@ -56,7 +55,6 @@ def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bo
     return True
 
 
-
 def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
     """Apply colors to widget based on type"""
     color_map = WIDGET_COLOR_MAP.get(widget_type, {})
@@ -70,7 +68,6 @@ def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
             # Add new property
             prop = ET.SubElement(widget_element, "property", name=prop_name)
             prop.text = colors[color_key]
-
 
 
 def get_preset_info(preset_name: str) -> Optional[dict]:

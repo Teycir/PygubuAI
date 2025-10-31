@@ -1,6 +1,5 @@
 """SQLAlchemy ORM models"""
 from datetime import datetime, timezone
-from typing import Optional
 
 try:
     from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey, JSON

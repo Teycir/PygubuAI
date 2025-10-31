@@ -3,7 +3,6 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict
 from .config import Config
 from .registry import Registry
 
@@ -13,7 +12,6 @@ logger = logging.getLogger(__name__)
 def migrate_registry() -> bool:
     """Migrate registry to new format"""
     try:
-        from pydantic import ValidationError
         from .models import RegistryData
     except ImportError:
         logger.error("Pydantic not installed, cannot migrate")
@@ -60,7 +58,6 @@ def migrate_registry() -> bool:
 def migrate_workflow(project_path: Path) -> bool:
     """Migrate workflow file to new format"""
     try:
-        from pydantic import ValidationError
         from .models import WorkflowData, WorkflowHistory
     except ImportError:
         logger.error("Pydantic not installed, cannot migrate")
@@ -160,6 +157,7 @@ def main():
         sys.exit(0)
 
     migrate_all()
+
 
 if __name__ == '__main__':
     main()

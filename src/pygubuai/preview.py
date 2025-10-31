@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Quick preview tool for UI files"""
 import tkinter as tk
-from pathlib import Path
-from typing import Optional
-import time
 from .registry import Registry
 
 
@@ -124,6 +121,7 @@ def main():
     except Exception as e:
         logger.exception(f"Unexpected error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

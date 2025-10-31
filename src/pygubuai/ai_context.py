@@ -6,7 +6,6 @@ from typing import Dict
 from datetime import datetime, timezone
 
 
-
 def generate_context(project_name: str) -> Dict:
     """Generate rich AI context for project"""
     from .registry import Registry
@@ -58,7 +57,6 @@ def generate_context(project_name: str) -> Dict:
     return context
 
 
-
 def _parse_ui_file(ui_file: Path) -> tuple:
     """Parse UI file for widgets and callbacks"""
     import xml.etree.ElementTree as ET
@@ -84,7 +82,6 @@ def _parse_ui_file(ui_file: Path) -> tuple:
         return [], []
 
 
-
 def format_for_ai(context: Dict) -> str:
     """Format context for AI consumption"""
     lines = [
@@ -108,7 +105,6 @@ def format_for_ai(context: Dict) -> str:
             lines.append(f"- {event['action']}: {event['description']}")
 
     return "\n".join(lines)
-
 
 
 def main():

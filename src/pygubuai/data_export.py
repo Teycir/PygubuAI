@@ -6,7 +6,6 @@ from .registry import Registry
 from .utils import validate_path
 
 
-
 def add_export_capability(project_name: str, formats: List[str], widget_id: str = None):
     """Add export capability to project"""
     registry = Registry()
@@ -23,7 +22,6 @@ def add_export_capability(project_name: str, formats: List[str], widget_id: str 
     _generate_export_code(str(validated_path), project_name, formats, widget_id)
 
     return True
-
 
 
 def _add_export_button(project_path: str, project_name: str, formats: List[str]):
@@ -55,7 +53,6 @@ def _add_export_button(project_path: str, project_name: str, formats: List[str])
     tree.write(ui_file, encoding='utf-8', xml_declaration=True)
 
 
-
 def _generate_export_code(project_path: str, project_name: str, formats: List[str], widget_id: str):
     """Generate export callback code"""
     py_file = Path(project_path) / f"{project_name}.py"
@@ -71,7 +68,6 @@ def _generate_export_code(project_path: str, project_name: str, formats: List[st
     if "def run(self):" in code:
         code = code.replace("def run(self):", f"{export_method}\n\n    def run(self):")
         py_file.write_text(code)
-
 
 
 def _create_export_method(formats: List[str], widget_id: str = None) -> str:
@@ -117,7 +113,6 @@ def _create_export_method(formats: List[str], widget_id: str = None) -> str:
     return method
 
 
-
 def generate_treeview_export(widget_id: str) -> str:
     """Generate Treeview export code"""
     return f'''    def _get_export_data(self):
@@ -135,7 +130,6 @@ def generate_treeview_export(widget_id: str) -> str:
             data.append(list(values))
 
         return data'''
-
 
 
 def main():

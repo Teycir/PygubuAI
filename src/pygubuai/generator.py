@@ -1,8 +1,6 @@
 """Centralized code generation functions for PygubuAI."""
 
 from typing import List, Tuple, Dict, Any
-from pathlib import Path
-
 
 
 def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[str, Dict[str, Any]]]) -> str:
@@ -34,7 +32,6 @@ def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[s
     return '\n'.join(xml_parts)
 
 
-
 def generate_python_app_structure(project_name: str, callbacks: List[str], custom_callbacks_code: str = "") -> str:
     """Generate Python application structure."""
     class_name = project_name.replace('_', ' ').title().replace(' ', '')
@@ -46,6 +43,7 @@ import pygubu
 
 PROJECT_PATH = pathlib.Path(__file__).parent
 PROJECT_UI = PROJECT_PATH / "{project_name}.ui"
+
 
 class {class_name}App:
     def __init__(self, master=None):
@@ -68,12 +66,12 @@ class {class_name}App:
     def run(self):
         self.mainwindow.mainloop()
 
+
 if __name__ == '__main__':
     app = {class_name}App()
     app.run()
 '''
     return code
-
 
 
 def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: str = None) -> str:

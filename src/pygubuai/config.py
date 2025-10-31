@@ -6,7 +6,6 @@ import threading
 from typing import Dict, Any
 
 
-
 class Config:
     """Configuration manager with multiple source support.
 
