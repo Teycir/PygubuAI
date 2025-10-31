@@ -155,7 +155,7 @@ class TestBugFixes(unittest.TestCase):
         Registry.REGISTRY_FILE = None
     
     def test_workflow_changes_array_limit(self):
-        """Test #11: Workflow changes array maintains exactly 100 entries"""
+        """Test #11: Workflow history array maintains exactly 100 entries"""
         import os
         os.chdir(self.test_dir)
         
@@ -167,23 +167,23 @@ class TestBugFixes(unittest.TestCase):
         # Simulate adding many changes with the trimming logic
         for i in range(150):
             # Trim before appending (as in the actual code)
-            if len(workflow["changes"]) >= 99:
-                workflow["changes"] = workflow["changes"][-98:]
+            if len(workflow["history"]) >= 99:
+                workflow["history"] = workflow["history"][-98:]
             
-            workflow["changes"].append({"file": f"test_{i}.ui", "timestamp": f"2024-01-{i:02d}"})
+            workflow["history"].append({"timestamp": f"2024-01-{i:02d}", "action": "file_changed", "description": f"File test_{i}.ui changed"})
         
         # After adding 150 with trimming, should have at most 99 entries
-        self.assertLessEqual(len(workflow["changes"]), 99, "Should have at most 99 entries")
+        self.assertLessEqual(len(workflow["history"]), 99, "Should have at most 99 entries")
         
         # The key test: verify it never exceeds 99 before append (which makes 100 max)
         # Add one more to verify the limit
-        if len(workflow["changes"]) >= 99:
-            workflow["changes"] = workflow["changes"][-98:]
-        workflow["changes"].append({"file": "final.ui", "timestamp": "2024-01-final"})
+        if len(workflow["history"]) >= 99:
+            workflow["history"] = workflow["history"][-98:]
+        workflow["history"].append({"timestamp": "2024-01-final", "action": "file_changed", "description": "File final.ui changed"})
         
         # Should now have at most 99 (or 100 if we just appended to 99)
-        self.assertLessEqual(len(workflow["changes"]), 100, "Should maintain at most 100 entries")
-        self.assertGreaterEqual(len(workflow["changes"]), 1, "Should have at least 1 entry")
+        self.assertLessEqual(len(workflow["history"]), 100, "Should maintain at most 100 entries")
+        self.assertGreaterEqual(len(workflow["history"]), 1, "Should have at least 1 entry")
     
     def test_config_thread_safety(self):
         """Test #15: Config loading is thread-safe"""

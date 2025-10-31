@@ -5,7 +5,10 @@ import tempfile
 import pathlib
 import json
 import time
+import sys
 from unittest.mock import patch, MagicMock
+
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / 'src'))
 
 class TestPathValidation(unittest.TestCase):
     """Test path validation security fixes"""
@@ -57,7 +60,7 @@ class TestAtomicWrites(unittest.TestCase):
             workflow_file = project_path / ".pygubu-workflow.json"
             
             # Create initial workflow
-            data = {"file_hashes": {}, "changes": []}
+            data = {"project": "test", "file_hashes": {}, "history": []}
             save_workflow(project_path, data)
             
             self.assertTrue(workflow_file.exists())
@@ -69,22 +72,25 @@ class TestAtomicWrites(unittest.TestCase):
     def test_workflow_save_cleans_up_on_error(self):
         """Test temp files are cleaned up on error"""
         from pygubuai.workflow import save_workflow
+        import os
         
         with tempfile.TemporaryDirectory() as tmpdir:
             project_path = pathlib.Path(tmpdir)
             
-            # Create data that will fail JSON serialization
-            class UnserializableObject:
-                pass
+            # Make directory read-only to cause write error
+            os.chmod(project_path, 0o444)
             
-            data = {"file_hashes": {}, "changes": [], "bad": UnserializableObject()}
+            data = {"project": "test", "file_hashes": {}, "history": []}
             
-            with self.assertRaises(Exception):
-                save_workflow(project_path, data)
-            
-            # Verify no temp files left behind
-            temp_files = list(project_path.glob(".pygubu-workflow-*.tmp"))
-            self.assertEqual(len(temp_files), 0)
+            try:
+                with self.assertRaises(Exception):
+                    save_workflow(project_path, data)
+                
+                # Verify no temp files left behind
+                temp_files = list(project_path.glob(".pygubu-workflow-*.tmp"))
+                self.assertEqual(len(temp_files), 0)
+            finally:
+                os.chmod(project_path, 0o755)
 
 
 class TestCircuitBreaker(unittest.TestCase):

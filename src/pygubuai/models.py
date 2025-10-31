@@ -1,6 +1,6 @@
 """Pydantic models for data validation"""
 from typing import Optional, Dict, List
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator
 
@@ -10,8 +10,8 @@ class ProjectConfig(BaseModel):
     path: str
     ui_file: Optional[str] = None
     py_file: Optional[str] = None
-    created: float = Field(default_factory=lambda: datetime.now().timestamp())
-    last_modified: float = Field(default_factory=lambda: datetime.now().timestamp())
+    created: float = Field(default_factory=lambda: datetime.now(timezone.utc).timestamp())
+    last_modified: float = Field(default_factory=lambda: datetime.now(timezone.utc).timestamp())
     metadata: Dict = Field(default_factory=dict)
     
     @field_validator('path')
@@ -47,6 +47,8 @@ class WorkflowData(BaseModel):
     history: List[WorkflowHistory] = Field(default_factory=list)
     last_sync: Optional[str] = None
     version: str = "1.0"
+    file_hashes: Dict[str, str] = Field(default_factory=dict)
+    file_mtimes: Dict[str, float] = Field(default_factory=dict)
 
 class WidgetConfig(BaseModel):
     """Widget configuration"""

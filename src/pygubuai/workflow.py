@@ -34,6 +34,10 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
 def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], 
                             prev_mtime: Optional[float]) -> tuple:
     """Get hash only if mtime changed (optimization)"""
+    if not filepath or not isinstance(filepath, pathlib.Path):
+        logger.error(f"Invalid filepath: {filepath}")
+        return None, None
+    
     try:
         stat = filepath.stat()
         if prev_mtime and stat.st_mtime == prev_mtime:
@@ -47,13 +51,17 @@ def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str],
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
     """Load workflow tracking file with validation"""
+    if not project_path or not isinstance(project_path, pathlib.Path):
+        raise ValueError(f"Invalid project_path: {project_path}")
+    
     workflow_file = project_path / ".pygubu-workflow.json"
     
     if not workflow_file.exists():
         return {"project": project_path.name, "file_hashes": {}, "file_mtimes": {}, "last_sync": None, "history": []}
     
     try:
-        data = json.loads(workflow_file.read_text())
+        with open(workflow_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         if not isinstance(data, dict):
             data = {}
         

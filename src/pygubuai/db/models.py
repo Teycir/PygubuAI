@@ -1,5 +1,5 @@
 """SQLAlchemy ORM models"""
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 try:
@@ -9,6 +9,10 @@ try:
     
     Base = declarative_base()
     
+    def _utcnow():
+        """Return timezone-aware UTC datetime"""
+        return datetime.now(timezone.utc)
+    
     class Project(Base):
         """Project model"""
         __tablename__ = "projects"
@@ -17,8 +21,8 @@ try:
         name = Column(String(255), unique=True, nullable=False, index=True)
         path = Column(String(512), nullable=False)
         description = Column(Text, default="")
-        created_at = Column(DateTime, default=datetime.utcnow)
-        updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        created_at = Column(DateTime, default=_utcnow)
+        updated_at = Column(DateTime, default=_utcnow, onupdate=_utcnow)
         meta_data = Column(JSON, default=dict)
         
         workflow_events = relationship("WorkflowEvent", back_populates="project", cascade="all, delete-orphan")
@@ -36,8 +40,8 @@ try:
         downloads = Column(Integer, default=0)
         rating = Column(Float, default=0.0)
         content = Column(Text, nullable=False)
-        created_at = Column(DateTime, default=datetime.utcnow)
-        updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        created_at = Column(DateTime, default=_utcnow)
+        updated_at = Column(DateTime, default=_utcnow, onupdate=_utcnow)
         meta_data = Column(JSON, default=dict)
     
     class WorkflowEvent(Base):
@@ -46,7 +50,7 @@ try:
         
         id = Column(Integer, primary_key=True)
         project_id = Column(Integer, ForeignKey("projects.id"), nullable=False, index=True)
-        timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+        timestamp = Column(DateTime, default=_utcnow, index=True)
         action = Column(String(100), nullable=False)
         description = Column(Text, default="")
         
@@ -60,7 +64,7 @@ try:
         project_id = Column(Integer, ForeignKey("projects.id"), nullable=True, index=True)
         metric_name = Column(String(100), nullable=False, index=True)
         metric_value = Column(Float, nullable=False)
-        recorded_at = Column(DateTime, default=datetime.utcnow, index=True)
+        recorded_at = Column(DateTime, default=_utcnow, index=True)
         meta_data = Column(JSON, default=dict)
         
         project = relationship("Project", back_populates="analytics")

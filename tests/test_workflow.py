@@ -41,22 +41,24 @@ class TestWorkflow(unittest.TestCase):
     def test_load_workflow_new(self):
         """Test loading workflow for new project"""
         workflow = load_workflow(self.project_dir)
-        self.assertIsNone(workflow["ui_hash"])
+        self.assertEqual(workflow["file_hashes"], {})
         self.assertIsNone(workflow["last_sync"])
-        self.assertEqual(workflow["changes"], [])
+        self.assertEqual(workflow["history"], [])
     
     def test_save_and_load_workflow(self):
         """Test saving and loading workflow"""
         workflow_data = {
-            "ui_hash": "abc123",
+            "project": "testproj",
+            "file_hashes": {"test.ui": "abc123"},
             "last_sync": None,
-            "changes": []
+            "history": []
         }
         
         save_workflow(self.project_dir, workflow_data)
         loaded = load_workflow(self.project_dir)
         
-        self.assertEqual(loaded["ui_hash"], "abc123")
+        self.assertIn("file_hashes", loaded)
+        self.assertEqual(loaded["file_hashes"].get("test.ui"), "abc123")
         self.assertIsNotNone(loaded["last_sync"])
     
     def test_load_workflow_invalid_json(self):
@@ -66,8 +68,8 @@ class TestWorkflow(unittest.TestCase):
         
         workflow = load_workflow(self.project_dir)
         # Should return defaults on error
-        self.assertIsNone(workflow["ui_hash"])
-        self.assertEqual(workflow["changes"], [])
+        self.assertEqual(workflow["file_hashes"], {})
+        self.assertEqual(workflow["history"], [])
     
     def test_get_file_hash_nonexistent(self):
         """Test hash of non-existent file returns None"""
@@ -84,16 +86,17 @@ class TestWorkflow(unittest.TestCase):
     def test_workflow_tracks_changes(self):
         """Test workflow tracks multiple changes"""
         workflow_data = {
-            "ui_hash": "initial",
+            "project": "testproj",
+            "file_hashes": {"test.ui": "initial"},
             "last_sync": None,
-            "changes": [{"file": "test.ui", "timestamp": "2024-01-01"}]
+            "history": [{"timestamp": "2024-01-01", "action": "file_changed", "description": "File test.ui changed"}]
         }
         
         save_workflow(self.project_dir, workflow_data)
         loaded = load_workflow(self.project_dir)
         
-        self.assertEqual(len(loaded["changes"]), 1)
-        self.assertEqual(loaded["changes"][0]["file"], "test.ui")
+        self.assertEqual(len(loaded["history"]), 1)
+        self.assertIn("test.ui", loaded["history"][0]["description"])
 
 class TestWorkflowEdgeCases(unittest.TestCase):
     """Test edge cases and error conditions."""
@@ -104,7 +107,7 @@ class TestWorkflowEdgeCases(unittest.TestCase):
         project_dir = pathlib.Path(temp_dir) / "newproj"
         project_dir.mkdir()
         
-        workflow_data = {"ui_hash": "test", "changes": []}
+        workflow_data = {"project": "newproj", "file_hashes": {"test.ui": "test"}, "history": []}
         save_workflow(project_dir, workflow_data)
         
         workflow_file = project_dir / ".pygubu-workflow.json"
@@ -117,17 +120,17 @@ class TestWorkflowEdgeCases(unittest.TestCase):
         project_dir.mkdir()
         
         # Save initial workflow
-        initial = {"ui_hash": "v1", "changes": [{"file": "a.ui"}]}
+        initial = {"project": "proj", "file_hashes": {"a.ui": "v1"}, "history": [{"timestamp": "2024-01-01", "action": "file_changed", "description": "File a.ui changed"}]}
         save_workflow(project_dir, initial)
         
         # Load and modify
         loaded = load_workflow(project_dir)
-        loaded["changes"].append({"file": "b.ui"})
+        loaded["history"].append({"timestamp": "2024-01-02", "action": "file_changed", "description": "File b.ui changed"})
         save_workflow(project_dir, loaded)
         
         # Verify both changes preserved
         final = load_workflow(project_dir)
-        self.assertEqual(len(final["changes"]), 2)
+        self.assertEqual(len(final["history"]), 2)
 
 class TestWorkflowSecurityFixes(unittest.TestCase):
     """Test security and reliability fixes."""
@@ -138,7 +141,7 @@ class TestWorkflowSecurityFixes(unittest.TestCase):
         project_dir = pathlib.Path(temp_dir) / "proj"
         project_dir.mkdir()
         
-        workflow_data = {"ui_hash": "test", "changes": []}
+        workflow_data = {"project": "proj", "file_hashes": {"test.ui": "test"}, "history": []}
         save_workflow(project_dir, workflow_data)
         
         loaded = load_workflow(project_dir)
@@ -166,12 +169,11 @@ class TestWorkflowSecurityFixes(unittest.TestCase):
         # Make directory read-only
         os.chmod(project_dir, 0o444)
         
-        workflow_data = {"ui_hash": "test", "changes": []}
-        # Should not raise, just log error
-        try:
+        workflow_data = {"project": "proj", "file_hashes": {"test.ui": "test"}, "history": []}
+        # Should raise on IO error
+        with self.assertRaises(Exception):
             save_workflow(project_dir, workflow_data)
-        finally:
-            os.chmod(project_dir, 0o755)
+        os.chmod(project_dir, 0o755)
     
     def test_get_file_hash_permission_error(self):
         """Test get_file_hash handles permission errors"""

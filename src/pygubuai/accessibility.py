@@ -4,6 +4,9 @@ from typing import Dict, List, Tuple
 
 def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
     """Check if color contrast meets WCAG AA standards (4.5:1)."""
+    if not fg or not isinstance(fg, str) or not bg or not isinstance(bg, str):
+        return False, 0.0
+    
     def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
         hex_color = hex_color.lstrip('#')
         return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
@@ -28,6 +31,11 @@ def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
 
 def generate_aria_labels(widget_type: str, widget_id: str) -> Dict[str, str]:
     """Generate ARIA labels for widgets."""
+    if not widget_type or not isinstance(widget_type, str):
+        widget_type = "Widget"
+    if not widget_id or not isinstance(widget_id, str):
+        widget_id = "unknown"
+    
     labels = {
         "Button": f"Button: {widget_id}",
         "Entry": f"Text input: {widget_id}",
@@ -42,6 +50,9 @@ def generate_aria_labels(widget_type: str, widget_id: str) -> Dict[str, str]:
 
 def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
     """Validate keyboard navigation setup."""
+    if not widgets or not isinstance(widgets, list):
+        return ["No widgets provided for validation"]
+    
     issues = []
     has_focus = any(w.get("takefocus") == "1" for w in widgets)
     
@@ -57,6 +68,9 @@ def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
 
 def check_accessibility(ui_data: Dict) -> Dict[str, List[str]]:
     """Run accessibility checks on UI data."""
+    if not ui_data or not isinstance(ui_data, dict):
+        return {"validation": ["Invalid UI data provided"]}
+    
     issues = {
         "contrast": [],
         "keyboard": [],

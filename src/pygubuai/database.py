@@ -200,5 +200,76 @@ def main():
         print(f"Unknown command: {command}")
         sys.exit(1)
 
+def add_table(project_name: str, table_name: str, schema: dict):
+    """Add database table to project"""
+    from .registry import Registry
+    from .db import get_session, SQLALCHEMY_AVAILABLE
+    from .db.operations import get_project
+
+    if not SQLALCHEMY_AVAILABLE:
+        print("Error: SQLAlchemy not installed")
+        print("Install with: pip install -e \".[db]\"")
+        return False
+
+    registry = Registry()
+    project_path = registry.get_project(project_name)
+    if not project_path:
+        raise ValueError(f"Project '{project_name}' not found")
+
+    session = get_session()
+    if not session:
+        return False
+
+    try:
+        project = get_project(session, project_name)
+        if not project:
+            print(f"Project '{project_name}' not found in database")
+            return False
+
+        # Add table creation logic here
+        # This is a placeholder for the actual table creation functionality
+        print(f"Table '{table_name}' would be added with schema: {schema}")
+        print("Note: add_table functionality is not fully implemented yet")
+
+        # Generate code for the project
+        _generate_table_code(project_path, project_name, table_name, schema)
+
+        return True
+
+    finally:
+        session.close()
+
+
+def _generate_table_code(project_path: str, project_name: str, table_name: str, schema: dict):
+    """Generate table-related code for project"""
+    from pathlib import Path
+
+    py_file = Path(project_path) / f"{project_name}.py"
+    if not py_file.exists():
+        return
+
+    code = py_file.read_text()
+
+    # Generate load method
+    load_method = f"""
+    def load_{table_name}(self):
+        \"\"\"Load {table_name} from database\"\"\"
+        # TODO: Implement database loading
+        return []
+"""
+
+    # Generate add method
+    fields = list(schema.keys())
+    add_method = f"""
+    def add_{table_name}(self, {', '.join(fields)}):
+        \"\"\"Add new {table_name} to database\"\"\"
+        # TODO: Implement database insertion
+        pass
+"""
+
+    # Insert methods before run() method
+    if "def run(self):" in code:
+        code = code.replace("def run(self):", f"{load_method}{add_method}\n    def run(self):")
+        py_file.write_text(code)
 if __name__ == "__main__":
     main()

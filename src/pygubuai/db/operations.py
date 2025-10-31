@@ -1,6 +1,6 @@
 """Database CRUD operations"""
 from typing import List, Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -50,7 +50,7 @@ def update_project(session: Session, name: str, **kwargs) -> bool:
         if hasattr(project, key):
             setattr(project, key, value)
     
-    project.updated_at = datetime.utcnow()
+    project.updated_at = datetime.now(timezone.utc)
     session.commit()
     return True
 
