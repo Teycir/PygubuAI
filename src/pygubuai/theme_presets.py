@@ -152,14 +152,14 @@ def validate_preset(preset_data: dict) -> bool:
     required = ["name", "description", "base", "colors"]
     if not all(k in preset_data for k in required):
         return False
-    
+
     required_colors = ["bg", "fg", "accent"]
     if not all(k in preset_data["colors"] for k in required_colors):
         return False
-    
+
     # Validate hex colors
     for color in preset_data["colors"].values():
         if not color.startswith("#") or len(color) != 7:
             return False
-    
+
     return True

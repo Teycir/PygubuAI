@@ -21,15 +21,15 @@ def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
     if not is_git_available():
         logger.warning("Git not available, skipping repository initialization")
         return False
-    
+
     try:
         subprocess.run(['git', 'init'], shell=False, cwd=str(project_path), capture_output=True, check=True)
         logger.info(f"Initialized git repository in {project_path}")
-        
+
         # Create .gitignore
         gitignore = project_path / ".gitignore"
         gitignore.write_text(generate_gitignore())
-        
+
         if initial_commit:
             subprocess.run(['git', 'add', '.'], shell=False, cwd=str(project_path), capture_output=True, check=True)
             subprocess.run(
@@ -40,7 +40,7 @@ def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
                 check=True
             )
             logger.info("Created initial commit")
-        
+
         return True
     except subprocess.CalledProcessError as e:
         logger.error(f"Git initialization failed: {e}")
@@ -94,13 +94,13 @@ def git_commit(project_path: Path, message: str, files: Optional[list] = None) -
     """Commit changes to git repository"""
     if not is_git_available():
         return False
-    
+
     try:
         if files:
             subprocess.run(['git', 'add'] + files, shell=False, cwd=str(project_path), capture_output=True, check=True)
         else:
             subprocess.run(['git', 'add', '.'], shell=False, cwd=str(project_path), capture_output=True, check=True)
-        
+
         subprocess.run(
             ['git', 'commit', '-m', message],
             shell=False,

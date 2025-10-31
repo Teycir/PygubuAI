@@ -8,7 +8,7 @@ def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[s
     """Generate base UI XML structure with widgets."""
     from .widgets import generate_widget_xml
     from .utils import safe_xml_text
-    
+
     xml_parts = [
         "<?xml version='1.0' encoding='utf-8'?>",
         '<interface version="1.2">',
@@ -36,7 +36,7 @@ def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[s
 def generate_python_app_structure(project_name: str, callbacks: List[str], custom_callbacks_code: str = "") -> str:
     """Generate Python application structure."""
     class_name = project_name.replace('_', ' ').title().replace(' ', '')
-    
+
     code = f'''#!/usr/bin/env python3
 import pathlib
 import tkinter as tk
@@ -52,13 +52,13 @@ class {class_name}App:
         self.mainwindow = self.builder.get_object('mainwindow', master)
         self.builder.connect_callbacks(self)
 '''
-    
+
     for callback in callbacks:
         code += f'''
     def {callback}(self):
         print("{callback} triggered")
 '''
-    
+
     if custom_callbacks_code:
         code += f"\n{custom_callbacks_code}\n"
 
@@ -77,11 +77,11 @@ def generate_readme_content(project_name: str, description: str, ui_file_name: s
     """Generate README.md content."""
     from .utils import find_pygubu_designer
     import html
-    
+
     title = html.escape(project_name.replace("_", " ").title())
     template_info = f"\nTemplate: {html.escape(template_name)}" if template_name else ""
     description_safe = html.escape(description)
-    
+
     return f'''# {title}
 {template_info}
 {description_safe}

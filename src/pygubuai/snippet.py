@@ -10,7 +10,7 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-    
+
     "entry": """    <object class="ttk.Entry" id="{id}">
       <property name="textvariable">{variable}</property>
       <layout manager="pack">
@@ -18,14 +18,14 @@ SNIPPET_TEMPLATES = {
         <property name="fill">x</property>
       </layout>
     </object>""",
-    
+
     "label": """    <object class="ttk.Label" id="{id}">
       <property name="text">{text}</property>
       <layout manager="pack">
         <property name="pady">5</property>
       </layout>
     </object>""",
-    
+
     "frame": """    <object class="ttk.Frame" id="{id}">
       <property name="padding">10</property>
       <layout manager="{layout}">
@@ -33,7 +33,7 @@ SNIPPET_TEMPLATES = {
         <property name="fill">both</property>
       </layout>
     </object>""",
-    
+
     "combobox": """    <object class="ttk.Combobox" id="{id}">
       <property name="textvariable">{variable}</property>
       <property name="values">{values}</property>
@@ -41,7 +41,7 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-    
+
     "checkbutton": """    <object class="ttk.Checkbutton" id="{id}">
       <property name="text">{text}</property>
       <property name="variable">{variable}</property>
@@ -49,7 +49,7 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-    
+
     "text": """    <object class="tk.Text" id="{id}">
       <property name="height">{height}</property>
       <layout manager="pack">
@@ -57,7 +57,7 @@ SNIPPET_TEMPLATES = {
         <property name="fill">both</property>
       </layout>
     </object>""",
-    
+
     "treeview": """    <object class="ttk.Treeview" id="{id}">
       <property name="columns">{columns}</property>
       <layout manager="pack">
@@ -82,17 +82,17 @@ def generate_snippet(widget_type: str, **kwargs) -> str:
     """Generate XML snippet for widget"""
     if widget_type not in SNIPPET_TEMPLATES:
         raise ValueError(f"Unknown widget type: {widget_type}")
-    
+
     # Merge defaults with provided values
     values = DEFAULT_VALUES[widget_type].copy()
     values.update(kwargs)
-    
+
     return SNIPPET_TEMPLATES[widget_type].format(**values)
 
 def main():
     """CLI entry point"""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: pygubu-snippet <widget_type> [text] [options]")
         print("\\nAvailable widgets:")
@@ -103,17 +103,17 @@ def main():
         print("  pygubu-snippet entry 'Email' --variable email_var")
         print("  pygubu-snippet frame --layout grid")
         sys.exit(1)
-    
+
     widget_type = sys.argv[1]
-    
+
     if widget_type not in SNIPPET_TEMPLATES:
         print(f"Error: Unknown widget type '{widget_type}'")
         print(f"Available: {', '.join(SNIPPET_TEMPLATES.keys())}")
         sys.exit(1)
-    
+
     # Parse arguments
     kwargs = {}
-    
+
     # Get text if provided (first non-option argument)
     if len(sys.argv) > 2 and not sys.argv[2].startswith('--'):
         if widget_type in ["button", "label", "checkbutton"]:
@@ -122,7 +122,7 @@ def main():
             # Use text as variable name (sanitized)
             var_name = sys.argv[2].lower().replace(' ', '_') + '_var'
             kwargs["variable"] = var_name
-    
+
     # Parse --options
     i = 2
     while i < len(sys.argv):
@@ -135,7 +135,7 @@ def main():
                 i += 1
         else:
             i += 1
-    
+
     try:
         snippet = generate_snippet(widget_type, **kwargs)
         print("\\n" + snippet + "\\n")

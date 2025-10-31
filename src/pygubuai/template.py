@@ -18,17 +18,17 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
     try:
         if not skip_validation:
             validate_pygubu()
-        
+
         template = get_template(template_name)
         if not template:
             raise PygubuAIError(
                 f"Template '{template_name}' not found",
                 "Use 'pygubu-template list' to see available templates"
             )
-        
+
         name = validate_project_name(name)
         base = Path.cwd() / name
-        
+
         if dry_run:
             logger.info("[DRY RUN] Would create from template:")
             logger.info(f"  Template: {template_name}")
@@ -37,31 +37,31 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
             if init_git:
                 logger.info(f"  Git: Initialize repository with .gitignore")
             return
-        
+
         base = ensure_directory(base)
-        
+
         template_widgets, template_callbacks_code = get_template_widgets_and_callbacks(template_name)
-        
+
         ui_file = base / f"{name}.ui"
         ui_file.write_text(generate_base_ui_xml_structure(name, template_widgets))
-        
+
         py_file = base / f"{name}.py"
         py_file.write_text(generate_python_app_structure(name, [], custom_callbacks_code=template_callbacks_code))
         py_file.chmod(0o755)
-        
+
         readme = base / "README.md"
         readme.write_text(generate_readme_content(name, template["description"], f"{name}.ui", template_name=template_name))
-        
+
         # Initialize git if requested
         if init_git:
             from .git_integration import init_git_repo
             if init_git_repo(base):
                 logger.info("  Git: Initialized repository")
-        
+
         logger.info(f"[SUCCESS] Created from '{template_name}' template: {base}/")
         logger.info(f"  Files: {name}.ui, {name}.py, README.md")
         logger.info(f"\nNext: cd {name} && python {name}.py")
-        
+
     except PygubuAIError as e:
         logger.error(str(e))
         sys.exit(1)
@@ -78,16 +78,16 @@ def main(args=None):
     )
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     subparsers = parser.add_subparsers(dest='command')
-    
+
     list_parser = subparsers.add_parser('list', help='List available templates')
-    
+
     create_parser = subparsers.add_parser('create', help='Create project from template')
     create_parser.add_argument('name', help='Project name')
     create_parser.add_argument('template', help='Template name')
-    
+
     # Support legacy positional args: pygubu-template <name> <template>
     parsed_args = parser.parse_args(args)
-    
+
     if parsed_args.command == 'list':
         print("Available templates:\n")
         for name, desc in list_templates():

@@ -17,29 +17,29 @@ except ImportError:
 def get_project_status(project_name: Optional[str] = None) -> Dict:
     """Get project sync status"""
     registry = Registry()
-    
+
     if not project_name:
         project_name = registry.get_active()
         if not project_name:
             return {"error": "No active project. Use: pygubu-register active <name>"}
-    
+
     project_path = registry.get_project(project_name)
     if not project_path:
         return {"error": f"Project '{project_name}' not found"}
-    
+
     project_dir = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = project_dir / f"{project_name}.ui"
     py_file = project_dir / f"{project_name}.py"
     workflow_file = project_dir / ".pygubu-workflow.json"
-    
+
     if not ui_file.exists():
         return {"error": f"UI file not found: {ui_file}"}
     if not py_file.exists():
         return {"error": f"Python file not found: {py_file}"}
-    
+
     ui_mtime = ui_file.stat().st_mtime
     py_mtime = py_file.stat().st_mtime
-    
+
     status = {
         "project": project_name,
         "path": str(project_dir),
@@ -48,7 +48,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
         "ui_modified": datetime.fromtimestamp(ui_mtime).isoformat(),
         "py_modified": datetime.fromtimestamp(py_mtime).isoformat(),
     }
-    
+
     # Check workflow history
     if workflow_file.exists():
         try:
@@ -59,7 +59,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
             status["last_sync"] = "Unknown"
     else:
         status["last_sync"] = "Never"
-    
+
     # Determine sync status
     time_diff = abs(ui_mtime - py_mtime)
     if time_diff < 2:  # Within 2 seconds
@@ -70,32 +70,32 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
     else:
         status["sync_status"] = "Code Ahead"
         status["message"] = "Python file modified after UI. Consider updating UI."
-    
+
     return status
 
 def main():
     """CLI entry point"""
     import sys
     project_name = sys.argv[1] if len(sys.argv) > 1 else None
-    
+
     status = get_project_status(project_name)
-    
+
     if "error" in status:
         print(f"Error: {status['error']}")
         sys.exit(1)
-    
+
     if RICH_AVAILABLE:
         console = Console()
         table = Table(title=f"Project Status: {status['project']}")
         table.add_column("Component", style="cyan")
         table.add_column("Value", style="green")
-        
+
         status_color = "green" if status['sync_status'] == "In Sync" else "yellow"
         table.add_row("Status", f"[{status_color}]{status['sync_status']}[/{status_color}]")
         table.add_row("UI Modified", status['ui_modified'])
         table.add_row("Code Modified", status['py_modified'])
         table.add_row("Last Sync", status['last_sync'])
-        
+
         console.print(table)
         if "message" in status:
             console.print(f"\nWARNING  [yellow]{status['message']}[/yellow]")

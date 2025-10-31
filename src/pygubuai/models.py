@@ -13,7 +13,7 @@ class ProjectConfig(BaseModel):
     created: float = Field(default_factory=lambda: datetime.now(timezone.utc).timestamp())
     last_modified: float = Field(default_factory=lambda: datetime.now(timezone.utc).timestamp())
     metadata: Dict = Field(default_factory=dict)
-    
+
     @field_validator('path')
     @classmethod
     def validate_path(cls, v):
@@ -26,7 +26,7 @@ class RegistryData(BaseModel):
     projects: Dict[str, Dict] = Field(default_factory=dict)
     active: Optional[str] = None
     version: str = "1.0"
-    
+
     @field_validator('active')
     @classmethod
     def validate_active(cls, v, info):
@@ -56,7 +56,7 @@ class WidgetConfig(BaseModel):
     widget_id: str
     properties: Dict = Field(default_factory=dict)
     layout: Dict = Field(default_factory=dict)
-    
+
 class ExportConfig(BaseModel):
     """Export configuration"""
     project: str

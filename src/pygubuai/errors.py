@@ -11,7 +11,7 @@ class PygubuAIError(Exception):
         self.suggestion = suggestion
         self.cause = cause
         super().__init__(self.message)
-    
+
     def __str__(self):
         error = f"[ERROR] {self.message}"
         if self.suggestion:

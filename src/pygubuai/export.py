@@ -23,10 +23,10 @@ class {class_name}:
         self.builder = pygubu.Builder()
         self.builder.add_from_string(UI_DEFINITION)
         self.mainwindow = self.builder.get_object('mainwindow', master)
-        
+
         # Connect callbacks
         self.builder.connect_callbacks(self)
-    
+
     def run(self):
         self.mainwindow.mainloop()
 {callbacks}
@@ -44,15 +44,15 @@ def extract_callbacks(py_file: Path) -> str:
     """Extract callback methods from Python file"""
     if not py_file.exists():
         return ""
-    
+
     content = py_file.read_text()
     lines = content.split('\\n')
-    
+
     callbacks = []
     in_callback = False
     current_callback = []
     indent_level = 0
-    
+
     for line in lines:
         # Detect callback method (starts with 'def on_')
         if line.strip().startswith('def on_'):
@@ -68,37 +68,37 @@ def extract_callbacks(py_file: Path) -> str:
                 in_callback = False
             else:
                 current_callback.append(line)
-    
+
     # Add last callback if exists
     if current_callback:
         callbacks.append('\\n'.join(current_callback))
-    
+
     return '\\n\\n'.join(callbacks) if callbacks else "    # Add your callbacks here\\n    pass"
 
 def export_standalone(project_name: str, output_file: Optional[str] = None) -> str:
     """Export project to standalone file"""
     registry = Registry()
     project_path = registry.get_project(project_name)
-    
+
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
-    
+
     project_dir = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = project_dir / f"{project_name}.ui"
     py_file = project_dir / f"{project_name}.py"
-    
+
     if not ui_file.exists():
         raise FileNotFoundError(f"UI file not found: {ui_file}")
-    
+
     # Read UI content
     ui_content = ui_file.read_text()
-    
+
     # Extract callbacks
     callbacks = extract_callbacks(py_file)
-    
+
     # Generate class name
     class_name = ''.join(word.capitalize() for word in project_name.split('_')) + 'App'
-    
+
     # Generate standalone code
     standalone_code = STANDALONE_TEMPLATE.format(
         project_name=project_name,
@@ -106,40 +106,40 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
         ui_content=ui_content,
         callbacks=callbacks
     )
-    
+
     # Determine output file
     if output_file is None:
         output_path = project_dir / f"{project_name}_standalone.py"
     else:
         output_path = validate_path(output_file)
-    
+
     # Write output
     output_path.write_text(standalone_code)
-    
+
     # Make executable
     output_path.chmod(0o755)
-    
+
     return str(output_path)
 
 def main():
     """CLI entry point"""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: pygubu-export <project> [--output file.py]")
         print("\\nExport project to standalone Python file with embedded UI.")
         print("\\nOptions:")
         print("  --output <file>    Output file path (default: <project>_standalone.py)")
         sys.exit(1)
-    
+
     project_name = sys.argv[1]
     output_file = None
-    
+
     if "--output" in sys.argv:
         idx = sys.argv.index("--output")
         if idx + 1 < len(sys.argv):
             output_file = sys.argv[idx + 1]
-    
+
     try:
         output_path = export_standalone(project_name, output_file)
         print(f"OK Exported '{project_name}' to standalone file:")

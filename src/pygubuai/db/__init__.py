@@ -27,20 +27,20 @@ def init_db(db_path: Optional[Path] = None) -> bool:
     """Initialize database"""
     if not SQLALCHEMY_AVAILABLE:
         return False
-    
+
     global _engine, _SessionLocal
-    
+
     if db_path is None:
         db_path = get_db_path()
-    
+
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     _engine = create_engine(f"sqlite:///{db_path}", echo=False)
     _SessionLocal = sessionmaker(bind=_engine)
-    
+
     from .models import Base
     Base.metadata.create_all(_engine)
-    
+
     logger.info(f"Database initialized at {db_path}")
     return True
 

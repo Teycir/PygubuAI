@@ -25,7 +25,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
             validate_pygubu()
         name = validate_project_name(name)
         base = Path.cwd() / name
-        
+
         if dry_run:
             logger.info("[DRY RUN] Would create:")
             logger.info(f"  Directory: {base}/")
@@ -36,41 +36,41 @@ def create_project(name: str, description: str, skip_validation: bool = False,
                 logger.info(f"  Template: {template}")
             logger.info(f"\nDescription: {description}")
             return
-        
+
         base = ensure_directory(base)
-        
+
         # Use template if specified
         if template:
             from .template import create_from_template
             create_from_template(name, template, dry_run=dry_run, init_git=init_git)
             return
-        
+
         widgets = detect_widgets(description)
         callbacks = get_callbacks(widgets)
-        
+
         ui_file = base / f"{name}.ui"
         ui_file.write_text(generate_base_ui_xml_structure(name, widgets))
-        
+
         py_file = base / f"{name}.py"
         py_file.write_text(generate_python_app_structure(name, callbacks))
         py_file.chmod(0o755)
-        
+
         readme = base / "README.md"
         readme.write_text(generate_readme_content(name, description, f"{name}.ui"))
-        
+
         # Initialize git if requested
         if init_git:
             if init_git_repo(base):
                 logger.info("  Git: Initialized repository")
-        
+
         # Register project
         registry = Registry()
         registry.add_project(name, str(base), description=description, tags=tags or [])
-        
+
         logger.info(f"[SUCCESS] Created project: {base}/")
         logger.info(f"  Files: {name}.ui, {name}.py, README.md")
         logger.info(f"\nNext: cd {name} && python {name}.py")
-        
+
     except PygubuAIError as e:
         logger.error(str(e))
         sys.exit(1)
@@ -100,9 +100,9 @@ def main(args=None):
     parser.add_argument('--git', action='store_true', help='Initialize git repository')
     parser.add_argument('--template', '-t', help='Use template (login, crud, settings, etc.)')
     parser.add_argument('--tags', help='Comma-separated tags for project')
-    
+
     parsed_args = parser.parse_args(args)
-    
+
     if parsed_args.interactive:
         config = interactive_create()
         create_project(
@@ -115,7 +115,7 @@ def main(args=None):
     else:
         if not parsed_args.name or not parsed_args.description:
             parser.error("name and description are required (or use --interactive)")
-        
+
         tags = [t.strip() for t in parsed_args.tags.split(',') if t.strip()] if parsed_args.tags else None
         create_project(
             parsed_args.name, 

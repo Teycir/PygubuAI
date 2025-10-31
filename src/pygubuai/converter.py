@@ -8,12 +8,12 @@ def main():
         print("Usage: tkinter-to-pygubu <file>.py")
         print("\nConverts legacy tkinter code to pygubu format")
         sys.exit(1)
-    
+
     filepath = Path(sys.argv[1])
     if not filepath.exists():
         print(f"Error: {filepath} not found")
         sys.exit(1)
-    
+
     print(f"Converting {filepath.name} to Pygubu format...")
     print("\nWARNING  This is a placeholder implementation.")
     print("Full conversion requires parsing tkinter widget creation code.")

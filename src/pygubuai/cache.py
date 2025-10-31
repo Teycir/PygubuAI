@@ -22,7 +22,7 @@ def get_cached(filepath: Path) -> Optional[dict]:
     try:
         safe_filepath = validate_path(str(filepath), must_exist=True)
         cache_file = CACHE_DIR / f"{safe_filepath.stem}_{_get_file_hash(safe_filepath)}.json"
-        
+
         if cache_file.exists():
             return json.loads(cache_file.read_text())
     except (ValueError, OSError) as e:
@@ -50,11 +50,11 @@ def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
     """Remove old or excess cache files to prevent bloat."""
     if not CACHE_DIR.exists():
         return
-    
+
     try:
         files = sorted(CACHE_DIR.glob("*.json"), key=lambda f: f.stat().st_mtime)
         cutoff = time.time() - (max_age_days * 86400)
-        
+
         for f in files:
             if f.stat().st_mtime < cutoff or len(files) > max_files:
                 f.unlink()

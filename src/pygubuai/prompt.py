@@ -92,32 +92,32 @@ def generate_prompt(template_name: str, project_name: Optional[str] = None, **kw
     """Generate AI prompt from template"""
     if template_name not in PROMPT_TEMPLATES:
         raise ValueError(f"Unknown template: {template_name}")
-    
+
     # Get project info if provided
     if project_name:
         registry = Registry()
         project_path = registry.get_project(project_name)
-        
+
         if project_path:
             project_dir = Path(project_path)
             kwargs.setdefault("project", project_name)
             kwargs.setdefault("project_path", str(project_dir))
             kwargs.setdefault("ui_file", str(project_dir / f"{project_name}.ui"))
             kwargs.setdefault("py_file", str(project_dir / f"{project_name}.py"))
-    
+
     # Fill in defaults for missing values
     kwargs.setdefault("feature", "<describe feature>")
     kwargs.setdefault("issues", "<describe layout issues>")
     kwargs.setdefault("fields", "<list fields to validate>")
     kwargs.setdefault("menu_structure", "<describe menu structure>")
-    
+
     return PROMPT_TEMPLATES[template_name].format(**kwargs)
 
 def save_prompt(name: str, content: str):
     """Save prompt to Amazon Q prompts directory"""
     prompts_dir = Path.home() / ".amazonq" / "prompts"
     prompts_dir.mkdir(parents=True, exist_ok=True)
-    
+
     prompt_file = prompts_dir / f"{name}.md"
     prompt_file.write_text(content)
     return prompt_file
@@ -125,7 +125,7 @@ def save_prompt(name: str, content: str):
 def main():
     """CLI entry point"""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("Usage: pygubu-prompt <template> [project] [args]")
         print("\\nAvailable templates:")
@@ -138,9 +138,9 @@ def main():
         print("  pygubu-prompt add-feature myapp 'menu bar'")
         print("  pygubu-prompt fix-layout myapp")
         sys.exit(1)
-    
+
     command = sys.argv[1]
-    
+
     if command == "list":
         print("\\nAvailable Prompt Templates:\\n")
         for template, content in PROMPT_TEMPLATES.items():
@@ -148,10 +148,10 @@ def main():
             print(f"  {template:20} - {first_line}")
         print()
         return
-    
+
     template_name = command
     project_name = sys.argv[2] if len(sys.argv) > 2 else None
-    
+
     # Parse additional arguments
     kwargs = {}
     if len(sys.argv) > 3:
@@ -163,19 +163,19 @@ def main():
             kwargs["fields"] = sys.argv[3]
         elif template_name == "add-menu":
             kwargs["menu_structure"] = sys.argv[3]
-    
+
     try:
         prompt = generate_prompt(template_name, project_name, **kwargs)
         print("\\n" + "="*60)
         print(prompt)
         print("="*60 + "\\n")
-        
+
         # Offer to save
         if project_name:
             save_name = f"pygubu-{template_name}-{project_name}"
             print(f"TIP Tip: Save this prompt with:")
             print(f"   pygubu-prompt {template_name} {project_name} | save-as {save_name}")
-    
+
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)

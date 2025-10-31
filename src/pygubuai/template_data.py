@@ -60,10 +60,10 @@ WIDGET_MAP = {
 
 def get_template(name: str) -> Dict[str, Any]:
     """Get template by name.
-    
+
     Args:
         name: Template name
-        
+
     Returns:
         Template dictionary or None if not found
     """
@@ -71,7 +71,7 @@ def get_template(name: str) -> Dict[str, Any]:
 
 def list_templates() -> List[Tuple[str, str]]:
     """List all available templates.
-    
+
     Returns:
         List of (name, description) tuples
     """
@@ -79,10 +79,10 @@ def list_templates() -> List[Tuple[str, str]]:
 
 def validate_widget(widget: Dict[str, Any]) -> None:
     """Validate widget structure.
-    
+
     Args:
         widget: Widget dictionary
-        
+
     Raises:
         ValueError: If widget is invalid
     """
@@ -96,13 +96,13 @@ def validate_widget(widget: Dict[str, Any]) -> None:
 
 def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[str, Dict[str, Any]]], str]:
     """Extract widgets and callback code from template.
-    
+
     Args:
         template_name: Name of the template
-        
+
     Returns:
         Tuple of (widget list, callback code string)
-        
+
     Raises:
         ValueError: If template is invalid
     """
@@ -112,20 +112,20 @@ def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[s
 
     widgets_for_generator = []
     used_ids = set()
-    
+
     for widget_data in template["widgets"]:
         validate_widget(widget_data)
-        
+
         widget_type = widget_data["type"]
         text = widget_data.get("text", "")
         widget_id = widget_data["id"]
         props = widget_data.get("properties", {})
-        
+
         # Ensure unique IDs
         if widget_id in used_ids:
             widget_id = f"{widget_id}_{uuid.uuid4().hex[:8]}"
         used_ids.add(widget_id)
-        
+
         config = {
             "class": WIDGET_MAP[widget_type],
             "properties": {},
@@ -134,11 +134,11 @@ def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[s
         if text:
             config["properties"]["text"] = text
         config["properties"].update(props)
-        
+
         widgets_for_generator.append((widget_type, config))
 
     code = []
     for callback in template.get("callbacks", []):
         code.append(f'    def {callback}(self):\n        """Handle {callback} event."""\n        pass\n')
-    
+
     return widgets_for_generator, '\n'.join(code)
