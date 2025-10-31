@@ -23,7 +23,7 @@ class ProjectConfig(BaseModel):
 
 class RegistryData(BaseModel):
     """Registry data model"""
-    projects: Dict[str, str] = Field(default_factory=dict)
+    projects: Dict[str, Dict] = Field(default_factory=dict)
     active: Optional[str] = None
     version: str = "1.0"
     

@@ -28,8 +28,10 @@ class Registry:
     """Thread-safe registry with file locking"""
     REGISTRY_FILE = None  # For testing override
     
-    def __init__(self):
-        if self.REGISTRY_FILE:
+    def __init__(self, registry_path: Optional[Path] = None):
+        if registry_path:
+            self.registry_path = Path(registry_path)
+        elif self.REGISTRY_FILE:
             self.registry_path = self.REGISTRY_FILE
         else:
             self.config = Config()

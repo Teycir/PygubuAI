@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 from typing import Dict, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 def generate_context(project_name: str) -> Dict:
     """Generate rich AI context for project"""
@@ -20,7 +20,7 @@ def generate_context(project_name: str) -> Dict:
     context = {
         "project": project_name,
         "path": project_path,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "widgets": [],
         "callbacks": [],
         "history": [],
