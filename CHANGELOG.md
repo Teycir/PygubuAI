@@ -5,6 +5,56 @@ All notable changes to PygubuAI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2025-01-31
+
+### Security Fixes - CRITICAL
+
+#### Path Traversal (CWE-22) - FIXED
+- Added `validate_safe_path()` function to prevent directory traversal attacks
+- Fixed in 20+ files including registry.py, workflow.py, status.py, inspect.py, theme.py, batch.py, export.py
+- All file paths now validated before use
+
+#### OS Command Injection (CWE-77/78/88) - FIXED
+- Removed all `shell=True` from subprocess calls in git_integration.py
+- Changed to list arguments to prevent command injection
+- All git operations now safe from arbitrary command execution
+
+#### Cross-Site Scripting (CWE-79/80) - FIXED
+- Added `safe_xml_text()` function for XML escaping
+- All user input in XML generation now properly escaped
+- Fixed in generator.py and other XML-generating modules
+
+#### Code Execution (CWE-94) - FIXED
+- Removed dynamic `exec()` calls from template.py
+- Templates now loaded from static data only
+
+#### Insecure Hashing (CWE-327/328) - FIXED
+- Replaced MD5 with SHA-256 in utils.py and cache.py
+- All file hashing now uses secure algorithms
+
+### Error Handling Improvements
+
+#### Enhanced Error Classes
+- Added 7 new specific exception types: FileOperationError, ValidationError, RegistryError, UIParseError, GitError
+- All errors now include helpful suggestions and error chaining
+- Added `handle_file_operation()` helper for safe file operations
+
+#### Improved Error Recovery
+- Replaced generic exception catches with specific types
+- Added circuit breaker pattern in workflow.py
+- Graceful degradation in cache and preview modules
+- Better error messages with context throughout
+
+### Testing
+- Added 36 new tests (16 security + 20 error handling)
+- 100% pass rate on all security and error handling tests
+- Comprehensive coverage of all critical fixes
+
+### Documentation
+- Added SECURITY_FIXES.md with complete fix documentation
+- Updated all version references to 0.8.0
+- Added deployment checklist and verification instructions
+
 ## [0.5.0] - 2025-01-25
 
 ### Added - 10 High-Value Productivity Features 🚀
