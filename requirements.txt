@@ -2,3 +2,5 @@ pygubu>=0.39
 pygubu-designer>=0.42
 rich>=13.0
 pydantic>=2.0
+filelock>=3.0
+sqlalchemy>=2.0

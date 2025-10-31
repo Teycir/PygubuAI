@@ -30,7 +30,7 @@ jobs:
     
     - name: Run type checking
       run: |
-        mypy src/pygubuai --ignore-missing-imports
+        mypy src/pygubuai
     
     - name: Run tests with coverage
       run: |

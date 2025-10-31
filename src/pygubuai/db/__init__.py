@@ -13,7 +13,7 @@ try:
     SQLALCHEMY_AVAILABLE = True
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
-    Session = None
+    Session = None  # type: ignore[assignment,misc]
     logger.warning("SQLAlchemy not installed, database features unavailable")
 
 _engine = None

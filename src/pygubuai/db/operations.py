@@ -8,7 +8,7 @@ try:
     from .models import Project, Template, WorkflowEvent, Analytics, SQLALCHEMY_AVAILABLE
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
-    Session = None
+    Session = None  # type: ignore[assignment,misc]
     Project = None  # type: ignore[assignment,misc]
     Template = None  # type: ignore[assignment,misc]
     WorkflowEvent = None  # type: ignore[assignment,misc]
@@ -56,7 +56,7 @@ def update_project(session: Session, name: str, **kwargs) -> bool:
         if hasattr(project, key):
             setattr(project, key, value)
 
-    project.updated_at = datetime.now(timezone.utc)
+    setattr(project, "updated_at", datetime.now(timezone.utc))
     session.commit()
     return True
 

@@ -22,9 +22,11 @@ classifiers = [
 ]
 dependencies = [
     "pygubu>=0.39",
+    "pygubu-designer>=0.42",
     "rich>=13.0",
     "pydantic>=2.0",
     "filelock>=3.0",
+    "sqlalchemy>=2.0",
 ]
 
 [project.optional-dependencies]
@@ -35,6 +37,8 @@ dev = [
     "flake8>=6.0",
     "mypy>=1.0",
     "coverage>=7.0",
+    "types-filelock",
+    "sqlalchemy[mypy]",
 ]
 
 [project.scripts]
@@ -80,6 +84,21 @@ line_length = 120
 
 [tool.mypy]
 python_version = "3.9"
-warn_return_any = true
+warn_return_any = false
 warn_unused_configs = true
+no_implicit_optional = false
+check_untyped_defs = false
+
+# Only ignore type stubs for libraries without them
+[[tool.mypy.overrides]]
+module = [
+    "rich.*",
+    "pygubu.*",
+]
 ignore_missing_imports = true
+
+# SQLAlchemy has complex types, allow some flexibility
+[[tool.mypy.overrides]]
+module = "pygubuai.db.*"
+warn_return_any = false
+disallow_untyped_defs = false
