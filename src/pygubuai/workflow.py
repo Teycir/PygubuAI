@@ -34,7 +34,9 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
         return None
 
 
-def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], prev_mtime: Optional[float]) -> Tuple[Optional[str], Optional[float]]:
+def get_file_hash_if_changed(
+    filepath: pathlib.Path, prev_hash: Optional[str], prev_mtime: Optional[float]
+) -> Tuple[Optional[str], Optional[float]]:
     """Get hash only if mtime changed (optimization)"""
     if not filepath or not isinstance(filepath, pathlib.Path):
         logger.error(f"Invalid filepath: {filepath}")

@@ -13,7 +13,9 @@ def get_themes_dir() -> Path:
     return themes_dir
 
 
-def create_custom_theme(name: str, base: str = "clam", colors: Union[Dict[str, Any], None] = None, description: str = "") -> Dict[str, Any]:
+def create_custom_theme(
+    name: str, base: str = "clam", colors: Union[Dict[str, Any], None] = None, description: str = ""
+) -> Dict[str, Any]:
     """Create custom theme"""
     theme_data = {
         "name": name,

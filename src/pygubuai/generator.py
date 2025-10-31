@@ -74,7 +74,9 @@ if __name__ == '__main__':
     return code
 
 
-def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: Optional[str] = None) -> str:
+def generate_readme_content(
+    project_name: str, description: str, ui_file_name: str, template_name: Optional[str] = None
+) -> str:
     """Generate README.md content."""
     from .utils import find_pygubu_designer
     import html

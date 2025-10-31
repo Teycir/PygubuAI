@@ -240,7 +240,9 @@ class Registry:
 
         return results
 
-    def update_project_metadata(self, name: str, description: Union[str, None] = None, tags: Union[list[str], None] = None) -> None:
+    def update_project_metadata(
+        self, name: str, description: Union[str, None] = None, tags: Union[list[str], None] = None
+    ) -> None:
         """Update project metadata"""
         data = self._read()
         if name not in data["projects"]:

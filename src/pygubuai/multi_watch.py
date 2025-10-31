@@ -13,7 +13,9 @@ from .errors import ProjectNotFoundError
 logger = logging.getLogger(__name__)
 
 
-def watch_multiple_projects(project_names: List[str], interval: Optional[float] = None, patterns: Union[List[str], None] = None) -> None:
+def watch_multiple_projects(
+    project_names: List[str], interval: Optional[float] = None, patterns: Union[List[str], None] = None
+) -> None:
     """Watch multiple projects simultaneously"""
     registry = Registry()
     all_projects = registry.list_projects()

@@ -1,111 +1,29 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[tool.black]
+line-length = 120
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
 
-[project]
-name = "pygubuai"
-version = "0.8.0"
-description = "AI-powered workflow tools for Pygubu - Build Tkinter UIs with natural language"
-readme = "README.md"
-requires-python = ">=3.9"
-license = {text = "MIT"}
-authors = [
-    {name = "PygubuAI Contributors"}
-]
-keywords = ["pygubu", "tkinter", "ai", "gui", "workflow"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: User Interfaces",
-]
-dependencies = [
-    "pygubu>=0.39",
-    "pygubu-designer>=0.42",
-    "filelock>=3.0",
-    "rich>=13.0",
-    "pydantic>=2.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "pytest-cov>=4.0",
-    "coverage>=7.0",
-    "black>=23.0",
-    "flake8>=6.0",
-    "mypy>=1.0",
-    "pre-commit>=3.0",
-]
-db = [
-    "sqlalchemy>=2.0",
-]
-
-[project.urls]
-Homepage = "https://github.com/Teycir/PygubuAI"
-Documentation = "https://github.com/Teycir/PygubuAI/blob/main/README.md"
-Repository = "https://github.com/Teycir/PygubuAI"
-
-[project.scripts]
-pygubu-create = "pygubuai.create:main"
-pygubu-register = "pygubuai.register:main"
-pygubu-template = "pygubuai.template:main"
-pygubu-ai-workflow = "pygubuai.workflow:main"
-tkinter-to-pygubu = "pygubuai.converter:main"
-# v0.5.0 features
-pygubu-status = "pygubuai.status:main"
-pygubu-widgets = "pygubuai.widgets:main"
-pygubu-theme = "pygubuai.theme:main"
-pygubu-preview = "pygubuai.preview:main"
-pygubu-validate = "pygubuai.validate_project:main"
-pygubu-inspect = "pygubuai.inspect:main"
-pygubu-snippet = "pygubuai.snippet:main"
-pygubu-prompt = "pygubuai.prompt:main"
-pygubu-batch = "pygubuai.batch:main"
-pygubu-export = "pygubuai.export:main"
-# v0.6.1+ features
-pygubu-data-export = "pygubuai.data_export:main"
-pygubu-db = "pygubuai.database:main"
-# v0.8.0 AI features
-pygubu-ai-context = "pygubuai.ai_context:main"
-pygubu-ai-analyze = "pygubuai.ai_analyzer:main"
-pygubu-ai-refactor = "pygubuai.ai_refactor:main"
-pygubu-ai-query = "pygubuai.ai_query:main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/pygubuai"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-
-[tool.coverage.run]
-source = ["src/pygubuai"]
-omit = ["*/tests/*", "*/__pycache__/*"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-]
+[tool.isort]
+profile = "black"
+line_length = 120
 
 [tool.mypy]
 python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
-disallow_untyped_defs = false
 ignore_missing_imports = true
-
-[tool.black]
-line-length = 120
-target-version = ['py39']
