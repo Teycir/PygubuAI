@@ -193,6 +193,46 @@
 - Best practices
 - Migration guides
 
+#### [API_REFERENCE.md](docs/API_REFERENCE.md)
+**Purpose:** Complete API documentation  
+**Audience:** Developers using PygubuAI programmatically  
+**Read Time:** 30 minutes (reference)  
+**Contains:**
+- Module documentation
+- Function signatures
+- Usage examples
+- CLI commands
+
+#### [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md)
+**Purpose:** Security features and best practices  
+**Audience:** Security-conscious developers and admins  
+**Read Time:** 25 minutes  
+**Contains:**
+- Threat model
+- Security features
+- Best practices
+- Vulnerability reporting
+
+#### [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
+**Purpose:** Production deployment guide  
+**Audience:** DevOps and system administrators  
+**Read Time:** 35 minutes  
+**Contains:**
+- Installation methods
+- Configuration
+- CI/CD integration
+- Docker deployment
+
+#### [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+**Purpose:** Common issues and solutions  
+**Audience:** All users encountering problems  
+**Read Time:** 20 minutes (reference)  
+**Contains:**
+- Quick diagnostics
+- Common issues
+- Error messages
+- Solutions
+
 ---
 
 ### Process Path 📋
@@ -246,6 +286,18 @@
 
 **...plan my work**
 → [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) → [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+
+**...use the API programmatically**
+→ [API_REFERENCE.md](docs/API_REFERENCE.md)
+
+**...deploy to production**
+→ [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) → [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md)
+
+**...fix an issue**
+→ [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+
+**...secure my installation**
+→ [SECURITY_GUIDE.md](docs/SECURITY_GUIDE.md)
 
 ---
 
@@ -307,6 +359,10 @@ README.md (Hub)
 | USER_GUIDE.md | ~500 | 20 min | Low |
 | DEVELOPER_GUIDE.md | ~700 | 45 min | High |
 | TESTING_QUICK_REF.md | ~300 | 10 min | Low |
+| API_REFERENCE.md | ~500 | 30 min | Medium |
+| SECURITY_GUIDE.md | ~450 | 25 min | Medium |
+| DEPLOYMENT_GUIDE.md | ~600 | 35 min | Medium |
+| TROUBLESHOOTING.md | ~450 | 20 min | Low |
 
 ---
 
@@ -332,6 +388,12 @@ README.md (Hub)
 - DEVELOPER_GUIDE.md
 - ARCHITECTURE.md
 - LIBRARY_INTEGRATIONS.md
+- API_REFERENCE.md
+
+### Operations (20-35 min read)
+- DEPLOYMENT_GUIDE.md
+- SECURITY_GUIDE.md
+- TROUBLESHOOTING.md
 
 ---
 
