@@ -2,7 +2,7 @@
 """Project validator for common issues"""
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import List, Dict
+from typing import List
 import re
 from .registry import Registry
 
@@ -12,6 +12,7 @@ try:
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
+
 
 class ValidationIssue:
     def __init__(self, severity: str, category: str, message: str, location: str = ""):
@@ -23,6 +24,7 @@ class ValidationIssue:
     def __repr__(self):
         loc = f" ({self.location})" if self.location else ""
         return f"[{self.severity.upper()}] {self.category}: {self.message}{loc}"
+
 
 def validate_project(project_name: str) -> List[ValidationIssue]:
     """Validate project for common issues"""
@@ -162,6 +164,7 @@ def main():
         print(f"Summary: {len(errors)} errors, {len(warnings)} warnings, {len(infos)} info")
 
     sys.exit(1 if errors else 0)
+
 
 if __name__ == "__main__":
     main()

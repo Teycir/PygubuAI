@@ -195,7 +195,7 @@ def main():
             print(f"Category: {info['category']}")
             print(f"Description: {info['description']}")
             print(f"\nProperties: {', '.join(info['properties'])}")
-            print(f"\nCommon Use Cases:")
+            print("\nCommon Use Cases:")
             for use_case in info["use_cases"]:
                 print(f"  • {use_case}")
 
