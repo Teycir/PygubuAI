@@ -113,10 +113,13 @@ Only use if pip installation doesn't work on your system:
 
 ```bash
 pip install -e ".[dev]"  # Install with dev dependencies
-make test                # Run tests
-make coverage            # Run with coverage
+make test-fast           # Run fast tests (<1 min)
+make test                # Run all tests
+make test-coverage       # Run with coverage report
 make lint                # Run linters
 ```
+
+**Testing:** See [TESTING_QUICK_REF.md](TESTING_QUICK_REF.md) for testing guide.
 
 ### Uninstall
 
@@ -153,7 +156,9 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ## Documentation
 
+- **[Library Integrations](docs/LIBRARY_INTEGRATIONS.md)** - ⭐ NEW! Rich, Pydantic, SQLAlchemy guide
 - **[Feature Showcase](FEATURE_SHOWCASE.md)** - ⭐ NEW! v0.5.0 features with examples
+- **[Testing Quick Ref](TESTING_QUICK_REF.md)** - ⭐ NEW! Testing guide and commands
 - **[Roadmap](ROADMAP.md)** - Development roadmap and plans
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
@@ -163,9 +168,24 @@ pip uninstall pygubuai  # For pip install (recommended)
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - How to contribute
 
-## What's New in v0.5.0 🚀
+## What's New 🚀
 
-### 10 High-Value Productivity Features
+### v0.5.1 - Rich Terminal UI (In Progress)
+
+**Beautiful CLI Output:**
+- ✅ Colored status tables with Rich
+- ✅ Formatted widget browser
+- ✅ Enhanced inspect command
+- 🔄 Progress bars for batch operations
+- 🔄 Colored validation results
+
+**New Dependencies:**
+- `rich>=13.0` - Beautiful terminal output
+- `pydantic>=2.0` - Data validation (models ready)
+
+**See:** [LIBRARY_INTEGRATION_PLAN.md](LIBRARY_INTEGRATION_PLAN.md)
+
+### v0.5.0 - 10 High-Value Productivity Features
 
 1. **Project Status** - Check UI/code sync status instantly
 2. **Widget Browser** - Discover 20+ widgets with categories
@@ -234,12 +254,15 @@ pygubu-designer myapp/myapp.ui
 - pygubu >= 0.39
 - pygubu-designer >= 0.42
 - tkinter (usually included with Python)
+- rich >= 13.0 (v0.5.1+)
+- pydantic >= 2.0 (v0.5.1+)
 
 ### Development (Optional)
 - coverage >= 7.0 (for code coverage)
 
 ```bash
 pip install -e ".[dev]"  # Install with dev dependencies
+pip install -e ".[db]"   # Install with database support (v0.7.0+)
 ```
 
 ## Contributing

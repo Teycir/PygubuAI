@@ -5,6 +5,14 @@ from pathlib import Path
 from typing import Optional, Dict, List
 from .registry import Registry
 
+try:
+    from rich.console import Console
+    from rich.tree import Tree
+    from rich.table import Table
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
     """Inspect specific widget"""
     registry = Registry()
@@ -128,10 +136,15 @@ def main():
     project_name = sys.argv[1]
     
     if len(sys.argv) == 2 or "--tree" in sys.argv:
-        tree = show_tree(project_name)
-        if tree:
-            print(f"\\nWidget Tree for '{project_name}':\\n")
-            print(tree)
+        tree_str = show_tree(project_name)
+        if tree_str:
+            if RICH_AVAILABLE:
+                console = Console()
+                console.print(f"\n[bold cyan]Widget Tree for '{project_name}':[/bold cyan]\n")
+                console.print(tree_str)
+            else:
+                print(f"\nWidget Tree for '{project_name}':\n")
+                print(tree_str)
         else:
             print(f"Error: Could not load project '{project_name}'")
             sys.exit(1)
@@ -173,10 +186,22 @@ def main():
         if not callbacks:
             print(f"No callbacks found in '{project_name}'")
         else:
-            print(f"\\nCallbacks in '{project_name}':\\n")
-            for cb in callbacks:
-                print(f"  {cb['widget']:20} -> {cb['callback']}")
-            print(f"\\nTotal: {len(callbacks)} callbacks")
+            if RICH_AVAILABLE:
+                console = Console()
+                table = Table(title=f"Callbacks in '{project_name}'")
+                table.add_column("Widget", style="cyan")
+                table.add_column("Callback", style="green")
+                
+                for cb in callbacks:
+                    table.add_row(cb['widget'], cb['callback'])
+                
+                console.print(table)
+                console.print(f"\nTotal: {len(callbacks)} callbacks", style="bold green")
+            else:
+                print(f"\nCallbacks in '{project_name}':\n")
+                for cb in callbacks:
+                    print(f"  {cb['widget']:20} -> {cb['callback']}")
+                print(f"\nTotal: {len(callbacks)} callbacks")
     
     else:
         print("Invalid option")

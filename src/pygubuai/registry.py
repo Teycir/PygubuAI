@@ -12,6 +12,14 @@ try:
 except ImportError:
     FileLock = None
 
+try:
+    from pydantic import ValidationError
+    from .models import RegistryData, ProjectConfig
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    PYDANTIC_AVAILABLE = False
+    ValidationError = Exception
+
 from .config import Config
 
 logger = logging.getLogger(__name__)
@@ -36,7 +44,7 @@ class Registry:
         """Initialize registry if missing"""
         if not self.registry_path.exists():
             self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-            self._write({"projects": {}, "active_project": None})
+            self._write({"projects": {}, "active": None})
     
     @contextmanager
     def _lock(self, mode='r'):
@@ -71,7 +79,7 @@ class Registry:
                     logger.debug(f"Error releasing lock: {e}")
     
     def _read(self) -> Dict:
-        """Read with lock and caching"""
+        """Read with lock, caching, and validation"""
         # Return cached data if still valid
         now = time.time()
         if self._cache and self._cache_time and (now - self._cache_time) < self._cache_ttl:
@@ -80,15 +88,41 @@ class Registry:
         try:
             with self._lock('r') as f:
                 data = json.load(f)
+                
+                # Validate with Pydantic if available
+                if PYDANTIC_AVAILABLE:
+                    try:
+                        # Convert old format to new
+                        if 'active_project' in data:
+                            data['active'] = data.pop('active_project')
+                        
+                        registry_model = RegistryData(**data)
+                        data = registry_model.model_dump()
+                    except ValidationError as e:
+                        logger.warning(f"Registry validation failed: {e}, using raw data")
+                
                 self._cache = data
                 self._cache_time = now
                 return data
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Registry read error: {e}, reinitializing")
-            return {"projects": {}, "active_project": None}
+            return {"projects": {}, "active": None}
     
     def _write(self, data: Dict):
-        """Write with lock and invalidate cache"""
+        """Write with lock, validation, and invalidate cache"""
+        # Validate with Pydantic if available
+        if PYDANTIC_AVAILABLE:
+            try:
+                # Ensure correct field names
+                if 'active_project' in data:
+                    data['active'] = data.pop('active_project')
+                
+                registry_model = RegistryData(**data)
+                data = registry_model.model_dump()
+            except ValidationError as e:
+                logger.error(f"Registry validation failed before write: {e}")
+                raise ValueError(f"Invalid registry data: {e}")
+        
         with self._lock('w') as f:
             json.dump(data, f, indent=2)
         # Invalidate cache on write
@@ -152,12 +186,14 @@ class Registry:
         data = self._read()
         if name not in data["projects"]:
             raise ValueError(f"Project '{name}' not found")
-        data["active_project"] = name
+        data["active"] = name
         self._write(data)
     
     def get_active(self) -> Optional[str]:
         """Get active project"""
-        return self._read().get("active_project")
+        data = self._read()
+        # Support both old and new field names
+        return data.get("active") or data.get("active_project")
     
     def search_projects(self, query: str) -> Dict[str, Dict]:
         """Search projects by name, description, or tags"""

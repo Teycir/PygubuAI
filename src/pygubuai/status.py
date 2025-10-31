@@ -6,6 +6,13 @@ from datetime import datetime
 from typing import Optional, Dict
 from .registry import Registry
 
+try:
+    from rich.console import Console
+    from rich.table import Table
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 def get_project_status(project_name: Optional[str] = None) -> Dict:
     """Get project sync status"""
     registry = Registry()
@@ -76,14 +83,29 @@ def main():
         print(f"Error: {status['error']}")
         sys.exit(1)
     
-    print(f"Project: {status['project']}")
-    print(f"Status: {status['sync_status']}")
-    print(f"UI Modified: {status['ui_modified']}")
-    print(f"Code Modified: {status['py_modified']}")
-    print(f"Last Sync: {status['last_sync']}")
-    
-    if "message" in status:
-        print(f"\n⚠️  {status['message']}")
+    if RICH_AVAILABLE:
+        console = Console()
+        table = Table(title=f"Project Status: {status['project']}")
+        table.add_column("Component", style="cyan")
+        table.add_column("Value", style="green")
+        
+        status_color = "green" if status['sync_status'] == "In Sync" else "yellow"
+        table.add_row("Status", f"[{status_color}]{status['sync_status']}[/{status_color}]")
+        table.add_row("UI Modified", status['ui_modified'])
+        table.add_row("Code Modified", status['py_modified'])
+        table.add_row("Last Sync", status['last_sync'])
+        
+        console.print(table)
+        if "message" in status:
+            console.print(f"\n⚠️  [yellow]{status['message']}[/yellow]")
+    else:
+        print(f"Project: {status['project']}")
+        print(f"Status: {status['sync_status']}")
+        print(f"UI Modified: {status['ui_modified']}")
+        print(f"Code Modified: {status['py_modified']}")
+        print(f"Last Sync: {status['last_sync']}")
+        if "message" in status:
+            print(f"\n⚠️  {status['message']}")
 
 if __name__ == "__main__":
     main()

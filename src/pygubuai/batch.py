@@ -7,6 +7,13 @@ from .registry import Registry
 from .theme import apply_theme
 from .validate_project import validate_project
 
+try:
+    from rich.console import Console
+    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     """Rename widget ID in project"""
     registry = Registry()
@@ -110,37 +117,76 @@ def main():
             sys.exit(1)
         
         theme = sys.argv[2]
-        projects = sys.argv[3:] if len(sys.argv) > 3 else None
+        project_list = sys.argv[3:] if len(sys.argv) > 3 else None
         
-        print(f"\\nApplying theme '{theme}' to projects...\\n")
-        results = batch_update_theme(theme, projects)
-        
-        success = sum(1 for v in results.values() if v)
-        failed = len(results) - success
-        
-        for project, status in results.items():
-            symbol = "✓" if status else "✗"
-            print(f"  {symbol} {project}")
-        
-        print(f"\\nCompleted: {success} succeeded, {failed} failed")
+        if RICH_AVAILABLE:
+            console = Console()
+            console.print(f"\n[cyan]Applying theme '{theme}' to projects...[/cyan]\n")
+            
+            with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), console=console) as progress:
+                task = progress.add_task("Processing...", total=None)
+                results = batch_update_theme(theme, project_list)
+                progress.update(task, completed=True)
+            
+            success = sum(1 for v in results.values() if v)
+            failed = len(results) - success
+            
+            for project, status in results.items():
+                symbol = "[green]✓[/green]" if status else "[red]✗[/red]"
+                console.print(f"  {symbol} {project}")
+            
+            console.print(f"\n[bold]Completed: {success} succeeded, {failed} failed[/bold]")
+        else:
+            print(f"\nApplying theme '{theme}' to projects...\n")
+            results = batch_update_theme(theme, project_list)
+            
+            success = sum(1 for v in results.values() if v)
+            failed = len(results) - success
+            
+            for project, status in results.items():
+                symbol = "✓" if status else "✗"
+                print(f"  {symbol} {project}")
+            
+            print(f"\nCompleted: {success} succeeded, {failed} failed")
     
     elif command == "validate":
-        projects = sys.argv[2:] if len(sys.argv) > 2 else None
+        project_list = sys.argv[2:] if len(sys.argv) > 2 else None
         
-        print("\\nValidating projects...\\n")
-        results = batch_validate(projects)
-        
-        for project, issues in results.items():
-            errors = sum(1 for i in issues if i.severity == "error")
-            warnings = sum(1 for i in issues if i.severity == "warning")
+        if RICH_AVAILABLE:
+            console = Console()
+            console.print("\n[cyan]Validating projects...[/cyan]\n")
             
-            if not issues:
-                print(f"  ✓ {project}: No issues")
-            else:
-                print(f"  ⚠️  {project}: {errors} errors, {warnings} warnings")
-        
-        total_issues = sum(len(issues) for issues in results.values())
-        print(f"\\nTotal issues found: {total_issues}")
+            with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+                task = progress.add_task("Validating...", total=None)
+                results = batch_validate(project_list)
+                progress.update(task, completed=True)
+            
+            for project, issues in results.items():
+                errors = sum(1 for i in issues if i.severity == "error")
+                warnings = sum(1 for i in issues if i.severity == "warning")
+                
+                if not issues:
+                    console.print(f"  [green]✓[/green] {project}: No issues")
+                else:
+                    console.print(f"  [yellow]⚠️[/yellow]  {project}: {errors} errors, {warnings} warnings")
+            
+            total_issues = sum(len(issues) for issues in results.values())
+            console.print(f"\n[bold]Total issues found: {total_issues}[/bold]")
+        else:
+            print("\nValidating projects...\n")
+            results = batch_validate(project_list)
+            
+            for project, issues in results.items():
+                errors = sum(1 for i in issues if i.severity == "error")
+                warnings = sum(1 for i in issues if i.severity == "warning")
+                
+                if not issues:
+                    print(f"  ✓ {project}: No issues")
+                else:
+                    print(f"  ⚠️  {project}: {errors} errors, {warnings} warnings")
+            
+            total_issues = sum(len(issues) for issues in results.values())
+            print(f"\nTotal issues found: {total_issues}")
     
     else:
         print(f"Unknown command: {command}")

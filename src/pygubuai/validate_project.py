@@ -6,6 +6,13 @@ from typing import List, Dict
 import re
 from .registry import Registry
 
+try:
+    from rich.console import Console
+    from rich.table import Table
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 class ValidationIssue:
     def __init__(self, severity: str, category: str, message: str, location: str = ""):
         self.severity = severity  # error, warning, info
@@ -98,7 +105,11 @@ def main():
     issues = validate_project(project_name)
     
     if not issues:
-        print(f"✓ Project '{project_name}' validation passed - no issues found")
+        if RICH_AVAILABLE:
+            console = Console()
+            console.print(f"[green]✓ Project '{project_name}' validation passed - no issues found[/green]")
+        else:
+            print(f"✓ Project '{project_name}' validation passed - no issues found")
         sys.exit(0)
     
     # Group by severity
@@ -106,27 +117,48 @@ def main():
     warnings = [i for i in issues if i.severity == "warning"]
     infos = [i for i in issues if i.severity == "info"]
     
-    print(f"\\nValidation Results for '{project_name}':\\n")
-    
-    if errors:
-        print("ERRORS:")
-        for issue in errors:
-            print(f"  ❌ {issue}")
-        print()
-    
-    if warnings:
-        print("WARNINGS:")
-        for issue in warnings:
-            print(f"  ⚠️  {issue}")
-        print()
-    
-    if infos:
-        print("INFO:")
-        for issue in infos:
-            print(f"  ℹ️  {issue}")
-        print()
-    
-    print(f"Summary: {len(errors)} errors, {len(warnings)} warnings, {len(infos)} info")
+    if RICH_AVAILABLE:
+        console = Console()
+        console.print(f"\n[bold]Validation Results for '{project_name}':[/bold]\n")
+        
+        if errors or warnings or infos:
+            table = Table()
+            table.add_column("Severity", style="bold")
+            table.add_column("Category")
+            table.add_column("Message")
+            
+            for issue in errors:
+                table.add_row("[red]ERROR[/red]", issue.category, issue.message)
+            for issue in warnings:
+                table.add_row("[yellow]WARNING[/yellow]", issue.category, issue.message)
+            for issue in infos:
+                table.add_row("[blue]INFO[/blue]", issue.category, issue.message)
+            
+            console.print(table)
+        
+        console.print(f"\n[bold]Summary: {len(errors)} errors, {len(warnings)} warnings, {len(infos)} info[/bold]")
+    else:
+        print(f"\nValidation Results for '{project_name}':\n")
+        
+        if errors:
+            print("ERRORS:")
+            for issue in errors:
+                print(f"  ❌ {issue}")
+            print()
+        
+        if warnings:
+            print("WARNINGS:")
+            for issue in warnings:
+                print(f"  ⚠️  {issue}")
+            print()
+        
+        if infos:
+            print("INFO:")
+            for issue in infos:
+                print(f"  ℹ️  {issue}")
+            print()
+        
+        print(f"Summary: {len(errors)} errors, {len(warnings)} warnings, {len(infos)} info")
     
     sys.exit(1 if errors else 0)
 

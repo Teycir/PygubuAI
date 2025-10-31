@@ -10,6 +10,13 @@ from .registry import Registry
 from .errors import ProjectNotFoundError, InvalidProjectError
 from .progress import ProgressBar
 
+try:
+    from rich.console import Console
+    from rich.table import Table
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
@@ -58,34 +65,65 @@ def list_projects(show_metadata: bool = False) -> None:
         print("  pygubu-register add /path/to/project")
         return
     
-    print("Registered Pygubu Projects:\n")
-    for name, data in projects.items():
-        active_marker = " [ACTIVE]" if name == active else ""
-        
-        if isinstance(data, dict):
-            path = data['path']
-            description = data.get('description', '')
-            tags = data.get('tags', [])
-            created = data.get('created', '')
-        else:
-            path = data
-            description = tags = created = ''
-        
-        project_path = pathlib.Path(path)
-        ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
-        
-        print(f"  {name}{active_marker}")
-        print(f"    Path: {path}")
-        print(f"    UI files: {len(ui_files)}")
-        
+    if RICH_AVAILABLE:
+        console = Console()
+        table = Table(title="Registered Pygubu Projects")
+        table.add_column("Project", style="cyan")
+        table.add_column("Path", style="white")
+        table.add_column("UI Files", style="green")
         if show_metadata:
-            if description:
-                print(f"    Description: {description}")
-            if tags:
-                print(f"    Tags: {', '.join(tags)}")
-            if created:
-                print(f"    Created: {created[:10]}")
-        print()
+            table.add_column("Description", style="yellow")
+            table.add_column("Tags", style="magenta")
+        
+        for name, data in projects.items():
+            if isinstance(data, dict):
+                path = data['path']
+                description = data.get('description', '')
+                tags = ', '.join(data.get('tags', []))
+            else:
+                path = data
+                description = tags = ''
+            
+            project_path = pathlib.Path(path)
+            ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
+            
+            name_display = f"[bold]{name}[/bold] [green](ACTIVE)[/green]" if name == active else name
+            
+            if show_metadata:
+                table.add_row(name_display, path, str(len(ui_files)), description, tags)
+            else:
+                table.add_row(name_display, path, str(len(ui_files)))
+        
+        console.print(table)
+    else:
+        print("Registered Pygubu Projects:\n")
+        for name, data in projects.items():
+            active_marker = " [ACTIVE]" if name == active else ""
+            
+            if isinstance(data, dict):
+                path = data['path']
+                description = data.get('description', '')
+                tags = data.get('tags', [])
+                created = data.get('created', '')
+            else:
+                path = data
+                description = tags = created = ''
+            
+            project_path = pathlib.Path(path)
+            ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
+            
+            print(f"  {name}{active_marker}")
+            print(f"    Path: {path}")
+            print(f"    UI files: {len(ui_files)}")
+            
+            if show_metadata:
+                if description:
+                    print(f"    Description: {description}")
+                if tags:
+                    print(f"    Tags: {', '.join(tags)}")
+                if created:
+                    print(f"    Created: {created[:10]}")
+            print()
 
 def get_active() -> Optional[str]:
     """Get active project info"""

@@ -13,6 +13,14 @@ from .registry import Registry
 from .errors import ProjectNotFoundError
 from .config import Config
 
+try:
+    from pydantic import ValidationError
+    from .models import WorkflowData, WorkflowHistory
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    PYDANTIC_AVAILABLE = False
+    ValidationError = Exception
+
 logger = logging.getLogger(__name__)
 
 def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
@@ -38,34 +46,65 @@ def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str],
         return None, None
 
 def load_workflow(project_path: pathlib.Path) -> Dict:
-    """Load workflow tracking file"""
+    """Load workflow tracking file with validation"""
     workflow_file = project_path / ".pygubu-workflow.json"
     
     if not workflow_file.exists():
-        return {"file_hashes": {}, "file_mtimes": {}, "last_sync": None, "changes": []}
+        return {"project": project_path.name, "file_hashes": {}, "file_mtimes": {}, "last_sync": None, "history": []}
     
     try:
         data = json.loads(workflow_file.read_text())
         if not isinstance(data, dict):
             data = {}
-        # Ensure required keys exist
+        
+        # Validate with Pydantic if available
+        if PYDANTIC_AVAILABLE:
+            try:
+                if 'changes' in data:
+                    data['history'] = [
+                        WorkflowHistory(
+                            timestamp=c.get('timestamp', datetime.now(timezone.utc).isoformat()),
+                            action='file_changed',
+                            description=f"File {c.get('file', 'unknown')} changed"
+                        ).model_dump()
+                        for c in data.pop('changes', [])
+                    ]
+                if 'project' not in data:
+                    data['project'] = project_path.name
+                workflow_model = WorkflowData(**data)
+                data = workflow_model.model_dump()
+            except ValidationError as e:
+                logger.warning(f"Workflow validation failed: {e}, using raw data")
+        
         data.setdefault("file_hashes", {})
-        data.setdefault("file_mtimes", {})  # For mtime optimization
+        data.setdefault("file_mtimes", {})
         data.setdefault("last_sync", None)
-        data.setdefault("changes", [])
+        data.setdefault("history", [])
+        data.setdefault("project", project_path.name)
         return data
     except Exception as e:
         logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
-        return {"file_hashes": {}, "file_mtimes": {}, "last_sync": None, "changes": []}
+        return {"project": project_path.name, "file_hashes": {}, "file_mtimes": {}, "last_sync": None, "history": []}
 
 def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
-    """Save workflow tracking with atomic write to prevent corruption."""
+    """Save workflow tracking with atomic write and validation."""
     import tempfile
     import shutil
     
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now(timezone.utc).isoformat()
-    # Limit changes history to last 100 entries
+    
+    if PYDANTIC_AVAILABLE:
+        try:
+            if 'project' not in data:
+                data['project'] = project_path.name
+            workflow_model = WorkflowData(**data)
+            data = workflow_model.model_dump()
+        except ValidationError as e:
+            logger.warning(f"Workflow validation failed before save: {e}")
+    
+    if "history" in data and len(data["history"]) > 100:
+        data["history"] = data["history"][-100:]
     if "changes" in data and len(data["changes"]) > 100:
         data["changes"] = data["changes"][-100:]
     
@@ -218,12 +257,16 @@ def _check_ui_changes(ui_files: List[pathlib.Path], workflow: Dict,
             _notify_ui_change(ui_file, project_name)
             workflow["file_hashes"][file_key] = current_hash
             workflow.setdefault("file_mtimes", {})[file_key] = current_mtime
-            # Trim changes array before appending to maintain exactly 100 entries
-            if len(workflow["changes"]) >= 99:
-                workflow["changes"] = workflow["changes"][-98:]
-            workflow["changes"].append({
-                "file": ui_file.name,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+            
+            if "history" not in workflow:
+                workflow["history"] = []
+            if len(workflow["history"]) >= 99:
+                workflow["history"] = workflow["history"][-98:]
+            
+            workflow["history"].append({
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "action": "file_changed",
+                "description": f"File {ui_file.name} changed"
             })
             save_workflow(project_path, workflow)
 

@@ -2,6 +2,14 @@
 from typing import List, Tuple, Dict, Any, Optional
 from .widget_data import WIDGET_LIBRARY, CATEGORIES
 
+try:
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 WIDGET_PATTERNS = {
     "label": {"keywords": ["label", "title", "heading"], "class": "ttk.Label", "properties": {"text": "Label"}},
     "entry": {"keywords": ["entry", "input", "field"], "class": "ttk.Entry", "properties": {}},
@@ -97,14 +105,29 @@ def main():
             category = sys.argv[3]
         
         widgets = list_widgets(category)
-        if category:
-            print(f"\n{CATEGORIES.get(category, category)} Widgets:\n")
-        else:
-            print("\nAll Available Widgets:\n")
         
-        for name, info in sorted(widgets.items()):
-            print(f"  {name:20} - {info['description']}")
-        print(f"\nTotal: {len(widgets)} widgets")
+        if RICH_AVAILABLE:
+            console = Console()
+            title = f"{CATEGORIES.get(category, category)} Widgets" if category else "All Available Widgets"
+            table = Table(title=title)
+            table.add_column("Widget", style="cyan", no_wrap=True)
+            table.add_column("Description", style="white")
+            table.add_column("Category", style="magenta")
+            
+            for name, info in sorted(widgets.items()):
+                table.add_row(name, info['description'], info['category'])
+            
+            console.print(table)
+            console.print(f"\nTotal: {len(widgets)} widgets", style="bold green")
+        else:
+            if category:
+                print(f"\n{CATEGORIES.get(category, category)} Widgets:\n")
+            else:
+                print("\nAll Available Widgets:\n")
+            
+            for name, info in sorted(widgets.items()):
+                print(f"  {name:20} - {info['description']}")
+            print(f"\nTotal: {len(widgets)} widgets")
     
     elif command == "search":
         if len(sys.argv) < 3:
@@ -131,14 +154,25 @@ def main():
             print(f"Widget '{widget_name}' not found")
             sys.exit(1)
         
-        print(f"\n{widget_name}")
-        print("=" * len(widget_name))
-        print(f"Category: {info['category']}")
-        print(f"Description: {info['description']}")
-        print(f"\nProperties: {', '.join(info['properties'])}")
-        print(f"\nCommon Use Cases:")
-        for use_case in info['use_cases']:
-            print(f"  • {use_case}")
+        if RICH_AVAILABLE:
+            console = Console()
+            panel_content = f"[cyan]Category:[/cyan] {info['category']}\n"
+            panel_content += f"[cyan]Description:[/cyan] {info['description']}\n\n"
+            panel_content += f"[cyan]Properties:[/cyan] {', '.join(info['properties'])}\n\n"
+            panel_content += "[cyan]Common Use Cases:[/cyan]\n"
+            for use_case in info['use_cases']:
+                panel_content += f"  • {use_case}\n"
+            
+            console.print(Panel(panel_content, title=f"[bold]{widget_name}[/bold]", border_style="blue"))
+        else:
+            print(f"\n{widget_name}")
+            print("=" * len(widget_name))
+            print(f"Category: {info['category']}")
+            print(f"Description: {info['description']}")
+            print(f"\nProperties: {', '.join(info['properties'])}")
+            print(f"\nCommon Use Cases:")
+            for use_case in info['use_cases']:
+                print(f"  • {use_case}")
     
     elif command == "categories":
         print("\nWidget Categories:\n")
