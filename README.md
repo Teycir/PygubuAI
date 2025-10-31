@@ -1,9 +1,6 @@
 # PygubuAI
 
-[![CI](https://github.com/Teycir/PygubuAI/workflows/CI/badge.svg)](https://github.com/Teycir/PygubuAI/actions)
-[![codecov](https://codecov.io/gh/Teycir/PygubuAI/branch/main/graph/badge.svg)](https://codecov.io/gh/Teycir/PygubuAI)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 AI-powered workflow tools for [Pygubu](https://github.com/alejandroautalan/pygubu) - Build Tkinter UIs with natural language and visual design.
 
@@ -57,9 +54,7 @@ pygubu-create myapp 'login form with username and password'
 ```bash
 pygubu-create todo 'todo app with entry, button, and list'
 ```
-Describe your UI in plain English, get a working Tkinter app!
-
-**NEW:** Enhanced with 15+ widget types including dropdowns, sliders, tabs, and more!
+Describe your UI in plain English, get a working Tkinter app with 15+ widget types including dropdowns, sliders, tabs, and more.
 
 ### Project Templates
 ```bash
@@ -146,17 +141,7 @@ bash scripts/setup-trigger.sh self
 
 After setup, just say "pygubuai" in Amazon Q from any marked directory!
 
-### Alternative: Shell Script (DEPRECATED)
 
-**⚠️ This method is deprecated and will be removed in v0.5.0**
-
-Only use if pip installation doesn't work on your system:
-
-```bash
-./install.sh  # Installs to ~/bin/ or /usr/local/bin/
-```
-
-**Migration:** Switch to `pip install -e .` before v0.5.0
 
 ### Development Setup
 
@@ -168,13 +153,12 @@ make test-coverage       # Run with coverage report
 make lint                # Run linters
 ```
 
-**Testing:** See [Testing Quick Ref](docs/TESTING_QUICK_REF.md) for testing guide.
+
 
 ### Uninstall
 
 ```bash
-pip uninstall pygubuai  # For pip install (recommended)
-./uninstall.sh          # For shell script install
+pip uninstall pygubuai
 ```
 
 ## Commands
@@ -189,7 +173,7 @@ pip uninstall pygubuai  # For pip install (recommended)
 | `tkinter-to-pygubu <file>.py` | Convert tkinter to pygubu |
 | `pygubu-ai-workflow watch <proj>` | Watch for UI changes |
 
-### New in v0.5.0 🎉
+### Advanced Commands
 | Command | Description |
 |---------|-------------|
 | `pygubu-status [project]` | Check UI/code sync status |
@@ -207,59 +191,18 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 All documentation is in the [docs/](docs/) folder:
 
-### Getting Started
-- **[Onboarding](docs/ONBOARDING.md)** - Get started in 15 minutes
-- **[Quick Status](docs/QUICK_STATUS.md)** - Project status at a glance
-- **[Feature Showcase](docs/FEATURE_SHOWCASE.md)** - v0.5.0 features with examples
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
-
-### Development
-- **[Implementation Plan](docs/IMPLEMENTATION_PLAN.md)** - Detailed tasks and timelines
-- **[Progress Tracker](docs/PROGRESS_TRACKER.md)** - Day-to-day tracking
+- **[Feature Showcase](docs/FEATURE_SHOWCASE.md)** - All features with examples
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
-- **[Developer Quick Ref](docs/DEVELOPER_QUICK_REF.md)** - Fast lookup for common tasks
-- **[Testing Quick Ref](docs/TESTING_QUICK_REF.md)** - Testing guide and commands
-
-### Technical
-- **[Library Integrations](docs/LIBRARY_INTEGRATIONS.md)** - Rich, Pydantic, SQLAlchemy guide
-- **[Documentation Map](docs/DOCS_MAP.md)** - Visual guide to all docs
-
-### Project Info
-- **[Roadmap](ROADMAP.md)** - Long-term plan (v0.5-v1.0)
-- **[Architecture](ARCHITECTURE.md)** - System design and module structure
+- **[Security Guide](docs/SECURITY_GUIDE.md)** - Security best practices
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Architecture](ARCHITECTURE.md)** - System design
 - **[Changelog](CHANGELOG.md)** - Version history
 - **[Contributing](CONTRIBUTING.md)** - How to contribute
 - **[Examples](examples/)** - Sample projects
 
-## What's New 🚀
 
-### v0.5.1 - Rich Terminal UI (In Progress)
-
-**Beautiful CLI Output:**
-- ✅ Colored status tables with Rich
-- ✅ Formatted widget browser
-- ✅ Enhanced inspect command
-- 🔄 Progress bars for batch operations
-- 🔄 Colored validation results
-
-**New Dependencies:**
-- `rich>=13.0` - Beautiful terminal output
-- `pydantic>=2.0` - Data validation (models ready)
-
-### v0.5.0 - 10 High-Value Productivity Features
-
-1. **Project Status** - Check UI/code sync status instantly
-2. **Widget Browser** - Discover 20+ widgets with categories
-3. **Theme Switcher** - Apply ttk themes with one command
-4. **Quick Preview** - View UI without running full app
-5. **Project Validator** - Find issues before they break
-6. **Widget Inspector** - Examine UI structure and properties
-7. **Snippet Generator** - Generate XML for quick insertion
-8. **AI Prompts** - Pre-written templates for common tasks
-9. **Batch Operations** - Manage multiple projects efficiently
-10. **Standalone Export** - Bundle UI into single Python file
-
-**See [Feature Showcase](docs/FEATURE_SHOWCASE.md) for detailed examples!**
 
 ## Examples
 
@@ -325,15 +268,20 @@ No commands to memorize - just natural conversation!
 - pygubu >= 0.39
 - pygubu-designer >= 0.42
 - tkinter (usually included with Python)
-- rich >= 13.0 (v0.5.1+)
-- pydantic >= 2.0 (v0.5.1+)
+- rich >= 13.0
+- pydantic >= 2.0
+- filelock >= 3.0
 
-### Development (Optional)
-- coverage >= 7.0 (for code coverage)
+### Development
+- pytest >= 7.0
+- pytest-cov >= 4.0
+- coverage >= 7.0
+- black >= 23.0
+- flake8 >= 6.0
+- mypy >= 1.0
 
 ```bash
 pip install -e ".[dev]"  # Install with dev dependencies
-pip install -e ".[db]"   # Install with database support (v0.7.0+)
 ```
 
 ## Contributing
