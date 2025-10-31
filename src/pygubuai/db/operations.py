@@ -90,7 +90,9 @@ def add_workflow_event(session: Session, project_name: str, action: str, descrip
     return True
 
 
-def get_workflow_events(session: Session, project_name: str, limit: int = 100) -> List[WorkflowEvent]:  # type: ignore[type-arg]
+def get_workflow_events(
+    session: Session, project_name: str, limit: int = 100
+) -> List[WorkflowEvent]:  # type: ignore[type-arg]
     """Get workflow events for project"""
     if not SQLALCHEMY_AVAILABLE:
         return []
