@@ -54,7 +54,7 @@ def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
     if not widgets or not isinstance(widgets, list):
         return ["No widgets provided for validation"]
 
-    issues = []
+    issues: list[str] = []
     has_focus = any(w.get("takefocus") == "1" for w in widgets)
 
     if not has_focus:

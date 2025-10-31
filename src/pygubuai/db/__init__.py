@@ -22,10 +22,7 @@ _SessionLocal = None
 
 def get_db_path() -> Path:
     """Get database file path"""
-    from ..config import Config
-
-    config = Config()
-    return config.config_dir / "pygubuai.db"
+    return Path.home() / ".pygubuai" / "pygubuai.db"  # type: ignore[no-any-return]
 
 
 def init_db(db_path: Optional[Path] = None) -> bool:

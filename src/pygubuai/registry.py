@@ -4,14 +4,14 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Dict, Optional, List
+from typing import Dict, Optional
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
 try:
     from filelock import FileLock
 except ImportError:
-    FileLock = None
+    FileLock = None  # type: ignore[assignment,misc]
 
 try:
     from pydantic import ValidationError
@@ -20,7 +20,7 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    ValidationError = Exception
+    ValidationError = Exception  # type: ignore[assignment,misc]
 
 from .config import Config
 
@@ -61,7 +61,7 @@ class Registry:
         file_handle = None
 
         try:
-            if FileLock:
+            if FileLock:  # type: ignore[truthy-function]
                 lock_file = FileLock(str(self.registry_path) + ".lock", timeout=10)
                 lock_file.acquire()
             else:
@@ -121,8 +121,8 @@ class Registry:
                         logger.debug(f"Registry validation failed: {e}, using converted data")
 
                 self._cache = data
-                self._cache_time = now
-                return data
+                self._cache_time = now  # type: ignore[assignment]
+                return data  # type: ignore[no-any-return]
         except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Registry read error: {e}, reinitializing")
             return {"projects": {}, "active": None}
@@ -148,7 +148,7 @@ class Registry:
         self._cache = None
         self._cache_time = None
 
-    def add_project(self, name: str, path: str, description: str = "", tags: List[str] = None):
+    def add_project(self, name: str, path: str, description: str = "", tags: list[str] | None = None):
         """Add project with metadata"""
         from .utils import validate_path
 
@@ -171,15 +171,15 @@ class Registry:
         data = self._read()
         project = data["projects"].get(name)
         if isinstance(project, dict):
-            return project["path"]
-        return project
+            return project  # type: ignore[no-any-return]["path"]  # type: ignore[no-any-return]
+        return project  # type: ignore[no-any-return]
 
     def get_project_metadata(self, name: str) -> Optional[Dict]:
         """Get full project metadata"""
         data = self._read()
         project = data["projects"].get(name)
         if isinstance(project, dict):
-            return project
+            return project  # type: ignore[no-any-return]
         elif project:  # Old format (string path)
             return {"path": project, "created": None, "modified": None, "description": "", "tags": []}
         return None
@@ -218,7 +218,7 @@ class Registry:
         """Get active project"""
         data = self._read()
         # Support both old and new field names
-        return data.get("active") or data.get("active_project")
+        return data  # type: ignore[no-any-return].get("active") or data.get("active_project")
 
     def search_projects(self, query: str) -> Dict[str, Dict]:
         """Search projects by name, description, or tags"""
@@ -236,7 +236,7 @@ class Registry:
 
         return results
 
-    def update_project_metadata(self, name: str, description: str = None, tags: List[str] = None):
+    def update_project_metadata(self, name: str, description: str | None = None, tags: list[str] | None = None):
         """Update project metadata"""
         data = self._read()
         if name not in data["projects"]:

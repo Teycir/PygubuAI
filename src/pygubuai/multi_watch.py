@@ -37,7 +37,7 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
 
     print(f"️  Watching {len(projects_to_watch)} project(s)...")
     for name, path in projects_to_watch.items():
-        ui_files = []
+        ui_files: list[Path] = []
         for pattern in patterns:
             ui_files.extend(path.glob(pattern))
         print(f"   {name}: {len(ui_files)} files")
@@ -55,7 +55,7 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
 
 def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List[str]):
     """Check single project for changes"""
-    ui_files = []
+    ui_files: list[Path] = []
     for pattern in patterns:
         ui_files.extend(path.glob(pattern))
 

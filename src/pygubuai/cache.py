@@ -26,7 +26,7 @@ def get_cached(filepath: Path) -> Optional[dict]:
         cache_file = CACHE_DIR / f"{safe_filepath.stem}_{_get_file_hash(safe_filepath)}.json"
 
         if cache_file.exists():
-            return json.loads(cache_file.read_text())
+            return json.loads(cache_file.read_text())  # type: ignore[no-any-return]
     except (ValueError, OSError) as e:
         logger.debug(f"Cache lookup failed for {filepath}: {e}")
     return None

@@ -4,7 +4,7 @@ import sys
 import pathlib
 import logging
 import argparse
-from typing import Optional, List
+from typing import Optional
 from .registry import Registry
 from .errors import ProjectNotFoundError, InvalidProjectError
 from .progress import ProgressBar
@@ -20,7 +20,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
+def register_project(path: str, description: str = "", tags: list[str] | None = None) -> None:
     """Register a pygubu project with path validation"""
     from .utils import validate_path
 

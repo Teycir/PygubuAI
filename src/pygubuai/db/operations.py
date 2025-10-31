@@ -9,10 +9,10 @@ try:
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
     Session = None
-    Project = None
-    Template = None
-    WorkflowEvent = None
-    Analytics = None
+    Project = None  # type: ignore[assignment,misc]
+    Template = None  # type: ignore[assignment,misc]
+    WorkflowEvent = None  # type: ignore[assignment,misc]
+    Analytics = None  # type: ignore[assignment,misc]
 
 
 def create_project(session: Session, name: str, path: str, description: str = "") -> Optional[Project]:

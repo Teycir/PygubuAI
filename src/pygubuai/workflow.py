@@ -20,7 +20,7 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    ValidationError = Exception
+    ValidationError = Exception  # type: ignore[assignment,misc]
 
 logger = logging.getLogger(__name__)
 

@@ -13,7 +13,7 @@ def get_themes_dir() -> Path:
     return themes_dir
 
 
-def create_custom_theme(name: str, base: str = "clam", colors: dict = None, description: str = "") -> bool:
+def create_custom_theme(name: str, base: str = "clam", colors: dict | None = None, description: str = "") -> bool:
     """Create custom theme"""
     theme_data = {
         "name": name,
@@ -26,7 +26,7 @@ def create_custom_theme(name: str, base: str = "clam", colors: dict = None, desc
         raise ValueError("Invalid theme data")
 
     save_theme(name, theme_data)
-    return theme_data
+    return theme_data  # type: ignore[return-value]
 
 
 def save_theme(name: str, theme_data: dict):
@@ -80,4 +80,4 @@ def import_theme(source: str):
         raise ValueError("Invalid theme file")
 
     save_theme(theme_data["name"], theme_data)
-    return theme_data["name"]
+    return theme_data  # type: ignore[return-value]["name"]

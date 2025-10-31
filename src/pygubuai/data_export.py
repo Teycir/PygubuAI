@@ -7,7 +7,7 @@ from .registry import Registry
 from .utils import validate_path
 
 
-def add_export_capability(project_name: str, formats: List[str], widget_id: str = None):
+def add_export_capability(project_name: str, formats: List[str], widget_id: str | None = None):
     """Add export capability to project"""
     registry = Registry()
     project_path = registry.get_project(project_name)
@@ -71,7 +71,7 @@ def _generate_export_code(project_path: str, project_name: str, formats: List[st
         py_file.write_text(code)
 
 
-def _create_export_method(formats: List[str], widget_id: str = None) -> str:
+def _create_export_method(formats: List[str], widget_id: str | None = None) -> str:
     """Create export method code"""
     method = '''    def on_export(self):
         """Export data"""

@@ -84,7 +84,7 @@ class TemplateRegistry:
         Returns:
             Template dictionary or None if not found
         """
-        return self.templates.get(name)
+        return self.templates.get(name)  # type: ignore[no-any-return]
 
     def list_templates(self) -> List[tuple]:
         """List all available templates.

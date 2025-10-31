@@ -8,13 +8,13 @@ try:
 
     SQLALCHEMY_AVAILABLE = True
 
-    Base = declarative_base()
+    Base = declarative_base()  # type: ignore[misc]
 
     def _utcnow():
         """Return timezone-aware UTC datetime"""
         return datetime.now(timezone.utc)
 
-    class Project(Base):
+    class Project(Base):  # type: ignore[misc,valid-type]
         """Project model"""
 
         __tablename__ = "projects"
@@ -30,7 +30,7 @@ try:
         workflow_events = relationship("WorkflowEvent", back_populates="project", cascade="all, delete-orphan")
         analytics = relationship("Analytics", back_populates="project", cascade="all, delete-orphan")
 
-    class Template(Base):
+    class Template(Base):  # type: ignore[misc,valid-type]
         """Template model"""
 
         __tablename__ = "templates"
@@ -47,7 +47,7 @@ try:
         updated_at = Column(DateTime, default=_utcnow, onupdate=_utcnow)
         meta_data = Column(JSON, default=dict)
 
-    class WorkflowEvent(Base):
+    class WorkflowEvent(Base):  # type: ignore[misc,valid-type]
         """Workflow event model"""
 
         __tablename__ = "workflow_events"
@@ -60,7 +60,7 @@ try:
 
         project = relationship("Project", back_populates="workflow_events")
 
-    class Analytics(Base):
+    class Analytics(Base):  # type: ignore[misc,valid-type]
         """Analytics model"""
 
         __tablename__ = "analytics"
@@ -77,7 +77,7 @@ try:
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
     Base = None
-    Project = None
-    Template = None
-    WorkflowEvent = None
-    Analytics = None
+    Project = None  # type: ignore[assignment,misc]
+    Template = None  # type: ignore[assignment,misc]
+    WorkflowEvent = None  # type: ignore[assignment,misc]
+    Analytics = None  # type: ignore[assignment,misc]

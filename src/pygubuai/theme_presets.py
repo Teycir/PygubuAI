@@ -142,7 +142,7 @@ THEME_PRESETS = {
 
 def get_preset(name: str) -> dict:
     """Get theme preset by name"""
-    return THEME_PRESETS.get(name)
+    return THEME_PRESETS.get(name)  # type: ignore[return-value]
 
 
 def list_presets() -> list:

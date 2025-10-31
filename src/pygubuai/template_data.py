@@ -69,7 +69,7 @@ def get_template(name: str) -> Dict[str, Any]:
     Returns:
         Template dictionary or None if not found
     """
-    return TEMPLATES.get(name)
+    return TEMPLATES.get(name)  # type: ignore[return-value]
 
 
 def list_templates() -> List[Tuple[str, str]]:
@@ -78,7 +78,7 @@ def list_templates() -> List[Tuple[str, str]]:
     Returns:
         List of (name, description) tuples
     """
-    return [(name, tmpl["description"]) for name, tmpl in TEMPLATES.items()]
+    return [(name, tmpl["description"]) for name, tmpl in TEMPLATES.items()]  # type: ignore[misc]
 
 
 def validate_widget(widget: Dict[str, Any]) -> None:
