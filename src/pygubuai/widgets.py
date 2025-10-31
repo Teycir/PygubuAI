@@ -176,7 +176,7 @@ def main():
         info = get_widget_info(widget_name)
 
         if not info:
-            print(f"Widget '{widget_name}' not found")
+            print("Widget '" + widget_name + "' not found")
             sys.exit(1)
 
         if RICH_AVAILABLE:

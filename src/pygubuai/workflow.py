@@ -15,7 +15,7 @@ from .config import Config
 
 try:
     from pydantic import ValidationError
-    from .models import WorkflowData, WorkflowHistory
+    from .models import WorkflowData
 
     PYDANTIC_AVAILABLE = True
 except ImportError:
@@ -78,7 +78,7 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
                 }
                 for c in data.pop("changes", [])
             ]
-        
+
         # Validate with Pydantic if available
         if PYDANTIC_AVAILABLE:
             try:
