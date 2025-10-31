@@ -14,6 +14,7 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
+
 def get_project_status(project_name: Optional[str] = None) -> Dict:
     """Get project sync status"""
     registry = Registry()
@@ -55,7 +56,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
             with open(workflow_file) as f:
                 workflow = json.load(f)
                 status["last_sync"] = workflow.get("history", [{}])[-1].get("timestamp", "Never")
-        except:
+        except Exception:
             status["last_sync"] = "Unknown"
     else:
         status["last_sync"] = "Never"
@@ -72,6 +73,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
         status["message"] = "Python file modified after UI. Consider updating UI."
 
     return status
+
 
 def main():
     """CLI entry point"""
@@ -107,6 +109,7 @@ def main():
         print(f"Last Sync: {status['last_sync']}")
         if "message" in status:
             print(f"\nWARNING  {status['message']}")
+
 
 def check_project_status(project_name: Optional[str] = None) -> Dict:
     """Alias for get_project_status for backward compatibility"""

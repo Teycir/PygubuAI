@@ -5,7 +5,9 @@ from pathlib import Path
 from typing import Dict, List
 from dataclasses import dataclass, asdict
 
+
 @dataclass
+
 class Suggestion:
     id: str
     category: str
@@ -14,6 +16,7 @@ class Suggestion:
     impact: str
     effort: str
     auto_fixable: bool
+
 
 
 def analyze_refactoring_opportunities(project_name: str) -> List[Suggestion]:
@@ -39,6 +42,7 @@ def analyze_refactoring_opportunities(project_name: str) -> List[Suggestion]:
     return suggestions
 
 
+
 def _check_widget_consolidation(analysis: Dict) -> List[Suggestion]:
     """Check for widget consolidation opportunities"""
     suggestions = []
@@ -49,7 +53,10 @@ def _check_widget_consolidation(analysis: Dict) -> List[Suggestion]:
             id="consolidate_labels",
             category="layout",
             title="Consolidate Labels",
-            description=f"Found {widget_types['ttk.Label']} labels. Consider using frames or labelframes to group related labels.",
+            description=(
+                f"Found {widget_types['ttk.Label']} labels. Consider using frames or "
+                "labelframes to group related labels."
+            ),
             impact="medium",
             effort="low",
             auto_fixable=False
@@ -67,6 +74,7 @@ def _check_widget_consolidation(analysis: Dict) -> List[Suggestion]:
         ))
 
     return suggestions
+
 
 
 def _check_layout_optimization(analysis: Dict) -> List[Suggestion]:
@@ -97,6 +105,7 @@ def _check_layout_optimization(analysis: Dict) -> List[Suggestion]:
         ))
 
     return suggestions
+
 
 
 def _check_accessibility(analysis: Dict) -> List[Suggestion]:
@@ -132,6 +141,7 @@ def _check_accessibility(analysis: Dict) -> List[Suggestion]:
     return suggestions
 
 
+
 def _check_performance(analysis: Dict) -> List[Suggestion]:
     """Check for performance improvements"""
     suggestions = []
@@ -148,6 +158,7 @@ def _check_performance(analysis: Dict) -> List[Suggestion]:
         ))
 
     return suggestions
+
 
 
 def _check_code_quality(analysis: Dict) -> List[Suggestion]:
@@ -191,6 +202,7 @@ def _check_code_quality(analysis: Dict) -> List[Suggestion]:
     return suggestions
 
 
+
 def save_suggestions(project_name: str, suggestions: List[Suggestion]):
     """Save suggestions to file"""
     output_dir = Path.home() / ".amazonq" / "prompts"
@@ -206,6 +218,7 @@ def save_suggestions(project_name: str, suggestions: List[Suggestion]):
         json.dump(data, f, indent=2)
 
     return output_file
+
 
 
 def main():
@@ -233,6 +246,7 @@ def main():
 
     output_file = save_suggestions(project_name, suggestions)
     print(f"Suggestions saved to: {output_file}")
+
 
 if __name__ == "__main__":
     main()

@@ -16,9 +16,11 @@ from .registry import Registry
 
 logger = logging.getLogger(__name__)
 
-def create_project(name: str, description: str, skip_validation: bool = False, 
-                  dry_run: bool = False, init_git: bool = False, 
-                  template: Optional[str] = None, tags: list = None) -> None:
+
+
+def create_project(name: str, description: str, skip_validation: bool = False,
+                   dry_run: bool = False, init_git: bool = False,
+                   template: Optional[str] = None, tags: list = None) -> None:
     """Create project with error handling"""
     try:
         if not skip_validation:
@@ -31,7 +33,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
             logger.info(f"  Directory: {base}/")
             logger.info(f"  Files: {name}.ui, {name}.py, README.md")
             if init_git:
-                logger.info(f"  Git: Initialize repository with .gitignore")
+                logger.info("  Git: Initialize repository with .gitignore")
             if template:
                 logger.info(f"  Template: {template}")
             logger.info(f"\nDescription: {description}")
@@ -78,16 +80,20 @@ def create_project(name: str, description: str, skip_validation: bool = False,
         logger.error(f"[ERROR] Unexpected error: {e}")
         sys.exit(1)
 
+
+
 def main(args=None):
     """CLI entry point"""
     logging.basicConfig(level=logging.INFO, format='%(message)s')
     parser = argparse.ArgumentParser(
         description="Create a new pygubu project from a natural language description.",
-        epilog="Examples:\n"
-               "  pygubu-create login 'login form with username and password'\n"
-               "  pygubu-create todo 'todo app with entry, button, and list'\n"
-               "  pygubu-create --interactive\n"
-               "  pygubu-create myapp 'app' --dry-run --git",
+        epilog=(
+            "Examples:\n"
+            "  pygubu-create login 'login form with username and password'\n"
+            "  pygubu-create todo 'todo app with entry, button, and list'\n"
+            "  pygubu-create --interactive\n"
+            "  pygubu-create myapp 'app' --dry-run --git"
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
@@ -106,8 +112,8 @@ def main(args=None):
     if parsed_args.interactive:
         config = interactive_create()
         create_project(
-            config['name'], 
-            config['description'], 
+            config['name'],
+            config['description'],
             dry_run=parsed_args.dry_run,
             init_git=config.get('git', False),
             template=config.get('template')
@@ -116,15 +122,19 @@ def main(args=None):
         if not parsed_args.name or not parsed_args.description:
             parser.error("name and description are required (or use --interactive)")
 
-        tags = [t.strip() for t in parsed_args.tags.split(',') if t.strip()] if parsed_args.tags else None
+        tags = (
+            [t.strip() for t in parsed_args.tags.split(',') if t.strip()]
+            if parsed_args.tags else None
+        )
         create_project(
-            parsed_args.name, 
+            parsed_args.name,
             parsed_args.description,
             dry_run=parsed_args.dry_run,
             init_git=parsed_args.git,
             template=parsed_args.template,
             tags=tags
         )
+
 
 if __name__ == '__main__':
     main()

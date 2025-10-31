@@ -8,6 +8,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
+
 def create_backup(project_path: Path) -> Optional[Path]:
     """Create backup of project directory"""
     if not project_path.exists():
@@ -29,6 +30,7 @@ def create_backup(project_path: Path) -> Optional[Path]:
         return None
 
 
+
 def restore_backup(backup_path: Path, target_path: Path) -> bool:
     """Restore project from backup"""
     if not backup_path.exists():
@@ -44,6 +46,7 @@ def restore_backup(backup_path: Path, target_path: Path) -> bool:
     except Exception as e:
         logger.error(f"Restore failed: {e}")
         return False
+
 
 
 def list_backups(project_name: str, backup_dir: Optional[Path] = None) -> list:

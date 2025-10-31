@@ -17,11 +17,13 @@ except ImportError:
 _engine = None
 _SessionLocal = None
 
+
 def get_db_path() -> Path:
     """Get database file path"""
     from ..config import Config
     config = Config()
     return config.config_dir / "pygubuai.db"
+
 
 def init_db(db_path: Optional[Path] = None) -> bool:
     """Initialize database"""
@@ -44,11 +46,13 @@ def init_db(db_path: Optional[Path] = None) -> bool:
     logger.info(f"Database initialized at {db_path}")
     return True
 
+
 def get_session() -> Optional[Session]:
     """Get database session"""
     if not SQLALCHEMY_AVAILABLE or _SessionLocal is None:
         return None
     return _SessionLocal()
+
 
 def close_db():
     """Close database connection"""

@@ -5,6 +5,7 @@ from pathlib import Path
 from .registry import Registry
 from .theme_builder import load_theme
 
+
 def preview_theme(project_name: str, theme_name: str, watch: bool = False):
     """Preview theme without saving"""
     try:
@@ -42,6 +43,7 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
         _show_preview(temp_ui, theme_name, tk, pygubu)
     finally:
         temp_ui.unlink(missing_ok=True)
+
 
 
 def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):

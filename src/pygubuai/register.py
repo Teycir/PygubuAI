@@ -19,6 +19,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 def register_project(path: str, description: str = "", tags: List[str] = None) -> None:
     """Register a pygubu project with path validation"""
     from .utils import validate_path
@@ -41,6 +42,7 @@ def register_project(path: str, description: str = "", tags: List[str] = None) -
     print(f"  Path: {project_path}")
     print(f"  UI files: {len(ui_files)}")
 
+
 def set_active(project_name: str) -> None:
     """Set active project"""
     registry = Registry()
@@ -52,6 +54,7 @@ def set_active(project_name: str) -> None:
 
     registry.set_active(project_name)
     print(f"[SUCCESS] Active project: {project_name}")
+
 
 def list_projects(show_metadata: bool = False) -> None:
     """List all registered projects"""
@@ -125,6 +128,7 @@ def list_projects(show_metadata: bool = False) -> None:
                     print(f"    Created: {created[:10]}")
             print()
 
+
 def get_active() -> Optional[str]:
     """Get active project info"""
     registry = Registry()
@@ -147,6 +151,7 @@ def get_active() -> Optional[str]:
             "py_files": [str(f) for f in py_files]
         }, indent=2))
     return project_path
+
 
 def scan_directory(directory: str = ".", show_progress: bool = True) -> None:
     """Auto-scan directory for pygubu projects with validation"""
@@ -185,6 +190,7 @@ def scan_directory(directory: str = ".", show_progress: bool = True) -> None:
 
     print(f"\n[SUCCESS] Registered {len(found)} project(s)")
 
+
 def search_projects(query: str) -> None:
     """Search projects by name, description, or tags"""
     registry = Registry()
@@ -203,6 +209,7 @@ def search_projects(query: str) -> None:
         if metadata.get('tags'):
             print(f"    Tags: {', '.join(metadata['tags'])}")
         print()
+
 
 def main():
     """Main CLI entry point"""

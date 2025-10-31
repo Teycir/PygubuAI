@@ -18,9 +18,11 @@ AVAILABLE_THEMES = {
 }
 
 
+
 def list_themes():
     """List all available themes"""
     return AVAILABLE_THEMES
+
 
 
 def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool:
@@ -67,6 +69,7 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
     return True
 
 
+
 def get_current_theme(project_name: str) -> Optional[str]:
     """Get current theme from project"""
     registry = Registry()
@@ -85,8 +88,9 @@ def get_current_theme(project_name: str) -> Optional[str]:
         root = tree.getroot()
         theme_prop = root.find(".//property[@name='theme']")
         return theme_prop.text if theme_prop is not None else "default"
-    except:
+    except Exception:
         return None
+
 
 
 def main():
@@ -140,8 +144,7 @@ def main():
             print(f"\nTheme: {info['name']}")
             print(f"Description: {info['description']}")
             print(f"Base: {info['base']}")
-            print("
-Colors:")
+            print("\nColors:")
             for key, value in info['colors'].items():
                 print(f"  {key:15} {value}")
         else:
@@ -226,6 +229,7 @@ Colors:")
     else:
         print("Invalid command or arguments")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@
 from typing import Dict, List, Tuple
 
 
+
 def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
     """Check if color contrast meets WCAG AA standards (4.5:1)."""
     if not fg or not isinstance(fg, str) or not bg or not isinstance(bg, str):
@@ -25,8 +26,9 @@ def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
         l2 = luminance(bg_rgb)
         ratio = (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
         return ratio >= 4.5, ratio
-    except:
+    except Exception:
         return False, 0.0
+
 
 
 def generate_aria_labels(widget_type: str, widget_id: str) -> Dict[str, str]:
@@ -48,6 +50,7 @@ def generate_aria_labels(widget_type: str, widget_id: str) -> Dict[str, str]:
     return {"aria-label": labels.get(widget_type, f"{widget_type}: {widget_id}")}
 
 
+
 def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
     """Validate keyboard navigation setup."""
     if not widgets or not isinstance(widgets, list):
@@ -64,6 +67,7 @@ def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
         issues.append("Buttons lack keyboard shortcuts (underline)")
 
     return issues
+
 
 
 def check_accessibility(ui_data: Dict) -> Dict[str, List[str]]:

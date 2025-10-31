@@ -31,6 +31,7 @@ class {class_name}:
         self.mainwindow.mainloop()
 {callbacks}
 
+
 def main():
     root = tk.Tk()
     app = {class_name}(root)
@@ -39,6 +40,7 @@ def main():
 if __name__ == '__main__':
     main()
 '''
+
 
 def extract_callbacks(py_file: Path) -> str:
     """Extract callback methods from Python file"""
@@ -74,6 +76,7 @@ def extract_callbacks(py_file: Path) -> str:
         callbacks.append('\\n'.join(current_callback))
 
     return '\\n\\n'.join(callbacks) if callbacks else "    # Add your callbacks here\\n    pass"
+
 
 def export_standalone(project_name: str, output_file: Optional[str] = None) -> str:
     """Export project to standalone file"""
@@ -120,6 +123,7 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     output_path.chmod(0o755)
 
     return str(output_path)
+
 
 def main():
     """CLI entry point"""

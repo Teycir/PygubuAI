@@ -14,6 +14,7 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
+
 def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
     """Inspect specific widget"""
     registry = Registry()
@@ -69,6 +70,7 @@ def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
 
     return info
 
+
 def show_tree(project_name: str) -> Optional[str]:
     """Show widget hierarchy tree"""
     registry = Registry()
@@ -97,6 +99,7 @@ def show_tree(project_name: str) -> Optional[str]:
 
     return "\\n".join(build_tree(root))
 
+
 def list_callbacks(project_name: str) -> List[Dict]:
     """List all callbacks in project"""
     registry = Registry()
@@ -124,6 +127,7 @@ def list_callbacks(project_name: str) -> List[Dict]:
                 })
 
     return callbacks
+
 
 def main():
     """CLI entry point"""

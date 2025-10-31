@@ -13,6 +13,7 @@ from .generator import generate_base_ui_xml_structure, generate_python_app_struc
 logger = logging.getLogger(__name__)
 
 
+
 def create_from_template(name: str, template_name: str, skip_validation: bool = False,
                         dry_run: bool = False, init_git: bool = False):
     """Create project from template"""
@@ -36,7 +37,7 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
             logger.info(f"  Directory: {base}/")
             logger.info(f"  Files: {name}.ui, {name}.py, README.md")
             if init_git:
-                logger.info(f"  Git: Initialize repository with .gitignore")
+                logger.info("  Git: Initialize repository with .gitignore")
             return
 
         base = ensure_directory(base)
@@ -51,7 +52,11 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
         py_file.chmod(0o755)
 
         readme = base / "README.md"
-        readme.write_text(generate_readme_content(name, template["description"], f"{name}.ui", template_name=template_name))
+        readme.write_text(
+            generate_readme_content(
+                name, template["description"], f"{name}.ui", template_name=template_name
+            )
+        )
 
         # Initialize git if requested
         if init_git:
@@ -69,6 +74,7 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
     except Exception as e:
         logger.error(f"[ERROR] Unexpected error: {e}")
         sys.exit(1)
+
 
 
 def main(args=None):

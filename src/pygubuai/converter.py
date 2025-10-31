@@ -2,6 +2,8 @@
 import sys
 from pathlib import Path
 
+
+
 def main():
     """CLI entry point for tkinter-to-pygubu converter"""
     if len(sys.argv) != 2:
@@ -21,6 +23,7 @@ def main():
     print("1. Manually recreate UI in pygubu-designer")
     print("2. Copy business logic to new pygubu app class")
     print("3. Connect callbacks via builder.connect_callbacks()")
+
 
 if __name__ == '__main__':
     main()

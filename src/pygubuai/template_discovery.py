@@ -8,6 +8,7 @@ from .template_data import TEMPLATES, WIDGET_MAP, validate_widget
 logger = get_logger(__name__)
 
 
+
 class TemplateRegistry:
     """Registry for discovering and managing templates from multiple sources."""
 
@@ -142,6 +143,7 @@ class TemplateRegistry:
 
 # Global registry instance
 _registry: Optional[TemplateRegistry] = None
+
 
 
 def get_template_registry() -> TemplateRegistry:

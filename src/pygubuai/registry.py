@@ -24,6 +24,7 @@ from .config import Config
 
 logger = logging.getLogger(__name__)
 
+
 class Registry:
     """Thread-safe registry with file locking"""
     REGISTRY_FILE = None  # For testing override

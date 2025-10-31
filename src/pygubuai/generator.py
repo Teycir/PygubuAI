@@ -4,6 +4,7 @@ from typing import List, Tuple, Dict, Any
 from pathlib import Path
 
 
+
 def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[str, Dict[str, Any]]]) -> str:
     """Generate base UI XML structure with widgets."""
     from .widgets import generate_widget_xml
@@ -31,6 +32,7 @@ def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[s
 
     xml_parts.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
     return '\n'.join(xml_parts)
+
 
 
 def generate_python_app_structure(project_name: str, callbacks: List[str], custom_callbacks_code: str = "") -> str:
@@ -71,6 +73,7 @@ if __name__ == '__main__':
     app.run()
 '''
     return code
+
 
 
 def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: str = None) -> str:

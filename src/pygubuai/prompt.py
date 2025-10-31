@@ -88,6 +88,7 @@ Focus on:
 Analyze current UI and suggest improvements.""",
 }
 
+
 def generate_prompt(template_name: str, project_name: Optional[str] = None, **kwargs) -> str:
     """Generate AI prompt from template"""
     if template_name not in PROMPT_TEMPLATES:
@@ -113,6 +114,7 @@ def generate_prompt(template_name: str, project_name: Optional[str] = None, **kw
 
     return PROMPT_TEMPLATES[template_name].format(**kwargs)
 
+
 def save_prompt(name: str, content: str):
     """Save prompt to Amazon Q prompts directory"""
     prompts_dir = Path.home() / ".amazonq" / "prompts"
@@ -121,6 +123,7 @@ def save_prompt(name: str, content: str):
     prompt_file = prompts_dir / f"{name}.md"
     prompt_file.write_text(content)
     return prompt_file
+
 
 def main():
     """CLI entry point"""
@@ -173,7 +176,7 @@ def main():
         # Offer to save
         if project_name:
             save_name = f"pygubu-{template_name}-{project_name}"
-            print(f"TIP Tip: Save this prompt with:")
+            print("TIP Tip: Save this prompt with:")
             print(f"   pygubu-prompt {template_name} {project_name} | save-as {save_name}")
 
     except Exception as e:

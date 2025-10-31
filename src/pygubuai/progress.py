@@ -4,6 +4,7 @@ import time
 from typing import Optional
 
 
+
 class ProgressBar:
     """Simple progress bar for CLI"""
 
@@ -37,6 +38,7 @@ class ProgressBar:
         if self.current >= self.total:
             sys.stdout.write("\n")
             sys.stdout.flush()
+
 
 
 class Spinner:

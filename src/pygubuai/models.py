@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator
 
+
 class ProjectConfig(BaseModel):
     """Project configuration model"""
     name: str
@@ -21,6 +22,7 @@ class ProjectConfig(BaseModel):
             raise ValueError(f"Path does not exist: {v}")
         return str(Path(v).resolve())
 
+
 class RegistryData(BaseModel):
     """Registry data model"""
     projects: Dict[str, Dict] = Field(default_factory=dict)
@@ -34,12 +36,14 @@ class RegistryData(BaseModel):
             raise ValueError(f"Active project '{v}' not in registry")
         return v
 
+
 class WorkflowHistory(BaseModel):
     """Workflow history entry"""
     timestamp: str
     action: str
     description: str
     user: Optional[str] = None
+
 
 class WorkflowData(BaseModel):
     """Workflow tracking data"""
@@ -50,12 +54,14 @@ class WorkflowData(BaseModel):
     file_hashes: Dict[str, str] = Field(default_factory=dict)
     file_mtimes: Dict[str, float] = Field(default_factory=dict)
 
+
 class WidgetConfig(BaseModel):
     """Widget configuration"""
     widget_type: str
     widget_id: str
     properties: Dict = Field(default_factory=dict)
     layout: Dict = Field(default_factory=dict)
+
 
 class ExportConfig(BaseModel):
     """Export configuration"""

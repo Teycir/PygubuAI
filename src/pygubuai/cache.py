@@ -4,15 +4,17 @@ import hashlib
 import time
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 CACHE_DIR = Path.home() / ".pygubuai" / "cache"
 logger = logging.getLogger(__name__)
 
 
+
 def _get_file_hash(filepath: Path) -> str:
     """Get SHA-256 hash of file contents."""
     return hashlib.sha256(filepath.read_bytes()).hexdigest()
+
 
 
 def get_cached(filepath: Path) -> Optional[dict]:
@@ -30,11 +32,13 @@ def get_cached(filepath: Path) -> Optional[dict]:
     return None
 
 
+
 def set_cached(filepath: Path, data: dict) -> None:
     """Cache parsed UI data."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     cache_file = CACHE_DIR / f"{filepath.stem}_{_get_file_hash(filepath)}.json"
     cache_file.write_text(json.dumps(data))
+
 
 
 def clear_cache(filepath: Optional[Path] = None) -> None:
@@ -45,6 +49,8 @@ def clear_cache(filepath: Optional[Path] = None) -> None:
     else:
         for f in CACHE_DIR.glob("*.json"):
             f.unlink()
+
+
 
 def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
     """Remove old or excess cache files to prevent bloat."""
@@ -62,6 +68,7 @@ def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
                 logger.debug(f"Cleaned up cache file: {f.name}")
     except (OSError, PermissionError) as e:
         logger.warning(f"Cache cleanup failed: {e}")
+
 
 # Auto-cleanup on module import
 try:

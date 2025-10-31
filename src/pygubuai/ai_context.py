@@ -2,8 +2,10 @@
 """AI context generation for enhanced Amazon Q integration"""
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 from datetime import datetime, timezone
+
+
 
 def generate_context(project_name: str) -> Dict:
     """Generate rich AI context for project"""
@@ -40,6 +42,7 @@ def generate_context(project_name: str) -> Dict:
         session = get_session()
         if session:
             try:
+                from .db.operations import get_workflow_events
                 events = get_workflow_events(session, project_name, limit=10)
                 context["history"] = [
                     {
@@ -53,6 +56,7 @@ def generate_context(project_name: str) -> Dict:
                 session.close()
 
     return context
+
 
 
 def _parse_ui_file(ui_file: Path) -> tuple:
@@ -76,8 +80,9 @@ def _parse_ui_file(ui_file: Path) -> tuple:
                     callbacks.add(prop.text)
 
         return widgets, list(callbacks)
-    except:
+    except Exception:
         return [], []
+
 
 
 def format_for_ai(context: Dict) -> str:
@@ -98,11 +103,12 @@ def format_for_ai(context: Dict) -> str:
             lines.append(f"- {cb}")
 
     if context.get("history"):
-        lines.append(f"\n## Recent History")
+        lines.append("\n## Recent History")
         for event in context["history"][:5]:
             lines.append(f"- {event['action']}: {event['description']}")
 
     return "\n".join(lines)
+
 
 
 def main():
@@ -130,6 +136,7 @@ def main():
         json.dump(context, f, indent=2)
 
     print(f"\nContext saved to: {output_file}")
+
 
 if __name__ == "__main__":
     main()

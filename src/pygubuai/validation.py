@@ -13,6 +13,7 @@ MAX_NAME_LENGTH = 50
 MIN_NAME_LENGTH = 2
 
 
+
 def validate_project_name(name: str) -> tuple[bool, Optional[str]]:
     """Validate project name with detailed error messages"""
     if not name:
@@ -36,6 +37,7 @@ def validate_project_name(name: str) -> tuple[bool, Optional[str]]:
     return True, None
 
 
+
 def sanitize_project_name(name: str) -> str:
     """Sanitize project name to valid format"""
     # Remove invalid characters
@@ -50,6 +52,7 @@ def sanitize_project_name(name: str) -> str:
         name = name[:MAX_NAME_LENGTH]
 
     return name or 'project'
+
 
 
 def validate_path(path: str) -> tuple[bool, Optional[str]]:
@@ -73,6 +76,7 @@ def validate_path(path: str) -> tuple[bool, Optional[str]]:
         return False, f"Invalid path: {e}"
 
 
+
 def validate_tags(tags: list) -> tuple[bool, Optional[str]]:
     """Validate project tags"""
     if not tags:
@@ -89,6 +93,7 @@ def validate_tags(tags: list) -> tuple[bool, Optional[str]]:
             return False, "Tags can only contain letters, numbers, hyphens, underscores"
 
     return True, None
+
 
 
 def validate_description(description: str) -> tuple[bool, Optional[str]]:

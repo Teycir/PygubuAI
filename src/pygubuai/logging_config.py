@@ -9,6 +9,7 @@ from typing import Optional
 DEFAULT_FORMAT = '%(levelname)s: %(message)s'
 DEBUG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
+
 def get_log_level() -> int:
     """Get log level from environment or default to INFO.
 
@@ -17,6 +18,7 @@ def get_log_level() -> int:
     """
     level_name = os.environ.get('PYGUBUAI_LOG_LEVEL', 'INFO').upper()
     return getattr(logging, level_name, logging.INFO)
+
 
 def setup_logging(name: Optional[str] = None, level: Optional[int] = None) -> logging.Logger:
     """Configure logging with consistent format and level.
@@ -45,6 +47,7 @@ def setup_logging(name: Optional[str] = None, level: Optional[int] = None) -> lo
 
     logger.addHandler(handler)
     return logger
+
 
 def get_logger(name: str) -> logging.Logger:
     """Get or create a logger with standard configuration.

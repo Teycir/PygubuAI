@@ -14,6 +14,7 @@ except ImportError:
     RICH_AVAILABLE = False
 
 
+
 class ValidationIssue:
     def __init__(self, severity: str, category: str, message: str, location: str = ""):
         self.severity = severity  # error, warning, info
@@ -24,6 +25,7 @@ class ValidationIssue:
     def __repr__(self):
         loc = f" ({self.location})" if self.location else ""
         return f"[{self.severity.upper()}] {self.category}: {self.message}{loc}"
+
 
 
 def validate_project(project_name: str) -> List[ValidationIssue]:
@@ -94,6 +96,7 @@ def validate_project(project_name: str) -> List[ValidationIssue]:
         issues.append(ValidationIssue("error", "Validation", f"Unexpected error: {e}"))
 
     return issues
+
 
 
 def main():

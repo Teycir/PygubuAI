@@ -3,7 +3,9 @@ import json
 import os
 import pathlib
 import threading
-from typing import Dict, Any, Optional
+from typing import Dict, Any
+
+
 
 class Config:
     """Configuration manager with multiple source support.
@@ -57,8 +59,10 @@ class Config:
                         logger.debug(f"Loaded user config from {self.config_path}")
 
                 except json.JSONDecodeError as e:
-                    logger.warning(f"Config file corrupted at line {e.lineno}: {e.msg}. "
-                                 f"Using defaults. Fix or delete: {self.config_path}")
+                    logger.warning(
+                        f"Config file corrupted at line {e.lineno}: {e.msg}. "
+                        f"Using defaults. Fix or delete: {self.config_path}"
+                    )
                 except OSError as e:
                     logger.warning(f"Cannot read config file: {e}. Using defaults.")
 

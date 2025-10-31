@@ -1,11 +1,11 @@
 """Data export functionality for PygubuAI projects"""
-import csv
-import json
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List
 import xml.etree.ElementTree as ET
 from .registry import Registry
 from .utils import validate_path
+
+
 
 def add_export_capability(project_name: str, formats: List[str], widget_id: str = None):
     """Add export capability to project"""
@@ -24,7 +24,9 @@ def add_export_capability(project_name: str, formats: List[str], widget_id: str 
 
     return True
 
-def _add_export_button(project_path: str, project_name: str, formats: List[str]):  # noqa: ARG001
+
+
+def _add_export_button(project_path: str, project_name: str, formats: List[str]):
     """Add export button to UI file"""
     ui_file = Path(project_path) / f"{project_name}.ui"
     if not ui_file.exists():
@@ -52,6 +54,8 @@ def _add_export_button(project_path: str, project_name: str, formats: List[str])
 
     tree.write(ui_file, encoding='utf-8', xml_declaration=True)
 
+
+
 def _generate_export_code(project_path: str, project_name: str, formats: List[str], widget_id: str):
     """Generate export callback code"""
     py_file = Path(project_path) / f"{project_name}.py"
@@ -68,7 +72,9 @@ def _generate_export_code(project_path: str, project_name: str, formats: List[st
         code = code.replace("def run(self):", f"{export_method}\n\n    def run(self):")
         py_file.write_text(code)
 
-def _create_export_method(formats: List[str], widget_id: str = None) -> str:  # noqa: ARG001
+
+
+def _create_export_method(formats: List[str], widget_id: str = None) -> str:
     """Create export method code"""
     method = '''    def on_export(self):
         """Export data"""
@@ -110,6 +116,8 @@ def _create_export_method(formats: List[str], widget_id: str = None) -> str:  # 
 
     return method
 
+
+
 def generate_treeview_export(widget_id: str) -> str:
     """Generate Treeview export code"""
     return f'''    def _get_export_data(self):
@@ -128,6 +136,8 @@ def generate_treeview_export(widget_id: str) -> str:
 
         return data'''
 
+
+
 def main():
     """CLI entry point"""
     import sys
@@ -135,7 +145,7 @@ def main():
     if len(sys.argv) < 3:
         print("Usage: pygubu-export <command> <project> [options]")
         print("Commands:")
-        print("  add <project> --format csv,json,pdf")
+        print("  add <project> --format csv,json,pd")
         print("  add-button <project>")
         sys.exit(1)
 
@@ -164,6 +174,7 @@ def main():
         except Exception as e:
             print(f"Error: {e}")
             sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -15,8 +15,10 @@ WIDGET_COLOR_MAP = {
 }
 
 
+
 def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bool:
     """Apply theme preset to project"""
+    from .theme_presets import get_preset
     preset = get_preset(preset_name)
     if not preset:
         raise ValueError(f"Unknown preset: {preset_name}")
@@ -54,6 +56,7 @@ def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bo
     return True
 
 
+
 def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
     """Apply colors to widget based on type"""
     color_map = WIDGET_COLOR_MAP.get(widget_type, {})
@@ -69,6 +72,8 @@ def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
             prop.text = colors[color_key]
 
 
+
 def get_preset_info(preset_name: str) -> Optional[dict]:
     """Get detailed preset information"""
+    from .theme_presets import get_preset
     return get_preset(preset_name)

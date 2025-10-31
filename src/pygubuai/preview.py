@@ -6,6 +6,7 @@ from typing import Optional
 import time
 from .registry import Registry
 
+
 def preview_ui(ui_file_path: str, watch: bool = False):
     """Preview UI file in Tkinter window"""
     from .errors import DependencyError, UIParseError, FileOperationError
@@ -70,6 +71,7 @@ def preview_ui(ui_file_path: str, watch: bool = False):
     root = create_window()
     root.mainloop()
 
+
 def preview_project(project_name: str, watch: bool = False):
     """Preview project by name"""
     from .errors import ProjectNotFoundError
@@ -88,6 +90,7 @@ def preview_project(project_name: str, watch: bool = False):
         raise FileNotFoundError(f"UI file not found: {ui_file}")
 
     preview_ui(str(ui_file), watch)
+
 
 def main():
     """CLI entry point"""

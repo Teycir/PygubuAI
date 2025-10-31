@@ -78,6 +78,7 @@ DEFAULT_VALUES = {
     "treeview": {"id": "tree_1", "columns": "col1 col2"},
 }
 
+
 def generate_snippet(widget_type: str, **kwargs) -> str:
     """Generate XML snippet for widget"""
     if widget_type not in SNIPPET_TEMPLATES:
@@ -88,6 +89,7 @@ def generate_snippet(widget_type: str, **kwargs) -> str:
     values.update(kwargs)
 
     return SNIPPET_TEMPLATES[widget_type].format(**values)
+
 
 def main():
     """CLI entry point"""

@@ -7,14 +7,14 @@ THEME_PRESETS = {
         "base": "clam",
         "colors": {
             "bg": "#2b2b2b",
-            "fg": "#ffffff",
+            "fg": "#fffff",
             "accent": "#0078d4",
             "button_bg": "#0e639c",
-            "button_fg": "#ffffff",
+            "button_fg": "#fffff",
             "entry_bg": "#3c3c3c",
-            "entry_fg": "#ffffff",
+            "entry_fg": "#fffff",
             "select_bg": "#0078d4",
-            "select_fg": "#ffffff",
+            "select_fg": "#fffff",
             "disabled_fg": "#808080"
         }
     },
@@ -23,7 +23,7 @@ THEME_PRESETS = {
         "description": "Clean light theme",
         "base": "clam",
         "colors": {
-            "bg": "#ffffff",
+            "bg": "#fffff",
             "fg": "#000000",
             "accent": "#0078d4",
             "button_bg": "#e1e1e1",
@@ -31,7 +31,7 @@ THEME_PRESETS = {
             "entry_bg": "#f3f3f3",
             "entry_fg": "#000000",
             "select_bg": "#0078d4",
-            "select_fg": "#ffffff",
+            "select_fg": "#fffff",
             "disabled_fg": "#a0a0a0"
         }
     },
@@ -44,11 +44,11 @@ THEME_PRESETS = {
             "fg": "#212121",
             "accent": "#2196f3",
             "button_bg": "#2196f3",
-            "button_fg": "#ffffff",
-            "entry_bg": "#ffffff",
+            "button_fg": "#fffff",
+            "entry_bg": "#fffff",
             "entry_fg": "#212121",
             "select_bg": "#2196f3",
-            "select_fg": "#ffffff",
+            "select_fg": "#fffff",
             "disabled_fg": "#9e9e9e"
         }
     },
@@ -109,12 +109,12 @@ THEME_PRESETS = {
         "base": "clam",
         "colors": {
             "bg": "#000000",
-            "fg": "#ffffff",
+            "fg": "#fffff",
             "accent": "#ffff00",
-            "button_bg": "#ffffff",
+            "button_bg": "#fffff",
             "button_fg": "#000000",
             "entry_bg": "#000000",
-            "entry_fg": "#ffffff",
+            "entry_fg": "#fffff",
             "select_bg": "#ffff00",
             "select_fg": "#000000",
             "disabled_fg": "#808080"
@@ -140,14 +140,17 @@ THEME_PRESETS = {
 }
 
 
+
 def get_preset(name: str) -> dict:
     """Get theme preset by name"""
     return THEME_PRESETS.get(name)
 
 
+
 def list_presets() -> list:
     """List all preset names"""
     return list(THEME_PRESETS.keys())
+
 
 
 def validate_preset(preset_data: dict) -> bool:

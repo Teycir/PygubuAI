@@ -7,6 +7,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
+
 def get_file_hash(filepath: Path) -> str:
     """Calculate SHA-256 hash of file contents.
 
@@ -26,6 +27,7 @@ def get_file_hash(filepath: Path) -> str:
         raise
 
 
+
 def validate_project_name(name: str) -> str:
     """Validate and sanitize project name"""
     if not name:
@@ -38,6 +40,7 @@ def validate_project_name(name: str) -> str:
     return sanitized
 
 
+
 def ensure_directory(path: Path) -> Path:
     """Ensure directory exists"""
     try:
@@ -47,11 +50,13 @@ def ensure_directory(path: Path) -> Path:
         raise OSError(f"Cannot create directory {path}: {e}")
 
 
+
 def find_pygubu_designer() -> str:
     """Find pygubu-designer executable"""
     import shutil
     designer = shutil.which("pygubu-designer")
     return designer if designer else "pygubu-designer"
+
 
 
 def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False) -> Path:
@@ -90,6 +95,7 @@ def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False
     return p
 
 
+
 def validate_safe_path(path: str, base_dir: str = None) -> Path:
     """Validate path is safe and within allowed directory.
 
@@ -126,6 +132,7 @@ def validate_safe_path(path: str, base_dir: str = None) -> Path:
         raise
     except Exception as e:
         raise ValueError(f"Invalid path: {e}")
+
 
 
 def safe_xml_text(text: str) -> str:

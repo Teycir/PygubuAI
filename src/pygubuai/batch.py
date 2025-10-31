@@ -14,6 +14,8 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
+
+
 def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     """Rename widget ID in project"""
     registry = Registry()
@@ -47,6 +49,8 @@ def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     tree.write(ui_file, encoding='utf-8', xml_declaration=True)
     return True
 
+
+
 def batch_update_theme(theme_name: str, projects: List[str] = None) -> Dict[str, bool]:
     """Apply theme to multiple projects"""
     registry = Registry()
@@ -59,10 +63,12 @@ def batch_update_theme(theme_name: str, projects: List[str] = None) -> Dict[str,
         try:
             apply_theme(project, theme_name, backup=True)
             results[project] = True
-        except Exception as e:
+        except Exception:
             results[project] = False
 
     return results
+
+
 
 def batch_validate(projects: List[str] = None) -> Dict[str, List]:
     """Validate multiple projects"""
@@ -78,17 +84,19 @@ def batch_validate(projects: List[str] = None) -> Dict[str, List]:
 
     return results
 
+
+
 def main():
     """CLI entry point"""
     import sys
 
     if len(sys.argv) < 2:
         print("Usage: pygubu-batch <command> [args]")
-        print("\\nCommands:")
+        print("\nCommands:")
         print("  rename-widget <project> <old_id> <new_id>")
         print("  update-theme <theme> [projects...]")
         print("  validate [projects...]")
-        print("\\nExamples:")
+        print("\nExamples:")
         print("  pygubu-batch rename-widget myapp btn_old btn_new")
         print("  pygubu-batch update-theme clam")
         print("  pygubu-batch validate myapp1 myapp2")
@@ -123,7 +131,12 @@ def main():
             console = Console()
             console.print(f"\n[cyan]Applying theme '{theme}' to projects...[/cyan]\n")
 
-            with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), console=console) as progress:
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[progress.description]{task.description}"),
+                BarColumn(),
+                console=console
+            ) as progress:
                 task = progress.add_task("Processing...", total=None)
                 results = batch_update_theme(theme, project_list)
                 progress.update(task, completed=True)
@@ -156,7 +169,11 @@ def main():
             console = Console()
             console.print("\n[cyan]Validating projects...[/cyan]\n")
 
-            with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console) as progress:
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[progress.description]{task.description}"),
+                console=console
+            ) as progress:
                 task = progress.add_task("Validating...", total=None)
                 results = batch_validate(project_list)
                 progress.update(task, completed=True)
@@ -191,6 +208,7 @@ def main():
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

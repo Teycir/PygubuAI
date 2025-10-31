@@ -14,6 +14,7 @@ except ImportError:
     WorkflowEvent = None
     Analytics = None
 
+
 def create_project(session: Session, name: str, path: str, description: str = "") -> Optional[Project]:
     """Create new project"""
     if not SQLALCHEMY_AVAILABLE:
@@ -25,17 +26,20 @@ def create_project(session: Session, name: str, path: str, description: str = ""
     session.refresh(project)
     return project
 
+
 def get_project(session: Session, name: str) -> Optional[Project]:
     """Get project by name"""
     if not SQLALCHEMY_AVAILABLE:
         return None
     return session.query(Project).filter(Project.name == name).first()
 
+
 def list_projects(session: Session) -> List[Project]:
     """List all projects"""
     if not SQLALCHEMY_AVAILABLE:
         return []
     return session.query(Project).order_by(Project.updated_at.desc()).all()
+
 
 def update_project(session: Session, name: str, **kwargs) -> bool:
     """Update project"""
@@ -54,6 +58,7 @@ def update_project(session: Session, name: str, **kwargs) -> bool:
     session.commit()
     return True
 
+
 def delete_project(session: Session, name: str) -> bool:
     """Delete project"""
     if not SQLALCHEMY_AVAILABLE:
@@ -66,6 +71,7 @@ def delete_project(session: Session, name: str) -> bool:
     session.delete(project)
     session.commit()
     return True
+
 
 def add_workflow_event(session: Session, project_name: str, action: str, description: str = "") -> bool:
     """Add workflow event"""
@@ -81,6 +87,7 @@ def add_workflow_event(session: Session, project_name: str, action: str, descrip
     session.commit()
     return True
 
+
 def get_workflow_events(session: Session, project_name: str, limit: int = 100) -> List[WorkflowEvent]:
     """Get workflow events for project"""
     if not SQLALCHEMY_AVAILABLE:
@@ -94,6 +101,7 @@ def get_workflow_events(session: Session, project_name: str, limit: int = 100) -
         WorkflowEvent.project_id == project.id
     ).order_by(WorkflowEvent.timestamp.desc()).limit(limit).all()
 
+
 def create_template(session: Session, name: str, content: str, **kwargs) -> Optional[Template]:
     """Create template"""
     if not SQLALCHEMY_AVAILABLE:
@@ -105,6 +113,7 @@ def create_template(session: Session, name: str, content: str, **kwargs) -> Opti
     session.refresh(template)
     return template
 
+
 def search_templates(session: Session, query: str) -> List[Template]:
     """Search templates"""
     if not SQLALCHEMY_AVAILABLE:
@@ -114,7 +123,8 @@ def search_templates(session: Session, query: str) -> List[Template]:
         (Template.name.contains(query)) | (Template.description.contains(query))
     ).order_by(Template.downloads.desc()).all()
 
-def record_analytics(session: Session, metric_name: str, metric_value: float, 
+
+def record_analytics(session: Session, metric_name: str, metric_value: float,
                      project_name: Optional[str] = None, metadata: Optional[Dict] = None) -> bool:
     """Record analytics metric"""
     if not SQLALCHEMY_AVAILABLE:

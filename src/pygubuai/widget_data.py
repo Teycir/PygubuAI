@@ -93,7 +93,7 @@ WIDGET_LIBRARY = {
     "tk.Menu": {
         "category": "action",
         "description": "Menu bar or popup menu",
-        "properties": ["tearoff"],
+        "properties": ["tearof"],
         "use_cases": ["Menu bars", "Context menus", "Submenus"]
     },
 
@@ -101,7 +101,7 @@ WIDGET_LIBRARY = {
     "ttk.Frame": {
         "category": "container",
         "description": "Container for grouping widgets",
-        "properties": ["padding", "relief", "borderwidth"],
+        "properties": ["padding", "relie", "borderwidth"],
         "use_cases": ["Layout groups", "Sections", "Panels"]
     },
     "ttk.LabelFrame": {

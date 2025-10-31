@@ -2,8 +2,10 @@
 """Project analysis for AI insights"""
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 from collections import Counter
+
+
 
 def analyze_project(project_name: str) -> Dict:
     """Analyze project structure and complexity"""
@@ -40,6 +42,7 @@ def analyze_project(project_name: str) -> Dict:
     return analysis
 
 
+
 def _analyze_ui(ui_file: Path, analysis: Dict):
     """Analyze UI file"""
     try:
@@ -69,8 +72,9 @@ def _analyze_ui(ui_file: Path, analysis: Dict):
         analysis["layout_patterns"] = list(layouts)
         analysis["callback_count"] = len(callbacks)
 
-    except:
+    except Exception:
         pass
+
 
 
 def _analyze_code(py_file: Path, analysis: Dict):
@@ -79,8 +83,9 @@ def _analyze_code(py_file: Path, analysis: Dict):
         content = py_file.read_text()
         analysis["code_lines"] = len(content.splitlines())
         analysis["has_docstrings"] = '"""' in content or "'''" in content
-    except:
+    except Exception:
         pass
+
 
 
 def _calculate_complexity(analysis: Dict):
@@ -92,6 +97,7 @@ def _calculate_complexity(analysis: Dict):
     score += len(analysis["layout_patterns"]) * 1.0
 
     analysis["complexity"] = round(score, 1)
+
 
 
 def _generate_suggestions(analysis: Dict):
@@ -113,6 +119,7 @@ def _generate_suggestions(analysis: Dict):
     analysis["suggestions"] = suggestions
 
 
+
 def main():
     """CLI entry point"""
     import sys
@@ -130,6 +137,7 @@ def main():
         sys.exit(1)
 
     print(json.dumps(analysis, indent=2))
+
 
 if __name__ == "__main__":
     main()

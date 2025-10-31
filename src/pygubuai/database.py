@@ -12,6 +12,8 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
+
+
 def init_database():
     """Initialize database"""
     from .db import init_db, get_db_path, SQLALCHEMY_AVAILABLE
@@ -34,6 +36,8 @@ def init_database():
         print(f"OK Database initialized at {db_path}")
         return True
     return False
+
+
 
 def migrate_from_json():
     """Migrate data from JSON to database"""
@@ -89,6 +93,8 @@ def migrate_from_json():
     finally:
         session.close()
 
+
+
 def show_stats():
     """Show database statistics"""
     from .db import get_session, SQLALCHEMY_AVAILABLE
@@ -131,6 +137,8 @@ def show_stats():
     finally:
         session.close()
 
+
+
 def backup_database(output_file: str):
     """Backup database"""
     import shutil
@@ -145,6 +153,8 @@ def backup_database(output_file: str):
     shutil.copy2(db_path, output_path)
     print(f"OK Database backed up to {output_path}")
     return True
+
+
 
 def restore_database(backup_file: str):
     """Restore database from backup"""
@@ -166,6 +176,8 @@ def restore_database(backup_file: str):
     shutil.copy2(backup_path, db_path)
     print(f"OK Database restored from {backup_path}")
     return True
+
+
 
 def main():
     """CLI entry point"""
@@ -200,6 +212,8 @@ def main():
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
+
+
 
 def add_table(project_name: str, table_name: str, schema: dict):
     """Add database table to project"""
@@ -241,6 +255,7 @@ def add_table(project_name: str, table_name: str, schema: dict):
         session.close()
 
 
+
 def _generate_table_code(project_path: str, project_name: str, table_name: str, schema: dict):
     """Generate table-related code for project"""
     from pathlib import Path
@@ -272,5 +287,7 @@ def _generate_table_code(project_path: str, project_name: str, table_name: str, 
     if "def run(self):" in code:
         code = code.replace("def run(self):", f"{load_method}{add_method}\n    def run(self):")
         py_file.write_text(code)
+
+
 if __name__ == "__main__":
     main()

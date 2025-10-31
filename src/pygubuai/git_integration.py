@@ -7,6 +7,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
+
 def is_git_available() -> bool:
     """Check if git is installed"""
     try:
@@ -14,6 +15,7 @@ def is_git_available() -> bool:
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
+
 
 
 def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
@@ -45,6 +47,7 @@ def init_git_repo(project_path: Path, initial_commit: bool = True) -> bool:
     except subprocess.CalledProcessError as e:
         logger.error(f"Git initialization failed: {e}")
         return False
+
 
 
 def generate_gitignore() -> str:
@@ -88,6 +91,7 @@ wheels/
 .DS_Store
 Thumbs.db
 """
+
 
 
 def git_commit(project_path: Path, message: str, files: Optional[list] = None) -> bool:

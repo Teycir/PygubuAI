@@ -9,6 +9,7 @@ from .registry import Registry
 
 logger = logging.getLogger(__name__)
 
+
 def migrate_registry() -> bool:
     """Migrate registry to new format"""
     try:
@@ -54,6 +55,7 @@ def migrate_registry() -> bool:
         backup_path.rename(registry_path)
         logger.info("Restored from backup")
         return False
+
 
 def migrate_workflow(project_path: Path) -> bool:
     """Migrate workflow file to new format"""
@@ -110,6 +112,7 @@ def migrate_workflow(project_path: Path) -> bool:
         logger.info("Restored from backup")
         return False
 
+
 def migrate_all() -> None:
     """Migrate all data to new format"""
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -144,6 +147,7 @@ def migrate_all() -> None:
         print(f"   FAILED {failed} workflows failed")
 
     print("\nMigration complete!")
+
 
 def main():
     """CLI entry point"""
