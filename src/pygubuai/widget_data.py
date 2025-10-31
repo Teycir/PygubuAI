@@ -44,7 +44,7 @@ WIDGET_LIBRARY = {
         "properties": ["from_", "to", "orient", "variable"],
         "use_cases": ["Volume controls", "Brightness", "Range selection"]
     },
-    
+
     # Display Widgets
     "ttk.Label": {
         "category": "display",
@@ -76,7 +76,7 @@ WIDGET_LIBRARY = {
         "properties": ["columns", "show", "selectmode"],
         "use_cases": ["Tables", "File trees", "Hierarchical data"]
     },
-    
+
     # Action Widgets
     "ttk.Button": {
         "category": "action",
@@ -96,7 +96,7 @@ WIDGET_LIBRARY = {
         "properties": ["tearoff"],
         "use_cases": ["Menu bars", "Context menus", "Submenus"]
     },
-    
+
     # Container Widgets
     "ttk.Frame": {
         "category": "container",
@@ -128,7 +128,7 @@ WIDGET_LIBRARY = {
         "properties": ["title"],
         "use_cases": ["Dialogs", "Popups", "Secondary windows"]
     },
-    
+
     # Scrolling
     "ttk.Scrollbar": {
         "category": "layout",

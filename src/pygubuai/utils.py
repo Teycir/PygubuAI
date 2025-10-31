@@ -63,20 +63,24 @@ def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False
     Raises:
         ValueError: If path is invalid, unsafe, or doesn't meet requirements
     """
+    # Prevent directory traversal attacks BEFORE resolving
+    if ".." in Path(path).parts:
+        raise ValueError(f"Path traversal not allowed: {path}")
+    
     try:
         p = Path(path).resolve()
     except (ValueError, RuntimeError, OSError) as e:
         raise ValueError(f"Invalid path '{path}': {e}")
     
-    # Prevent directory traversal attacks
-    if ".." in Path(path).parts:
-        raise ValueError(f"Path traversal not allowed: {path}")
+    if must_exist:
+        if not p.exists():
+            raise ValueError(f"Path does not exist: {p}")
     
-    if must_exist and not p.exists():
-        raise ValueError(f"Path does not exist: {p}")
-    
-    if must_be_dir and p.exists() and not p.is_dir():
-        raise ValueError(f"Path is not a directory: {p}")
+    if must_be_dir:
+        if p.exists() and not p.is_dir():
+            raise ValueError(f"Path is not a directory: {p}")
+        elif must_exist and not p.is_dir():
+            raise ValueError(f"Path is not a directory: {p}")
     
     return p
 

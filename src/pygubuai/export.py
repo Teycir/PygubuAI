@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional
 from .registry import Registry
-from .utils import validate_safe_path
+from .utils import validate_path
 
 STANDALONE_TEMPLATE = '''#!/usr/bin/env python3
 """
@@ -83,7 +83,7 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
     
-    project_dir = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    project_dir = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = project_dir / f"{project_name}.ui"
     py_file = project_dir / f"{project_name}.py"
     
@@ -111,7 +111,7 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     if output_file is None:
         output_path = project_dir / f"{project_name}_standalone.py"
     else:
-        output_path = validate_safe_path(output_file)
+        output_path = validate_path(output_file)
     
     # Write output
     output_path.write_text(standalone_code)

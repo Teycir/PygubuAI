@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 import xml.etree.ElementTree as ET
 from .registry import Registry
-from .utils import validate_safe_path
+from .utils import validate_path
 
 def add_export_capability(project_name: str, formats: List[str], widget_id: str = None):
     """Add export capability to project"""
@@ -14,7 +14,7 @@ def add_export_capability(project_name: str, formats: List[str], widget_id: str 
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
     
-    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    validated_path = validate_path(project_path, must_exist=True, must_be_dir=True)
     
     # Add export button to UI
     _add_export_button(str(validated_path), project_name, formats)

@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Optional, Dict, List
 from .registry import Registry
-from .utils import validate_safe_path
+from .utils import validate_path
 
 try:
     from rich.console import Console
@@ -22,7 +22,7 @@ def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
     if not project_path:
         return None
     
-    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    validated_path = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = validated_path / f"{project_name}.ui"
     if not ui_file.exists():
         return None
@@ -77,7 +77,7 @@ def show_tree(project_name: str) -> Optional[str]:
     if not project_path:
         return None
     
-    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    validated_path = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = validated_path / f"{project_name}.ui"
     if not ui_file.exists():
         return None
@@ -105,7 +105,7 @@ def list_callbacks(project_name: str) -> List[Dict]:
     if not project_path:
         return []
     
-    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    validated_path = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = validated_path / f"{project_name}.ui"
     if not ui_file.exists():
         return []

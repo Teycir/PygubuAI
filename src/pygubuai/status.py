@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Dict
 from .registry import Registry
-from .utils import validate_safe_path
+from .utils import validate_path
 
 try:
     from rich.console import Console
@@ -27,7 +27,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
     if not project_path:
         return {"error": f"Project '{project_name}' not found"}
     
-    project_dir = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    project_dir = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = project_dir / f"{project_name}.ui"
     py_file = project_dir / f"{project_name}.py"
     workflow_file = project_dir / ".pygubu-workflow.json"

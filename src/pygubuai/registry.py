@@ -134,9 +134,12 @@ class Registry:
     
     def add_project(self, name: str, path: str, description: str = "", tags: List[str] = None):
         """Add project with metadata"""
-        from .utils import validate_safe_path
+        from .utils import validate_path
         data = self._read()
-        safe_path = validate_safe_path(path)
+        try:
+            safe_path = validate_path(path, must_exist=True, must_be_dir=True)
+        except ValueError:
+            safe_path = Path(path).resolve()
         data["projects"][name] = {
             "path": str(safe_path),
             "created": datetime.now(timezone.utc).isoformat(),

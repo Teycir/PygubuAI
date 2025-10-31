@@ -1,6 +1,6 @@
 """Widget detection, generation, and library browser"""
 
-from typing import List, Tuple, Dict, Any, Optional
+from typing import List, Dict, Optional
 from .widget_data import WIDGET_LIBRARY, CATEGORIES
 
 try:
@@ -72,7 +72,7 @@ def generate_widget_xml(widget_type: str, widget_id: str, config: dict, index: i
             ]
         )
     else:
-        xml.append(f'{layout}<property name="pady">5</property></layout>')
+        xml.append(layout + '<property name="pady">5</property></layout>')
 
     xml.extend(["          </object>", "        </child>"])
     return xml
