@@ -68,24 +68,26 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
         if not isinstance(data, dict):
             data = {}
 
+        # Convert old format to new format
+        if "changes" in data:
+            data["history"] = [
+                {
+                    "timestamp": c.get("timestamp", datetime.now(timezone.utc).isoformat()),
+                    "action": "file_changed",
+                    "description": f"File {c.get('file', 'unknown')} changed",
+                }
+                for c in data.pop("changes", [])
+            ]
+        
         # Validate with Pydantic if available
         if PYDANTIC_AVAILABLE:
             try:
-                if "changes" in data:
-                    data["history"] = [
-                        WorkflowHistory(
-                            timestamp=c.get("timestamp", datetime.now(timezone.utc).isoformat()),
-                            action="file_changed",
-                            description=f"File {c.get('file', 'unknown')} changed",
-                        ).model_dump()
-                        for c in data.pop("changes", [])
-                    ]
                 if "project" not in data:
                     data["project"] = project_path.name
                 workflow_model = WorkflowData(**data)
                 data = workflow_model.model_dump()
             except ValidationError as e:
-                logger.warning(f"Workflow validation failed: {e}, using raw data")
+                logger.debug(f"Workflow validation failed: {e}, using raw data with defaults")
 
         data.setdefault("file_hashes", {})
         data.setdefault("file_mtimes", {})
@@ -113,7 +115,7 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
             workflow_model = WorkflowData(**data)
             data = workflow_model.model_dump()
         except ValidationError as e:
-            logger.warning(f"Workflow validation failed before save: {e}")
+            logger.debug(f"Workflow validation failed before save: {e}, saving raw data")
 
     if "history" in data and len(data["history"]) > 100:
         data["history"] = data["history"][-100:]
@@ -343,7 +345,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 class WorkflowTracker:

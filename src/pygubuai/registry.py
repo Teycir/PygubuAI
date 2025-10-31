@@ -92,17 +92,28 @@ class Registry:
             with self._lock('r') as f:
                 data = json.load(f)
                 
+                # Convert old format to new
+                if 'active_project' in data:
+                    data['active'] = data.pop('active_project')
+                
+                # Convert old string paths to new dict format
+                for name, project in list(data.get("projects", {}).items()):
+                    if isinstance(project, str):
+                        data["projects"][name] = {
+                            "path": project,
+                            "created": None,
+                            "modified": None,
+                            "description": "",
+                            "tags": []
+                        }
+                
                 # Validate with Pydantic if available
                 if PYDANTIC_AVAILABLE:
                     try:
-                        # Convert old format to new
-                        if 'active_project' in data:
-                            data['active'] = data.pop('active_project')
-                        
                         registry_model = RegistryData(**data)
                         data = registry_model.model_dump()
                     except ValidationError as e:
-                        logger.warning(f"Registry validation failed: {e}, using raw data")
+                        logger.debug(f"Registry validation failed: {e}, using converted data")
                 
                 self._cache = data
                 self._cache_time = now

@@ -42,7 +42,7 @@ class TestStatus(unittest.TestCase):
     
     def test_ui_ahead(self):
         """Test UI file modified after code"""
-        time.sleep(0.1)
+        time.sleep(2.5)
         self.ui_file.write_text("<interface>modified</interface>")
         
         status = get_project_status("testapp")
@@ -50,7 +50,7 @@ class TestStatus(unittest.TestCase):
     
     def test_code_ahead(self):
         """Test code modified after UI"""
-        time.sleep(0.1)
+        time.sleep(2.5)
         self.py_file.write_text("# Modified")
         
         status = get_project_status("testapp")
