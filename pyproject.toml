@@ -71,6 +71,11 @@ pygubu-export = "pygubuai.export:main"
 # v0.6.1+ features
 pygubu-data-export = "pygubuai.data_export:main"
 pygubu-db = "pygubuai.database:main"
+# v0.8.0 AI features
+pygubu-ai-context = "pygubuai.ai_context:main"
+pygubu-ai-analyze = "pygubuai.ai_analyzer:main"
+pygubu-ai-refactor = "pygubuai.ai_refactor:main"
+pygubu-ai-query = "pygubuai.ai_query:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pygubuai"]
