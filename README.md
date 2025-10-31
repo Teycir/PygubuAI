@@ -119,7 +119,7 @@ make test-coverage       # Run with coverage report
 make lint                # Run linters
 ```
 
-**Testing:** See [TESTING_QUICK_REF.md](TESTING_QUICK_REF.md) for testing guide.
+**Testing:** See [Testing Quick Ref](docs/TESTING_QUICK_REF.md) for testing guide.
 
 ### Uninstall
 
@@ -156,28 +156,31 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ## Documentation
 
-**📍 [Documentation Map](DOCS_MAP.md)** - Visual guide to all docs
+All documentation is in the [docs/](docs/) folder:
 
-### Quick Start
-- **[Quick Status](QUICK_STATUS.md)** - ⭐ At-a-glance project status (2 min)
-- **[Onboarding](ONBOARDING.md)** - ⭐ NEW! Get started in 15 minutes
-- **[Feature Showcase](FEATURE_SHOWCASE.md)** - v0.5.0 features with examples
+### Getting Started
+- **[Onboarding](docs/ONBOARDING.md)** - Get started in 15 minutes
+- **[Quick Status](docs/QUICK_STATUS.md)** - Project status at a glance
+- **[Feature Showcase](docs/FEATURE_SHOWCASE.md)** - v0.5.0 features with examples
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
 
 ### Development
-- **[Roadmap](ROADMAP.md)** - Long-term plan (v0.5-v1.0)
-- **[Implementation Plan](IMPLEMENTATION_PLAN.md)** - ⭐ NEW! Detailed tasks & timelines
-- **[Progress Tracker](PROGRESS_TRACKER.md)** - ⭐ NEW! Day-to-day tracking
-- **[Testing Quick Ref](TESTING_QUICK_REF.md)** - Testing guide and commands
+- **[Implementation Plan](docs/IMPLEMENTATION_PLAN.md)** - Detailed tasks and timelines
+- **[Progress Tracker](docs/PROGRESS_TRACKER.md)** - Day-to-day tracking
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
-- **[Developer Quick Ref](DEVELOPER_QUICK_REF.md)** - Fast lookup for common tasks
+- **[Developer Quick Ref](docs/DEVELOPER_QUICK_REF.md)** - Fast lookup for common tasks
+- **[Testing Quick Ref](docs/TESTING_QUICK_REF.md)** - Testing guide and commands
 
 ### Technical
 - **[Library Integrations](docs/LIBRARY_INTEGRATIONS.md)** - Rich, Pydantic, SQLAlchemy guide
+- **[Documentation Map](docs/DOCS_MAP.md)** - Visual guide to all docs
+
+### Project Info
+- **[Roadmap](ROADMAP.md)** - Long-term plan (v0.5-v1.0)
 - **[Architecture](ARCHITECTURE.md)** - System design and module structure
-- [Examples](examples/) - Sample projects
-- [Changelog](CHANGELOG.md) - Version history
-- [Contributing](CONTRIBUTING.md) - How to contribute
+- **[Changelog](CHANGELOG.md)** - Version history
+- **[Contributing](CONTRIBUTING.md)** - How to contribute
+- **[Examples](examples/)** - Sample projects
 
 ## What's New 🚀
 
@@ -194,8 +197,6 @@ pip uninstall pygubuai  # For pip install (recommended)
 - `rich>=13.0` - Beautiful terminal output
 - `pydantic>=2.0` - Data validation (models ready)
 
-**See:** [LIBRARY_INTEGRATION_PLAN.md](LIBRARY_INTEGRATION_PLAN.md)
-
 ### v0.5.0 - 10 High-Value Productivity Features
 
 1. **Project Status** - Check UI/code sync status instantly
@@ -209,18 +210,7 @@ pip uninstall pygubuai  # For pip install (recommended)
 9. **Batch Operations** - Manage multiple projects efficiently
 10. **Standalone Export** - Bundle UI into single Python file
 
-**See [FEATURE_SHOWCASE.md](FEATURE_SHOWCASE.md) for detailed examples!**
-
-## Recent Improvements (v0.4.0)
-
-- **Dry-Run Mode**: Preview operations with `--dry-run` flag
-- **Performance Caching**: 100x faster for large projects
-- **Accessibility Helpers**: WCAG compliance checking
-- **E2E Testing**: Complete workflow test coverage (95%+)
-- **Structured Logging**: Debug mode with `PYGUBUAI_LOG_LEVEL=DEBUG`
-- **Custom Templates**: Add your own in `~/.pygubuai/templates/`
-- **Multi-Project Watch**: Monitor multiple projects simultaneously
-- **Backup & Rollback**: Automatic backups with restoration
+**See [Feature Showcase](docs/FEATURE_SHOWCASE.md) for detailed examples!**
 
 ## Examples
 
