@@ -1,101 +1,64 @@
-"""Shared pytest fixtures and configuration."""
+"""Pytest configuration and fixtures"""
 import pytest
 import tempfile
+import shutil
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 
 @pytest.fixture
-def temp_project():
-    """
-    Create a temporary project directory.
-    
-    Yields:
-        Path: Temporary project directory that's automatically cleaned up
-    """
-    with tempfile.TemporaryDirectory() as tmpdir:
-        project_dir = Path(tmpdir) / "testproj"
-        project_dir.mkdir()
-        yield project_dir
+def tmp_path():
+    """Create temporary directory for tests"""
+    temp_dir = tempfile.mkdtemp()
+    yield Path(temp_dir)
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 @pytest.fixture
-def temp_registry(temp_project):
-    """
-    Create a temporary registry file.
-    
-    Yields:
-        Path: Temporary registry file path
-    """
-    registry_file = temp_project.parent / "registry.json"
-    yield registry_file
+def clean_registry(tmp_path):
+    """Create clean registry for testing"""
+    from pygubuai.registry import Registry
+    registry_path = tmp_path / "test_registry.json"
+    return Registry(str(registry_path))
 
 
 @pytest.fixture
-def mock_registry(temp_project):
-    """
-    Mock Registry with test project.
-    
-    Yields:
-        MagicMock: Mocked Registry instance
-    """
-    with patch('pygubuai.workflow.Registry') as MockRegistry:
-        mock_instance = MagicMock()
-        mock_instance.list_projects.return_value = {
-            'test': str(temp_project)
-        }
-        MockRegistry.return_value = mock_instance
-        yield mock_instance
+def sample_project(tmp_path):
+    """Create sample project for testing"""
+    from pygubuai.create import create_project
+    project_name = "test_project"
+    create_project(project_name, "test application", str(tmp_path))
+    return tmp_path / project_name
 
 
 @pytest.fixture
-def ui_file(temp_project):
-    """
-    Create a test UI file.
+def benchmark(request):
+    """Simple benchmark fixture"""
+    import time
     
-    Args:
-        temp_project: Temporary project directory fixture
+    class BenchmarkResult:
+        def __init__(self):
+            self.stats = type('obj', (object,), {
+                'stats': type('obj', (object,), {'mean': 0})()
+            })()
         
-    Returns:
-        Path: Path to created UI file
-    """
-    ui_file = temp_project / "test.ui"
-    ui_file.write_text("<interface></interface>")
-    return ui_file
-
-
-@pytest.fixture
-def workflow_file(temp_project):
-    """
-    Create a test workflow file.
+        def __call__(self, func):
+            start = time.time()
+            result = func()
+            elapsed = time.time() - start
+            self.stats.stats.mean = elapsed
+            return result
     
-    Args:
-        temp_project: Temporary project directory fixture
-        
-    Returns:
-        Path: Path to workflow file
-    """
-    workflow_file = temp_project / ".pygubu-workflow.json"
-    return workflow_file
+    return BenchmarkResult()
 
 
 def pytest_configure(config):
-    """Configure pytest with custom markers."""
+    """Configure pytest"""
     config.addinivalue_line(
-        "markers", "unit: Unit tests (fast, isolated)"
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
     config.addinivalue_line(
-        "markers", "integration: Integration tests (slower, multiple components)"
+        "markers", "integration: marks tests as integration tests"
     )
     config.addinivalue_line(
-        "markers", "slow: Slow tests (>1s runtime)"
-    )
-    config.addinivalue_line(
-        "markers", "security: Security-critical tests"
-    )
-    config.addinivalue_line(
-        "markers", "performance: Performance benchmarks"
-    )
-    config.addinivalue_line(
-        "markers", "cli: CLI integration tests"
+        "markers", "performance: marks tests as performance tests"
     )

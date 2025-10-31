@@ -1,39 +1,41 @@
-.PHONY: test test-fast test-unit test-integration test-security test-coverage clean help
+.PHONY: help install test test-fast test-integration test-performance test-coverage lint clean
 
 help:
-	@echo "PygubuAI Test Commands"
-	@echo "======================"
-	@echo "make test          - Run all tests"
-	@echo "make test-fast     - Run fast unit tests only"
-	@echo "make test-unit     - Run all unit tests"
-	@echo "make test-integration - Run integration tests"
-	@echo "make test-security - Run security tests"
-	@echo "make test-coverage - Run tests with HTML coverage report"
-	@echo "make clean         - Remove test artifacts"
+	@echo "PygubuAI Development Commands"
+	@echo ""
+	@echo "  make install           - Install package in development mode"
+	@echo "  make test              - Run all tests"
+	@echo "  make test-fast         - Run fast tests only"
+	@echo "  make test-integration  - Run integration tests"
+	@echo "  make test-performance  - Run performance tests"
+	@echo "  make test-coverage     - Run tests with coverage report"
+	@echo "  make lint              - Run linters"
+	@echo "  make clean             - Clean build artifacts"
+
+install:
+	pip install -e ".[dev]"
 
 test:
-	pytest -v
+	pytest tests/ -v
 
 test-fast:
-	pytest -m "unit and not slow" -v
-
-test-unit:
-	pytest -m unit -v
+	pytest tests/ -v -m "not slow and not integration and not performance"
 
 test-integration:
-	pytest -m integration -v
+	pytest tests/test_integration.py -v
 
-test-security:
-	pytest -m security -v
+test-performance:
+	pytest tests/test_performance.py -v
 
 test-coverage:
-	pytest --cov=pygubuai --cov-report=html --cov-report=term-missing
-	@echo "Coverage report generated in htmlcov/index.html"
+	pytest tests/ -v --cov=src/pygubuai --cov-report=html --cov-report=term
+
+lint:
+	flake8 src/pygubuai --max-line-length=120 --extend-ignore=E203,W503
+	black --check src/pygubuai
 
 clean:
-	rm -rf htmlcov/
-	rm -rf .pytest_cache/
-	rm -rf .coverage
-	rm -rf coverage.xml
+	rm -rf build/ dist/ *.egg-info
+	rm -rf htmlcov/ .coverage coverage.xml
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
