@@ -24,9 +24,30 @@ git clone https://github.com/Teycir/PygubuAI.git
 cd PygubuAI
 
 # Install
-./install.sh
+pip install -e .
 
-# Create your first AI-powered project
+# Enable trigger word (one-time setup)
+bash scripts/setup-trigger.sh scan ~/Repos
+
+# Now just say "pygubuai" in Amazon Q from any directory!
+```
+
+### Natural Language Mode (Recommended)
+
+Just mention "pygubuai" in Amazon Q chat:
+
+```
+pygubuai create a login form
+pygubuai add a submit button
+pygubuai show my projects
+pygubuai build a dashboard with charts
+```
+
+No commands to memorize - just describe what you want!
+
+### Command Line Mode (Alternative)
+
+```bash
 pygubu-create myapp 'login form with username and password'
 ```
 
@@ -61,13 +82,24 @@ tkinter-to-pygubu old_app.py
 ```
 Migrate legacy tkinter code to pygubu format.
 
-### AI Chat Integration
-In ANY conversation with your AI assistant:
-- "Add a button to my project"
-- "Change the color scheme"
-- "Show my pygubu projects"
+### AI Chat Integration - Trigger Word "pygubuai"
 
-Use `@pygubu-context` prompt for automatic context loading.
+Just say "pygubuai" + what you want in Amazon Q:
+
+```
+pygubuai create a todo app
+pygubuai add a delete button with red background
+pygubuai show my projects
+pygubuai I changed the UI, sync the code
+pygubuai build a settings panel with theme dropdown
+```
+
+Works from ANY directory after one-time setup:
+```bash
+bash scripts/setup-trigger.sh scan ~/Repos
+```
+
+No need to use `@pygubu-context` - the trigger word activates everything automatically!
 
 ### Watch Mode
 ```bash
@@ -96,6 +128,23 @@ Verify installation:
 pygubu-create --version
 pygubu-register list
 ```
+
+### Enable Natural Language Trigger (Recommended)
+
+One-time setup to enable "pygubuai" keyword:
+
+```bash
+# Mark all pygubu projects in your repos
+bash scripts/setup-trigger.sh scan ~/Repos
+
+# Or mark a specific directory
+bash scripts/setup-trigger.sh mark /path/to/project
+
+# Or mark PygubuAI repo itself
+bash scripts/setup-trigger.sh self
+```
+
+After setup, just say "pygubuai" in Amazon Q from any marked directory!
 
 ### Alternative: Shell Script (DEPRECATED)
 
@@ -244,10 +293,30 @@ See [examples/RUN_EXAMPLES.md](examples/RUN_EXAMPLES.md) for detailed instructio
 
 ## How It Works
 
-1. **Project Registry**: `~/.pygubu-registry.json` tracks all projects
-2. **AI Context**: `~/.amazonq/prompts/pygubu-context.md` provides context to AI
-3. **Workflow Tracking**: Each project has `.pygubu-workflow.json` for history
-4. **Auto-sync**: Tools detect changes and prompt for updates
+1. **Trigger Word**: Say "pygubuai" to activate natural language mode
+2. **Project Markers**: `.pygubuai` files mark enabled directories
+3. **Project Registry**: `~/.pygubu-registry.json` tracks all projects
+4. **AI Context**: `~/.amazonq/prompts/pygubu-context.md` provides context to AI
+5. **Workflow Tracking**: Each project has `.pygubu-workflow.json` for history
+6. **Auto-sync**: Tools detect changes and prompt for updates
+
+### Natural Language Workflow
+
+```
+You: pygubuai create a login form
+Amazon Q: [Detects trigger word]
+          [Loads PygubuAI context]
+          [Runs: pygubu-create login 'login form']
+          [Shows: Created at /path/to/login/]
+
+You: pygubuai add a submit button
+Amazon Q: [Loads active project]
+          [Modifies .ui file]
+          [Updates Python code]
+          [Shows: Added submit button]
+```
+
+No commands to memorize - just natural conversation!
 
 ## Requirements
 

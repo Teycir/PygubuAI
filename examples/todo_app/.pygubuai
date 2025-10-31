@@ -1,0 +1,6 @@
+# PygubuAI Project Marker
+# This file enables automatic PygubuAI context loading
+# When you mention "pygubuai" in Amazon Q chat, context is auto-loaded
+
+project_root: .
+enabled: true
