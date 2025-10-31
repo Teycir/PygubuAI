@@ -351,7 +351,8 @@ class WorkflowTracker:
     """Tracks workflow events for a project"""
 
     def __init__(self, project_path: str):
-        self.project_path = pathlib.Path(project_path)
+        from pathlib import Path
+        self.project_path = Path(project_path)
         self.workflow_file = self.project_path / ".pygubu-workflow.json"
 
     def add_event(self, action: str, description: str):

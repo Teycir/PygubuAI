@@ -206,7 +206,7 @@ def main():
             print(f"  {cat:12} - {desc} ({count} widgets)")
 
     else:
-        print(f"Unknown command: {command}")
+        print("Unknown command: " + command)
         sys.exit(1)
 
 
