@@ -15,6 +15,7 @@ class Suggestion:
     effort: str
     auto_fixable: bool
 
+
 def analyze_refactoring_opportunities(project_name: str) -> List[Suggestion]:
     """Analyze project for refactoring opportunities"""
     from .registry import Registry
@@ -36,6 +37,7 @@ def analyze_refactoring_opportunities(project_name: str) -> List[Suggestion]:
     suggestions.extend(_check_code_quality(analysis))
 
     return suggestions
+
 
 def _check_widget_consolidation(analysis: Dict) -> List[Suggestion]:
     """Check for widget consolidation opportunities"""
@@ -66,6 +68,7 @@ def _check_widget_consolidation(analysis: Dict) -> List[Suggestion]:
 
     return suggestions
 
+
 def _check_layout_optimization(analysis: Dict) -> List[Suggestion]:
     """Check for layout optimization opportunities"""
     suggestions = []
@@ -94,6 +97,7 @@ def _check_layout_optimization(analysis: Dict) -> List[Suggestion]:
         ))
 
     return suggestions
+
 
 def _check_accessibility(analysis: Dict) -> List[Suggestion]:
     """Check for accessibility improvements"""
@@ -127,6 +131,7 @@ def _check_accessibility(analysis: Dict) -> List[Suggestion]:
 
     return suggestions
 
+
 def _check_performance(analysis: Dict) -> List[Suggestion]:
     """Check for performance improvements"""
     suggestions = []
@@ -143,6 +148,7 @@ def _check_performance(analysis: Dict) -> List[Suggestion]:
         ))
 
     return suggestions
+
 
 def _check_code_quality(analysis: Dict) -> List[Suggestion]:
     """Check for code quality improvements"""
@@ -184,6 +190,7 @@ def _check_code_quality(analysis: Dict) -> List[Suggestion]:
 
     return suggestions
 
+
 def save_suggestions(project_name: str, suggestions: List[Suggestion]):
     """Save suggestions to file"""
     output_dir = Path.home() / ".amazonq" / "prompts"
@@ -199,6 +206,7 @@ def save_suggestions(project_name: str, suggestions: List[Suggestion]):
         json.dump(data, f, indent=2)
 
     return output_file
+
 
 def main():
     """CLI entry point"""

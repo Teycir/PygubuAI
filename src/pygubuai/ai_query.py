@@ -32,6 +32,7 @@ def query_project(project_name: str, query: str) -> str:
 
     return "I don't understand that query. Try: 'How many widgets?', 'What callbacks?', 'Show complexity'"
 
+
 def _count_widgets(analysis: Dict, context: Dict, query: str) -> str:
     """Count widgets"""
     if 'button' in query:
@@ -46,6 +47,7 @@ def _count_widgets(analysis: Dict, context: Dict, query: str) -> str:
     else:
         return f"Total widgets: {analysis['widget_count']}"
 
+
 def _list_callbacks(analysis: Dict, context: Dict, query: str) -> str:
     """List callbacks"""
     callbacks = context.get('callbacks', [])
@@ -54,9 +56,11 @@ def _list_callbacks(analysis: Dict, context: Dict, query: str) -> str:
 
     return f"Callbacks ({len(callbacks)}):\n" + "\n".join(f"- {cb}" for cb in callbacks)
 
+
 def _find_unused(analysis: Dict, context: Dict, query: str) -> str:
     """Find unused callbacks"""
     return "Unused callback detection requires code analysis (coming soon)"
+
 
 def _get_complexity(analysis: Dict, context: Dict, query: str) -> str:
     """Get complexity score"""
@@ -67,6 +71,7 @@ def _get_complexity(analysis: Dict, context: Dict, query: str) -> str:
            f"Callbacks: {analysis['callback_count']}\n" \
            f"Layouts: {', '.join(analysis['layout_patterns'])}"
 
+
 def _get_suggestions(analysis: Dict, context: Dict, query: str) -> str:
     """Get improvement suggestions"""
     suggestions = analysis.get('suggestions', [])
@@ -75,6 +80,7 @@ def _get_suggestions(analysis: Dict, context: Dict, query: str) -> str:
 
     return "Suggestions:\n" + "\n".join(f"- {s}" for s in suggestions)
 
+
 def _get_layout_info(analysis: Dict, context: Dict, query: str) -> str:
     """Get layout information"""
     layouts = analysis.get('layout_patterns', [])
@@ -82,6 +88,7 @@ def _get_layout_info(analysis: Dict, context: Dict, query: str) -> str:
         return "No layout managers detected"
 
     return f"Layout managers: {', '.join(layouts)}"
+
 
 def _list_widget_types(analysis: Dict, context: Dict, query: str) -> str:
     """List widget types"""
@@ -94,6 +101,7 @@ def _list_widget_types(analysis: Dict, context: Dict, query: str) -> str:
         lines.append(f"- {wtype}: {count}")
 
     return "\n".join(lines)
+
 
 def main():
     """CLI entry point"""

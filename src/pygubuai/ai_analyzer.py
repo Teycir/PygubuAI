@@ -39,6 +39,7 @@ def analyze_project(project_name: str) -> Dict:
 
     return analysis
 
+
 def _analyze_ui(ui_file: Path, analysis: Dict):
     """Analyze UI file"""
     try:
@@ -71,6 +72,7 @@ def _analyze_ui(ui_file: Path, analysis: Dict):
     except:
         pass
 
+
 def _analyze_code(py_file: Path, analysis: Dict):
     """Analyze Python code"""
     try:
@@ -79,6 +81,7 @@ def _analyze_code(py_file: Path, analysis: Dict):
         analysis["has_docstrings"] = '"""' in content or "'''" in content
     except:
         pass
+
 
 def _calculate_complexity(analysis: Dict):
     """Calculate complexity score"""
@@ -89,6 +92,7 @@ def _calculate_complexity(analysis: Dict):
     score += len(analysis["layout_patterns"]) * 1.0
 
     analysis["complexity"] = round(score, 1)
+
 
 def _generate_suggestions(analysis: Dict):
     """Generate improvement suggestions"""
@@ -107,6 +111,7 @@ def _generate_suggestions(analysis: Dict):
         suggestions.append("Add docstrings for better documentation")
 
     analysis["suggestions"] = suggestions
+
 
 def main():
     """CLI entry point"""

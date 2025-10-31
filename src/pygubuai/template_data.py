@@ -58,6 +58,7 @@ WIDGET_MAP = {
     "spinbox": "ttk.Spinbox",
 }
 
+
 def get_template(name: str) -> Dict[str, Any]:
     """Get template by name.
 
@@ -69,6 +70,7 @@ def get_template(name: str) -> Dict[str, Any]:
     """
     return TEMPLATES.get(name)
 
+
 def list_templates() -> List[Tuple[str, str]]:
     """List all available templates.
 
@@ -76,6 +78,7 @@ def list_templates() -> List[Tuple[str, str]]:
         List of (name, description) tuples
     """
     return [(name, tmpl["description"]) for name, tmpl in TEMPLATES.items()]
+
 
 def validate_widget(widget: Dict[str, Any]) -> None:
     """Validate widget structure.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Theme switcher for pygubu projects"""
 import xml.etree.ElementTree as ET
-from pathlib import Path
+
 from typing import Optional
 import shutil
 from .registry import Registry
@@ -17,9 +17,11 @@ AVAILABLE_THEMES = {
     "aqua": "macOS native theme (macOS only)",
 }
 
+
 def list_themes():
     """List all available themes"""
     return AVAILABLE_THEMES
+
 
 def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool:
     """Apply theme to project UI file"""
@@ -64,6 +66,7 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
     tree.write(ui_file, encoding='utf-8', xml_declaration=True)
     return True
 
+
 def get_current_theme(project_name: str) -> Optional[str]:
     """Get current theme from project"""
     registry = Registry()
@@ -84,6 +87,7 @@ def get_current_theme(project_name: str) -> Optional[str]:
         return theme_prop.text if theme_prop is not None else "default"
     except:
         return None
+
 
 def main():
     """CLI entry point"""
@@ -136,7 +140,8 @@ def main():
             print(f"\nTheme: {info['name']}")
             print(f"Description: {info['description']}")
             print(f"Base: {info['base']}")
-            print(f"\nColors:")
+            print("
+Colors:")
             for key, value in info['colors'].items():
                 print(f"  {key:15} {value}")
         else:

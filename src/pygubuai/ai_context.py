@@ -9,7 +9,6 @@ def generate_context(project_name: str) -> Dict:
     """Generate rich AI context for project"""
     from .registry import Registry
     from .db import get_session, SQLALCHEMY_AVAILABLE
-    from .db.operations import get_project, get_workflow_events
 
     registry = Registry()
     project_path = registry.get_project(project_name)
@@ -55,6 +54,7 @@ def generate_context(project_name: str) -> Dict:
 
     return context
 
+
 def _parse_ui_file(ui_file: Path) -> tuple:
     """Parse UI file for widgets and callbacks"""
     import xml.etree.ElementTree as ET
@@ -79,12 +79,13 @@ def _parse_ui_file(ui_file: Path) -> tuple:
     except:
         return [], []
 
+
 def format_for_ai(context: Dict) -> str:
     """Format context for AI consumption"""
     lines = [
         f"# Project: {context['project']}",
         f"Path: {context['path']}",
-        f"",
+        "",
         f"## Widgets ({context['metrics'].get('widget_count', 0)})",
     ]
 
@@ -102,6 +103,7 @@ def format_for_ai(context: Dict) -> str:
             lines.append(f"- {event['action']}: {event['description']}")
 
     return "\n".join(lines)
+
 
 def main():
     """CLI entry point"""

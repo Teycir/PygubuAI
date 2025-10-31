@@ -12,6 +12,7 @@ from .generator import generate_base_ui_xml_structure, generate_python_app_struc
 
 logger = logging.getLogger(__name__)
 
+
 def create_from_template(name: str, template_name: str, skip_validation: bool = False,
                         dry_run: bool = False, init_git: bool = False):
     """Create project from template"""
@@ -69,6 +70,7 @@ def create_from_template(name: str, template_name: str, skip_validation: bool = 
         logger.error(f"[ERROR] Unexpected error: {e}")
         sys.exit(1)
 
+
 def main(args=None):
     """CLI entry point"""
     logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -79,7 +81,7 @@ def main(args=None):
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
     subparsers = parser.add_subparsers(dest='command')
 
-    list_parser = subparsers.add_parser('list', help='List available templates')
+    # list_parser = subparsers.add_parser('list', help='List available templates')
 
     create_parser = subparsers.add_parser('create', help='Create project from template')
     create_parser.add_argument('name', help='Project name')

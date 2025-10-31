@@ -6,6 +6,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 def get_file_hash(filepath: Path) -> str:
     """Calculate SHA-256 hash of file contents.
 

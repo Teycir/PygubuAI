@@ -139,13 +139,16 @@ THEME_PRESETS = {
     }
 }
 
+
 def get_preset(name: str) -> dict:
     """Get theme preset by name"""
     return THEME_PRESETS.get(name)
 
+
 def list_presets() -> list:
     """List all preset names"""
     return list(THEME_PRESETS.keys())
+
 
 def validate_preset(preset_data: dict) -> bool:
     """Validate preset structure"""

@@ -3,7 +3,6 @@ import tempfile
 import shutil
 from pathlib import Path
 from .registry import Registry
-from .theme_advanced import apply_preset
 from .theme_builder import load_theme
 
 def preview_theme(project_name: str, theme_name: str, watch: bool = False):
@@ -44,6 +43,7 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
     finally:
         temp_ui.unlink(missing_ok=True)
 
+
 def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
     """Show preview window"""
     root = tk.Tk()
@@ -55,7 +55,7 @@ def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
         builder.get_object('mainwindow', root)
 
         # Add info label
-        info = tk.Label(root, text=f"Preview Mode - Theme: {theme_name}", 
+        info = tk.Label(root, text=f"Preview Mode - Theme: {theme_name}",
                        bg="yellow", fg="black")
         info.pack(side="top", fill="x")
 

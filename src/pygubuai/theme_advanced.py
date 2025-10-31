@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Optional
 import shutil
 from .registry import Registry
-from .theme_presets import THEME_PRESETS, get_preset
 
 WIDGET_COLOR_MAP = {
     "ttk.Button": {"background": "button_bg", "foreground": "button_fg"},
@@ -14,6 +13,7 @@ WIDGET_COLOR_MAP = {
     "ttk.Combobox": {"fieldbackground": "entry_bg", "foreground": "entry_fg"},
     "tk.Text": {"background": "entry_bg", "foreground": "entry_fg"},
 }
+
 
 def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bool:
     """Apply theme preset to project"""
@@ -53,6 +53,7 @@ def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bo
     tree.write(ui_file, encoding='utf-8', xml_declaration=True)
     return True
 
+
 def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
     """Apply colors to widget based on type"""
     color_map = WIDGET_COLOR_MAP.get(widget_type, {})
@@ -66,6 +67,7 @@ def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
             # Add new property
             prop = ET.SubElement(widget_element, "property", name=prop_name)
             prop.text = colors[color_key]
+
 
 def get_preset_info(preset_name: str) -> Optional[dict]:
     """Get detailed preset information"""
