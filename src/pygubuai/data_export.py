@@ -1,13 +1,13 @@
 """Data export functionality for PygubuAI projects"""
 
 from pathlib import Path
-from typing import List
+from typing import List, Union, Optional
 import xml.etree.ElementTree as ET
 from .registry import Registry
 from .utils import validate_path
 
 
-def add_export_capability(project_name: str, formats: List[str], widget_id: str | None = None):
+def add_export_capability(project_name: str, formats: List[str], widget_id: Union[str, None] = None) -> bool:
     """Add export capability to project"""
     registry = Registry()
     project_path = registry.get_project(project_name)
@@ -25,7 +25,7 @@ def add_export_capability(project_name: str, formats: List[str], widget_id: str 
     return True
 
 
-def _add_export_button(project_path: str, project_name: str, formats: List[str]):
+def _add_export_button(project_path: str, project_name: str, formats: List[str]) -> None:
     """Add export button to UI file"""
     ui_file = Path(project_path) / f"{project_name}.ui"
     if not ui_file.exists():
@@ -54,7 +54,7 @@ def _add_export_button(project_path: str, project_name: str, formats: List[str])
     tree.write(ui_file, encoding="utf-8", xml_declaration=True)
 
 
-def _generate_export_code(project_path: str, project_name: str, formats: List[str], widget_id: str):
+def _generate_export_code(project_path: str, project_name: str, formats: List[str], widget_id: Optional[str]) -> None:
     """Generate export callback code"""
     py_file = Path(project_path) / f"{project_name}.py"
     if not py_file.exists():
@@ -71,7 +71,7 @@ def _generate_export_code(project_path: str, project_name: str, formats: List[st
         py_file.write_text(code)
 
 
-def _create_export_method(formats: List[str], widget_id: str | None = None) -> str:
+def _create_export_method(formats: List[str], widget_id: Union[str, None] = None) -> str:
     """Create export method code"""
     method = '''    def on_export(self):
         """Export data"""

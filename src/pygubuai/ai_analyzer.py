@@ -41,7 +41,7 @@ def analyze_project(project_name: str) -> Dict:
     return analysis
 
 
-def _analyze_ui(ui_file: Path, analysis: Dict):
+def _analyze_ui(ui_file: Path, analysis: Dict) -> None:
     """Analyze UI file"""
     try:
         tree = ET.parse(ui_file)
@@ -50,7 +50,7 @@ def _analyze_ui(ui_file: Path, analysis: Dict):
         widgets = root.findall(".//object[@id]")
         analysis["widget_count"] = len(widgets)
 
-        widget_types = Counter()
+        widget_types: Counter[str] = Counter()
         layouts = set()
         callbacks = set()
 
@@ -74,7 +74,7 @@ def _analyze_ui(ui_file: Path, analysis: Dict):
         pass
 
 
-def _analyze_code(py_file: Path, analysis: Dict):
+def _analyze_code(py_file: Path, analysis: Dict) -> None:
     """Analyze Python code"""
     try:
         content = py_file.read_text()
@@ -84,7 +84,7 @@ def _analyze_code(py_file: Path, analysis: Dict):
         pass
 
 
-def _calculate_complexity(analysis: Dict):
+def _calculate_complexity(analysis: Dict) -> None:
     """Calculate complexity score"""
     score = 0.0
 
@@ -95,7 +95,7 @@ def _calculate_complexity(analysis: Dict):
     analysis["complexity"] = round(score, 1)
 
 
-def _generate_suggestions(analysis: Dict):
+def _generate_suggestions(analysis: Dict) -> None:
     """Generate improvement suggestions"""
     suggestions = []
 

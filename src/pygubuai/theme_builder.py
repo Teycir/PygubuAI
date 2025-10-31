@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union, Dict, Any
 from .theme_presets import validate_preset
 
 
@@ -13,7 +13,7 @@ def get_themes_dir() -> Path:
     return themes_dir
 
 
-def create_custom_theme(name: str, base: str = "clam", colors: dict | None = None, description: str = "") -> bool:
+def create_custom_theme(name: str, base: str = "clam", colors: Union[Dict[str, Any], None] = None, description: str = "") -> Dict[str, Any]:
     """Create custom theme"""
     theme_data = {
         "name": name,
@@ -26,10 +26,10 @@ def create_custom_theme(name: str, base: str = "clam", colors: dict | None = Non
         raise ValueError("Invalid theme data")
 
     save_theme(name, theme_data)
-    return theme_data  # type: ignore[return-value]
+    return theme_data
 
 
-def save_theme(name: str, theme_data: dict):
+def save_theme(name: str, theme_data: Dict[str, Any]) -> None:
     """Save theme to user directory"""
     themes_dir = get_themes_dir()
     theme_file = themes_dir / f"{name}.json"
@@ -38,7 +38,7 @@ def save_theme(name: str, theme_data: dict):
         json.dump(theme_data, f, indent=2)
 
 
-def load_theme(name: str) -> Optional[dict]:
+def load_theme(name: str) -> Optional[Dict[str, Any]]:
     """Load theme from user directory"""
     themes_dir = get_themes_dir()
     theme_file = themes_dir / f"{name}.json"
@@ -47,16 +47,17 @@ def load_theme(name: str) -> Optional[dict]:
         return None
 
     with open(theme_file, "r") as f:
-        return json.load(f)
+        data: Dict[str, Any] = json.load(f)
+        return data
 
 
-def list_custom_themes() -> list:
+def list_custom_themes() -> list[str]:
     """List all custom themes"""
     themes_dir = get_themes_dir()
     return [f.stem for f in themes_dir.glob("*.json")]
 
 
-def export_theme(name: str, output_path: str = None) -> str:
+def export_theme(name: str, output_path: Optional[str] = None) -> str:
     """Export theme to file"""
     theme = load_theme(name)
     if not theme:
@@ -71,13 +72,14 @@ def export_theme(name: str, output_path: str = None) -> str:
     return output_path
 
 
-def import_theme(source: str):
+def import_theme(source: str) -> str:
     """Import theme from file"""
     with open(source, "r") as f:
-        theme_data = json.load(f)
+        theme_data: Dict[str, Any] = json.load(f)
 
     if not validate_preset(theme_data):
         raise ValueError("Invalid theme file")
 
-    save_theme(theme_data["name"], theme_data)
-    return theme_data  # type: ignore[return-value]["name"]
+    theme_name: str = theme_data["name"]
+    save_theme(theme_name, theme_data)
+    return theme_name

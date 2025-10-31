@@ -2,7 +2,7 @@
 """Batch operations across multiple projects"""
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Union, Any
 from .registry import Registry
 from .theme import apply_theme
 from .validate_project import validate_project
@@ -50,7 +50,7 @@ def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
     return True
 
 
-def batch_update_theme(theme_name: str, projects: list[str] | None = None) -> Dict[str, bool]:
+def batch_update_theme(theme_name: str, projects: Union[List[str], None] = None) -> Dict[str, bool]:
     """Apply theme to multiple projects"""
     registry = Registry()
 
@@ -68,7 +68,7 @@ def batch_update_theme(theme_name: str, projects: list[str] | None = None) -> Di
     return results
 
 
-def batch_validate(projects: list[str] | None = None) -> Dict[str, List]:
+def batch_validate(projects: Union[List[str], None] = None) -> Dict[str, List[Any]]:
     """Validate multiple projects"""
     registry = Registry()
 

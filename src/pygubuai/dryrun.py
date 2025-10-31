@@ -21,18 +21,18 @@ class DryRunOperation:
 class DryRunContext:
     """Context manager for dry-run operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.operations: List[DryRunOperation] = []
         self.enabled = False
 
-    def __enter__(self):
+    def __enter__(self) -> "DryRunContext":
         self.enabled = True
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self.enabled = False
 
-    def record(self, action: str, target: str, **details):
+    def record(self, action: str, target: str, **details: Any) -> None:
         """Record an operation."""
         if self.enabled:
             self.operations.append(DryRunOperation(action, target, details))
@@ -53,12 +53,12 @@ class DryRunContext:
 _context = DryRunContext()
 
 
-def enable_dryrun():
+def enable_dryrun() -> None:
     """Enable dry-run mode."""
     _context.enabled = True
 
 
-def disable_dryrun():
+def disable_dryrun() -> None:
     """Disable dry-run mode."""
     _context.enabled = False
 
@@ -68,7 +68,7 @@ def is_dryrun() -> bool:
     return _context.enabled
 
 
-def record_operation(action: str, target: str, **details):
+def record_operation(action: str, target: str, **details: Any) -> None:
     """Record a dry-run operation."""
     _context.record(action, target, **details)
 
@@ -78,6 +78,6 @@ def get_preview() -> str:
     return _context.preview()
 
 
-def clear_operations():
+def clear_operations() -> None:
     """Clear recorded operations."""
     _context.operations.clear()

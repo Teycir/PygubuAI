@@ -4,6 +4,7 @@ import re
 import hashlib
 import logging
 from pathlib import Path
+from typing import Optional
 
 
 logger = logging.getLogger(__name__)
@@ -93,7 +94,7 @@ def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False
     return p
 
 
-def validate_safe_path(path: str, base_dir: str | None = None) -> Path:
+def validate_safe_path(path: str, base_dir: Optional[str] = None) -> Path:
     """Validate path is safe and within allowed directory.
 
     Args:

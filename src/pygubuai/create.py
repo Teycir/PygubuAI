@@ -4,7 +4,7 @@ import sys
 import logging
 import argparse
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from . import __version__
 from .errors import PygubuAIError, validate_pygubu
@@ -25,7 +25,7 @@ def create_project(
     dry_run: bool = False,
     init_git: bool = False,
     template: Optional[str] = None,
-    tags: list = None,
+    tags: Union[list, None] = None,
 ) -> None:
     """Create project with error handling"""
     try:

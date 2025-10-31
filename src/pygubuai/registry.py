@@ -4,7 +4,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
@@ -148,7 +148,7 @@ class Registry:
         self._cache = None
         self._cache_time = None
 
-    def add_project(self, name: str, path: str, description: str = "", tags: list[str] | None = None):
+    def add_project(self, name: str, path: str, description: str = "", tags: Union[list[str], None] = None) -> None:
         """Add project with metadata"""
         from .utils import validate_path
 
@@ -171,8 +171,11 @@ class Registry:
         data = self._read()
         project = data["projects"].get(name)
         if isinstance(project, dict):
-            return project  # type: ignore[no-any-return]["path"]  # type: ignore[no-any-return]
-        return project  # type: ignore[no-any-return]
+            path_value: str = project["path"]
+            return path_value
+        if isinstance(project, str):
+            return project
+        return None
 
     def get_project_metadata(self, name: str) -> Optional[Dict]:
         """Get full project metadata"""
@@ -218,7 +221,8 @@ class Registry:
         """Get active project"""
         data = self._read()
         # Support both old and new field names
-        return data  # type: ignore[no-any-return].get("active") or data.get("active_project")
+        active: Optional[str] = data.get("active") or data.get("active_project")
+        return active
 
     def search_projects(self, query: str) -> Dict[str, Dict]:
         """Search projects by name, description, or tags"""
@@ -236,7 +240,7 @@ class Registry:
 
         return results
 
-    def update_project_metadata(self, name: str, description: str | None = None, tags: list[str] | None = None):
+    def update_project_metadata(self, name: str, description: Union[str, None] = None, tags: Union[list[str], None] = None) -> None:
         """Update project metadata"""
         data = self._read()
         if name not in data["projects"]:

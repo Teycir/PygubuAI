@@ -8,7 +8,7 @@ import hashlib
 import logging
 import argparse
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any, Tuple
 from .registry import Registry
 from .errors import ProjectNotFoundError
 from .config import Config
@@ -34,7 +34,7 @@ def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
         return None
 
 
-def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], prev_mtime: Optional[float]) -> tuple:
+def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], prev_mtime: Optional[float]) -> Tuple[Optional[str], Optional[float]]:
     """Get hash only if mtime changed (optimization)"""
     if not filepath or not isinstance(filepath, pathlib.Path):
         logger.error(f"Invalid filepath: {filepath}")
@@ -52,7 +52,7 @@ def get_file_hash_if_changed(filepath: pathlib.Path, prev_hash: Optional[str], p
         return None, None
 
 
-def load_workflow(project_path: pathlib.Path) -> Dict:
+def load_workflow(project_path: pathlib.Path) -> Dict[str, Any]:
     """Load workflow tracking file with validation"""
     if not project_path or not isinstance(project_path, pathlib.Path):
         raise ValueError(f"Invalid project_path: {project_path}")
@@ -94,13 +94,14 @@ def load_workflow(project_path: pathlib.Path) -> Dict:
         data.setdefault("last_sync", None)
         data.setdefault("history", [])
         data.setdefault("project", project_path.name)
-        return data
+        result: Dict[str, Any] = data
+        return result
     except Exception as e:
         logger.warning(f"Failed to load workflow file: {e}. Using defaults.")
         return {"project": project_path.name, "file_hashes": {}, "file_mtimes": {}, "last_sync": None, "history": []}
 
 
-def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
+def save_workflow(project_path: pathlib.Path, data: Dict[str, Any]) -> None:
     """Save workflow tracking with atomic write and validation."""
     import tempfile
     import shutil
@@ -263,7 +264,7 @@ def watch_project(project_name: str, interval: Optional[float] = None) -> None:
 
 
 def _check_ui_changes(
-    ui_files: List[pathlib.Path], workflow: Dict, project_path: pathlib.Path, project_name: str
+    ui_files: List[pathlib.Path], workflow: Dict[str, Any], project_path: pathlib.Path, project_name: str
 ) -> None:
     """Check UI files for changes and update workflow"""
     for ui_file in ui_files:
@@ -375,7 +376,8 @@ class WorkflowTracker:
 
         save_workflow(self.project_path, workflow)
 
-    def get_history(self) -> list:
+    def get_history(self) -> List[Any]:
         """Get workflow history"""
         workflow = load_workflow(self.project_path)
-        return workflow.get("history", [])
+        history: List[Any] = workflow.get("history", [])
+        return history

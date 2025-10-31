@@ -10,7 +10,8 @@ def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
 
     def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
         hex_color = hex_color.lstrip("#")
-        return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        rgb_tuple = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        return (rgb_tuple[0], rgb_tuple[1], rgb_tuple[2])
 
     def luminance(rgb: Tuple[int, int, int]) -> float:
         r, g, b = [x / 255.0 for x in rgb]
@@ -54,7 +55,7 @@ def validate_keyboard_navigation(widgets: List[Dict]) -> List[str]:
     if not widgets or not isinstance(widgets, list):
         return ["No widgets provided for validation"]
 
-    issues: list[str] = []
+    issues: List[str] = []
     has_focus = any(w.get("takefocus") == "1" for w in widgets)
 
     if not has_focus:
@@ -72,7 +73,7 @@ def check_accessibility(ui_data: Dict) -> Dict[str, List[str]]:
     if not ui_data or not isinstance(ui_data, dict):
         return {"validation": ["Invalid UI data provided"]}
 
-    issues = {"contrast": [], "keyboard": [], "labels": []}
+    issues: Dict[str, List[str]] = {"contrast": [], "keyboard": [], "labels": []}
 
     widgets = ui_data.get("widgets", [])
 

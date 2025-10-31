@@ -2,7 +2,7 @@
 """AI context generation for enhanced Amazon Q integration"""
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Tuple
 from datetime import datetime, timezone
 
 
@@ -17,7 +17,7 @@ def generate_context(project_name: str) -> Dict:
     if not project_path:
         return {"error": f"Project '{project_name}' not found"}
 
-    context = {
+    context: Dict = {
         "project": project_name,
         "path": project_path,
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -33,8 +33,9 @@ def generate_context(project_name: str) -> Dict:
         widgets, callbacks = _parse_ui_file(ui_file)
         context["widgets"] = widgets
         context["callbacks"] = callbacks
-        context["metrics"]["widget_count"] = len(widgets)
-        context["metrics"]["callback_count"] = len(callbacks)
+        metrics_dict: Dict = context["metrics"]
+        metrics_dict["widget_count"] = len(widgets)
+        metrics_dict["callback_count"] = len(callbacks)
 
     # Get history from database if available
     if SQLALCHEMY_AVAILABLE:
@@ -44,17 +45,18 @@ def generate_context(project_name: str) -> Dict:
                 from .db.operations import get_workflow_events
 
                 events = get_workflow_events(session, project_name, limit=10)
-                context["history"] = [
+                history_list: List = [
                     {"action": e.action, "description": e.description, "timestamp": e.timestamp.isoformat()}
                     for e in events
                 ]
+                context["history"] = history_list
             finally:
                 session.close()
 
     return context
 
 
-def _parse_ui_file(ui_file: Path) -> tuple:
+def _parse_ui_file(ui_file: Path) -> Tuple[List[Dict[str, str]], List[str]]:
     """Parse UI file for widgets and callbacks"""
     import xml.etree.ElementTree as ET
 
@@ -62,13 +64,14 @@ def _parse_ui_file(ui_file: Path) -> tuple:
         tree = ET.parse(ui_file)
         root = tree.getroot()
 
-        widgets = []
+        widgets: List[Dict[str, str]] = []
         callbacks = set()
 
         for obj in root.findall(".//object[@id]"):
             widget_id = obj.get("id")
             widget_class = obj.get("class")
-            widgets.append({"id": widget_id, "class": widget_class})
+            if widget_id and widget_class:
+                widgets.append({"id": widget_id, "class": widget_class})
 
             for prop in obj.findall("property[@name='command']"):
                 if prop.text:

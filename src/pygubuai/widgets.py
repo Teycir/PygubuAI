@@ -96,10 +96,13 @@ def list_widgets(category: Optional[str] = None) -> Dict[str, Dict]:
 
 def search_widgets(query: str) -> Dict[str, Dict]:
     """Search widgets by name or description"""
-    query_lower = query.lower()
+    query_lower = query.lower() if isinstance(query, str) else str(query).lower()
     results = {}
     for name, info in WIDGET_LIBRARY.items():
-        if query_lower in name.lower() or query_lower in info["description"].lower():
+        name_str = name if isinstance(name, str) else str(name)
+        desc = info["description"]
+        desc_str = desc if isinstance(desc, str) else str(desc)
+        if query_lower in name_str.lower() or query_lower in desc_str.lower():
             results[name] = info
     return results
 

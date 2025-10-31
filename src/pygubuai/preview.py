@@ -4,10 +4,10 @@ import tkinter as tk
 from .registry import Registry
 
 
-def preview_ui(ui_file_path: str, watch: bool = False):
+def preview_ui(ui_file_path: str, watch: bool = False) -> None:
     """Preview UI file in Tkinter window"""
     from .errors import DependencyError, UIParseError, FileOperationError
-    from .utils import validate_safe_path
+    from .utils import validate_path
 
     try:
         import pygubu
@@ -15,7 +15,7 @@ def preview_ui(ui_file_path: str, watch: bool = False):
         raise DependencyError("pygubu", "pip install pygubu>=0.39") from e
 
     try:
-        ui_path = validate_safe_path(ui_file_path, must_exist=True)
+        ui_path = validate_path(ui_file_path, must_exist=True)
     except ValueError as e:
         raise FileOperationError("read", ui_file_path, e) from e
 
@@ -71,10 +71,10 @@ def preview_ui(ui_file_path: str, watch: bool = False):
     root.mainloop()
 
 
-def preview_project(project_name: str, watch: bool = False):
+def preview_project(project_name: str, watch: bool = False) -> None:
     """Preview project by name"""
     from .errors import ProjectNotFoundError
-    from .utils import validate_safe_path
+    from .utils import validate_path
 
     registry = Registry()
     project_path = registry.get_project(project_name)
@@ -82,7 +82,7 @@ def preview_project(project_name: str, watch: bool = False):
     if not project_path:
         raise ProjectNotFoundError(project_name)
 
-    safe_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    safe_path = validate_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = safe_path / f"{project_name}.ui"
 
     if not ui_file.exists():

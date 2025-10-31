@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Widget inspector for UI files"""
 import xml.etree.ElementTree as ET
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 from .registry import Registry
 from .utils import validate_path
 
@@ -36,7 +36,7 @@ def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
         return None
 
     # Extract info
-    info = {
+    info: Dict[str, Any] = {
         "id": widget_id,
         "class": widget.get("class"),
         "properties": {},
@@ -46,25 +46,36 @@ def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
     }
 
     # Get properties
+    props_dict: Dict[str, Any] = info["properties"]  # type: ignore[assignment]
     for prop in widget.findall("property"):
-        info["properties"][prop.get("name")] = prop.text
+        prop_name = prop.get("name")
+        if prop_name:
+            props_dict[prop_name] = prop.text
 
     # Get layout
     layout = widget.find("layout")
+    layout_dict: Dict[str, Any] = info["layout"]  # type: ignore[assignment]
     if layout is not None:
-        info["layout"]["manager"] = layout.get("manager")
+        layout_dict["manager"] = layout.get("manager")
         for prop in layout.findall("property"):
-            info["layout"][prop.get("name")] = prop.text
+            prop_name = prop.get("name")
+            if prop_name:
+                layout_dict[prop_name] = prop.text
 
     # Get children
+    children_list: List[Any] = info["children"]  # type: ignore[assignment]
     for child in widget.findall(".//object[@id]"):
         if child != widget:
-            info["children"].append(child.get("id"))
+            child_id = child.get("id")
+            if child_id:
+                children_list.append(child_id)
 
     # Find parent
     for obj in root.findall(".//object[@id]"):
         if widget in obj.findall(".//object"):
-            info["parent"] = obj.get("id")
+            parent_id = obj.get("id")
+            if parent_id:
+                info["parent"] = parent_id
             break
 
     return info

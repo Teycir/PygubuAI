@@ -3,7 +3,7 @@
 import time
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 from datetime import datetime, timezone
 
 from .workflow import get_file_hash, load_workflow, save_workflow, get_watch_interval, get_file_patterns
@@ -13,7 +13,7 @@ from .errors import ProjectNotFoundError
 logger = logging.getLogger(__name__)
 
 
-def watch_multiple_projects(project_names: List[str], interval: float = None, patterns: List[str] = None):
+def watch_multiple_projects(project_names: List[str], interval: Optional[float] = None, patterns: Union[List[str], None] = None) -> None:
     """Watch multiple projects simultaneously"""
     registry = Registry()
     all_projects = registry.list_projects()
@@ -53,7 +53,7 @@ def watch_multiple_projects(project_names: List[str], interval: float = None, pa
         print("\n\nOK Stopped watching")
 
 
-def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List[str]):
+def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List[str]) -> None:
     """Check single project for changes"""
     ui_files: list[Path] = []
     for pattern in patterns:
@@ -80,7 +80,7 @@ def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List
             save_workflow(path, workflow)
 
 
-def watch_all_projects(interval: float = None, patterns: List[str] = None):
+def watch_all_projects(interval: Optional[float] = None, patterns: Union[List[str], None] = None) -> None:
     """Watch all registered projects"""
     registry = Registry()
     projects = registry.list_projects()

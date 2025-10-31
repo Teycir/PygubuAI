@@ -32,7 +32,7 @@ class ProgressBar:
         # elapsed = time.time() - self.start_time
         # rate = self.current / elapsed if elapsed > 0 else 0
 
-        sys.stdout.write(f"\r{self.prefix} [{bar}] {percent*100:.0f}% ({self.current}/{self.total})")
+        sys.stdout.write(f"\r{self.prefix} [{bar}] {percent * 100:.0f}% ({self.current}/{self.total})")
         sys.stdout.flush()
 
         if self.current >= self.total:
@@ -57,7 +57,8 @@ class Spinner:
     def stop(self, final_message: Optional[str] = None):
         """Stop spinner"""
         self.running = False
-        sys.stdout.write("\r" + " " * (len(self.message) + 10) + "\r")
+        clear_line = " " * (len(self.message) + 10)
+        sys.stdout.write(f"\r{clear_line}\r")
         if final_message:
             sys.stdout.write(final_message + "\n")
         sys.stdout.flush()

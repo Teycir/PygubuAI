@@ -5,9 +5,10 @@ import shutil
 from pathlib import Path
 from .registry import Registry
 from .theme_builder import load_theme
+from typing import Dict, Any
 
 
-def preview_theme(project_name: str, theme_name: str, watch: bool = False):
+def preview_theme(project_name: str, theme_name: str, watch: bool = False) -> None:
     """Preview theme without saving"""
     try:
         import tkinter as tk
@@ -34,12 +35,13 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
         # Apply theme to temp
         from .theme_presets import get_preset
 
-        preset = get_preset(theme_name)
+        preset: Dict[str, Any] = get_preset(theme_name)  # type: ignore[assignment]
         if not preset:
             # Try custom theme
-            preset = load_theme(theme_name)
-            if not preset:
+            preset_custom = load_theme(theme_name)
+            if not preset_custom:
                 raise ValueError(f"Theme '{theme_name}' not found")
+            preset = preset_custom
 
         # Apply to temp file (simplified - just show preview)
         _show_preview(temp_ui, theme_name, tk, pygubu)
@@ -47,7 +49,7 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
         temp_ui.unlink(missing_ok=True)
 
 
-def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
+def _show_preview(ui_file: Path, theme_name: str, tk: Any, pygubu: Any) -> None:
     """Show preview window"""
     root = tk.Tk()
     root.title(f"Preview: {theme_name}")

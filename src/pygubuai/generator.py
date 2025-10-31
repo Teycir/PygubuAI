@@ -1,6 +1,6 @@
 """Centralized code generation functions for PygubuAI."""
 
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Optional
 
 
 def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[str, Dict[str, Any]]]) -> str:
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     return code
 
 
-def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: str = None) -> str:
+def generate_readme_content(project_name: str, description: str, ui_file_name: str, template_name: Optional[str] = None) -> str:
     """Generate README.md content."""
     from .utils import find_pygubu_designer
     import html
