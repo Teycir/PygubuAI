@@ -17,13 +17,16 @@ def _get_file_hash(filepath: Path) -> str:
 
 def get_cached(filepath: Path) -> Optional[dict]:
     """Get cached parsed UI data if valid."""
-    from .utils import validate_safe_path
+    from .utils import validate_path
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    safe_filepath = validate_safe_path(str(filepath), must_exist=True)
-    cache_file = CACHE_DIR / f"{safe_filepath.stem}_{_get_file_hash(safe_filepath)}.json"
-    
-    if cache_file.exists():
-        return json.loads(cache_file.read_text())
+    try:
+        safe_filepath = validate_path(str(filepath), must_exist=True)
+        cache_file = CACHE_DIR / f"{safe_filepath.stem}_{_get_file_hash(safe_filepath)}.json"
+        
+        if cache_file.exists():
+            return json.loads(cache_file.read_text())
+    except (ValueError, OSError) as e:
+        logger.debug(f"Cache lookup failed for {filepath}: {e}")
     return None
 
 
