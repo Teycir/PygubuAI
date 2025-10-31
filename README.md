@@ -214,32 +214,33 @@ All documentation is in the [docs/](docs/) folder:
 
 ## Examples
 
-### Create a Calculator
+See [examples/](examples/) for 6 complete working applications:
+
+1. **Number Game** - Beginner-friendly guessing game
+2. **Todo App** - Task manager with dynamic lists
+3. **Calculator** - Grid layout with operations
+4. **Login Form** - Professional form with validation
+5. **Settings Dialog** - Tabbed interface with multiple widgets
+6. **Data Viewer** - Advanced table with search and filtering
+
+Each example includes `.ui` file, Python code, and detailed README.
+
+### Running Examples
+
 ```bash
-pygubu-create calc 'calculator with number pad and display'
-pygubu-register active calc
+# Install pygubu first
+pip install pygubu
+
+# Run any example
+./run_example.sh calculator
+./run_example.sh todo_app
+./run_example.sh login_form
+
+# Or manually
+cd examples/calculator && python3 calculator.py
 ```
 
-Then in AI chat: "Add memory functions"
-
-### Convert Existing App
-```bash
-tkinter-to-pygubu legacy_app.py
-pygubu-register add .
-```
-
-Then: "Modernize the UI with ttk widgets"
-
-### Collaborative Design
-```bash
-# Terminal 1: Watch for changes
-pygubu-ai-workflow watch myapp
-
-# Terminal 2: Visual editing
-pygubu-designer myapp/myapp.ui
-
-# AI Chat: "I added a menu bar, update the code"
-```
+See [examples/RUN_EXAMPLES.md](examples/RUN_EXAMPLES.md) for detailed instructions.
 
 ## How It Works
 

@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.3">
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">400</property>
+    <property name="width">500</property>
+    <property name="title" translatable="yes">Todo List</property>
+    <child>
+      <object class="ttk.Frame" id="main_frame">
+        <property name="padding">10</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="title_label">
+            <property name="font">{Arial} 16 {bold}</property>
+            <property name="text" translatable="yes">My Tasks</property>
+            <layout manager="pack">
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="input_frame">
+            <layout manager="pack">
+              <property name="fill">x</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Entry" id="task_entry">
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">x</property>
+                  <property name="padx">0 5</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="add_button">
+                <property name="text" translatable="yes">Add Task</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="list_frame">
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="tk.Listbox" id="task_listbox">
+                <property name="selectmode">single</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Scrollbar" id="scrollbar">
+                <property name="orient">vertical</property>
+                <layout manager="pack">
+                  <property name="fill">y</property>
+                  <property name="side">right</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="button_frame">
+            <layout manager="pack">
+              <property name="fill">x</property>
+              <property name="pady">5</property>
+              <property name="side">top</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="counter_label">
+                <property name="text" translatable="yes">0 tasks</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="delete_button">
+                <property name="text" translatable="yes">Delete Selected</property>
+                <layout manager="pack">
+                  <property name="padx">5</property>
+                  <property name="side">right</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="clear_button">
+                <property name="text" translatable="yes">Clear All</property>
+                <layout manager="pack">
+                  <property name="side">right</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.3">
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">450</property>
+    <property name="width">600</property>
+    <property name="title" translatable="yes">Data Viewer</property>
+    <child>
+      <object class="ttk.Frame" id="main_frame">
+        <property name="padding">10</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="toolbar">
+            <layout manager="pack">
+              <property name="fill">x</property>
+              <property name="pady">0 10</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="load_button">
+                <property name="text" translatable="yes">Load Data</property>
+                <layout manager="pack">
+                  <property name="padx">0 5</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="refresh_button">
+                <property name="text" translatable="yes">Refresh</property>
+                <layout manager="pack">
+                  <property name="padx">0 5</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="search_entry">
+                <layout manager="pack">
+                  <property name="padx">10 5</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="search_button">
+                <property name="text" translatable="yes">Search</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="tree_frame">
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+            </layout>
+            <child>
+              <object class="ttk.Treeview" id="data_tree">
+                <property name="columns">name age city</property>
+                <property name="show">tree headings</property>
+                <layout manager="pack">
+                  <property name="expand">true</property>
+                  <property name="fill">both</property>
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Scrollbar" id="tree_scrollbar">
+                <property name="orient">vertical</property>
+                <layout manager="pack">
+                  <property name="fill">y</property>
+                  <property name="side">right</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="status_frame">
+            <layout manager="pack">
+              <property name="fill">x</property>
+              <property name="pady">10 0</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="status_label">
+                <property name="text" translatable="yes">Ready</property>
+                <layout manager="pack">
+                  <property name="side">left</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="count_label">
+                <property name="text" translatable="yes">0 records</property>
+                <layout manager="pack">
+                  <property name="side">right</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

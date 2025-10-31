@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.3">
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">350</property>
+    <property name="width">450</property>
+    <property name="title" translatable="yes">Settings</property>
+    <child>
+      <object class="ttk.Notebook" id="notebook">
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="fill">both</property>
+          <property name="padx">10</property>
+          <property name="pady">10</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="general_tab">
+            <property name="padding">10</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+            </layout>
+            <child>
+              <object class="ttk.Checkbutton" id="auto_save_check">
+                <property name="text" translatable="yes">Enable auto-save</property>
+                <layout manager="pack">
+                  <property name="anchor">w</property>
+                  <property name="pady">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Checkbutton" id="notifications_check">
+                <property name="text" translatable="yes">Show notifications</property>
+                <layout manager="pack">
+                  <property name="anchor">w</property>
+                  <property name="pady">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="theme_frame">
+                <layout manager="pack">
+                  <property name="fill">x</property>
+                  <property name="pady">10</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="theme_label">
+                    <property name="text" translatable="yes">Theme:</property>
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Combobox" id="theme_combo">
+                    <property name="state">readonly</property>
+                    <property name="values">Light Dark System</property>
+                    <layout manager="pack">
+                      <property name="padx">10</property>
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="advanced_tab">
+            <property name="padding">10</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+            </layout>
+            <child>
+              <object class="ttk.Frame" id="cache_frame">
+                <layout manager="pack">
+                  <property name="fill">x</property>
+                  <property name="pady">5</property>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="cache_label">
+                    <property name="text" translatable="yes">Cache size (MB):</property>
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Scale" id="cache_scale">
+                    <property name="from_">10</property>
+                    <property name="orient">horizontal</property>
+                    <property name="to">1000</property>
+                    <layout manager="pack">
+                      <property name="expand">true</property>
+                      <property name="fill">x</property>
+                      <property name="padx">10</property>
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="cache_value_label">
+                    <property name="text" translatable="yes">100</property>
+                    <layout manager="pack">
+                      <property name="side">left</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Checkbutton" id="debug_check">
+                <property name="text" translatable="yes">Enable debug mode</property>
+                <layout manager="pack">
+                  <property name="anchor">w</property>
+                  <property name="pady">5</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
