@@ -156,14 +156,25 @@ pip uninstall pygubuai  # For pip install (recommended)
 
 ## Documentation
 
-- **[Library Integrations](docs/LIBRARY_INTEGRATIONS.md)** - ⭐ NEW! Rich, Pydantic, SQLAlchemy guide
-- **[Feature Showcase](FEATURE_SHOWCASE.md)** - ⭐ NEW! v0.5.0 features with examples
-- **[Testing Quick Ref](TESTING_QUICK_REF.md)** - ⭐ NEW! Testing guide and commands
-- **[Roadmap](ROADMAP.md)** - Development roadmap and plans
+**📍 [Documentation Map](DOCS_MAP.md)** - Visual guide to all docs
+
+### Quick Start
+- **[Quick Status](QUICK_STATUS.md)** - ⭐ At-a-glance project status (2 min)
+- **[Onboarding](ONBOARDING.md)** - ⭐ NEW! Get started in 15 minutes
+- **[Feature Showcase](FEATURE_SHOWCASE.md)** - v0.5.0 features with examples
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
+
+### Development
+- **[Roadmap](ROADMAP.md)** - Long-term plan (v0.5-v1.0)
+- **[Implementation Plan](IMPLEMENTATION_PLAN.md)** - ⭐ NEW! Detailed tasks & timelines
+- **[Progress Tracker](PROGRESS_TRACKER.md)** - ⭐ NEW! Day-to-day tracking
+- **[Testing Quick Ref](TESTING_QUICK_REF.md)** - Testing guide and commands
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
-- **[Architecture](ARCHITECTURE.md)** - System design and module structure
 - **[Developer Quick Ref](DEVELOPER_QUICK_REF.md)** - Fast lookup for common tasks
+
+### Technical
+- **[Library Integrations](docs/LIBRARY_INTEGRATIONS.md)** - Rich, Pydantic, SQLAlchemy guide
+- **[Architecture](ARCHITECTURE.md)** - System design and module structure
 - [Examples](examples/) - Sample projects
 - [Changelog](CHANGELOG.md) - Version history
 - [Contributing](CONTRIBUTING.md) - How to contribute
