@@ -3,6 +3,7 @@
 from pathlib import Path
 from typing import Optional
 from .registry import Registry
+from .utils import validate_safe_path
 
 STANDALONE_TEMPLATE = '''#!/usr/bin/env python3
 """
@@ -82,7 +83,7 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
     
-    project_dir = Path(project_path)
+    project_dir = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
     ui_file = project_dir / f"{project_name}.ui"
     py_file = project_dir / f"{project_name}.py"
     
@@ -108,17 +109,17 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     
     # Determine output file
     if output_file is None:
-        output_file = project_dir / f"{project_name}_standalone.py"
+        output_path = project_dir / f"{project_name}_standalone.py"
     else:
-        output_file = Path(output_file)
+        output_path = validate_safe_path(output_file)
     
     # Write output
-    output_file.write_text(standalone_code)
+    output_path.write_text(standalone_code)
     
     # Make executable
-    output_file.chmod(0o755)
+    output_path.chmod(0o755)
     
-    return str(output_file)
+    return str(output_path)
 
 def main():
     """CLI entry point"""

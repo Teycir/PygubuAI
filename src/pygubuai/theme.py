@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Optional
 import shutil
 from .registry import Registry
+from .utils import validate_safe_path
 
 AVAILABLE_THEMES = {
     "default": "Default system theme",
@@ -31,7 +32,8 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
     
-    ui_file = Path(project_path) / f"{project_name}.ui"
+    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    ui_file = validated_path / f"{project_name}.ui"
     if not ui_file.exists():
         raise FileNotFoundError(f"UI file not found: {ui_file}")
     
@@ -70,7 +72,8 @@ def get_current_theme(project_name: str) -> Optional[str]:
     if not project_path:
         return None
     
-    ui_file = Path(project_path) / f"{project_name}.ui"
+    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    ui_file = validated_path / f"{project_name}.ui"
     if not ui_file.exists():
         return None
     

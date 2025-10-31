@@ -3,6 +3,7 @@
 import sys
 import json
 from pathlib import Path
+from .utils import validate_safe_path
 
 try:
     from rich.console import Console
@@ -64,7 +65,7 @@ def migrate_from_json():
                 print(f"  OK {name}")
                 
                 # Migrate workflow events
-                project_path = Path(path)
+                project_path = validate_safe_path(path, must_exist=True, must_be_dir=True)
                 workflow_file = project_path / ".pygubu-workflow.json"
                 if workflow_file.exists():
                     try:
@@ -140,7 +141,7 @@ def backup_database(output_file: str):
         print("Error: Database does not exist")
         return False
     
-    output_path = Path(output_file)
+    output_path = validate_safe_path(output_file)
     shutil.copy2(db_path, output_path)
     print(f"OK Database backed up to {output_path}")
     return True
@@ -150,7 +151,7 @@ def restore_database(backup_file: str):
     import shutil
     from .db import get_db_path
     
-    backup_path = Path(backup_file)
+    backup_path = validate_safe_path(backup_file, must_exist=True)
     if not backup_path.exists():
         print(f"Error: Backup file not found: {backup_file}")
         return False

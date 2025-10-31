@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 import xml.etree.ElementTree as ET
 from .registry import Registry
+from .utils import validate_safe_path
 
 def add_export_capability(project_name: str, formats: List[str], widget_id: str = None):
     """Add export capability to project"""
@@ -13,15 +14,17 @@ def add_export_capability(project_name: str, formats: List[str], widget_id: str 
     if not project_path:
         raise ValueError(f"Project '{project_name}' not found")
     
+    validated_path = validate_safe_path(project_path, must_exist=True, must_be_dir=True)
+    
     # Add export button to UI
-    _add_export_button(project_path, project_name, formats)
+    _add_export_button(str(validated_path), project_name, formats)
     
     # Generate export code
-    _generate_export_code(project_path, project_name, formats, widget_id)
+    _generate_export_code(str(validated_path), project_name, formats, widget_id)
     
     return True
 
-def _add_export_button(project_path: str, project_name: str, formats: List[str]):
+def _add_export_button(project_path: str, project_name: str, formats: List[str]):  # noqa: ARG001
     """Add export button to UI file"""
     ui_file = Path(project_path) / f"{project_name}.ui"
     if not ui_file.exists():
@@ -65,7 +68,7 @@ def _generate_export_code(project_path: str, project_name: str, formats: List[st
         code = code.replace("def run(self):", f"{export_method}\n\n    def run(self):")
         py_file.write_text(code)
 
-def _create_export_method(formats: List[str], widget_id: str = None) -> str:
+def _create_export_method(formats: List[str], widget_id: str = None) -> str:  # noqa: ARG001
     """Create export method code"""
     method = '''    def on_export(self):
         """Export data"""

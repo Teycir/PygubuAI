@@ -146,6 +146,14 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
 
 def get_watch_interval(config: Optional[Config] = None) -> float:
     """Get watch interval from config or default to 2.0s"""
+    import os
+    env_interval = os.environ.get("PYGUBUAI_WATCH_INTERVAL")
+    if env_interval:
+        try:
+            interval = float(env_interval)
+            return interval if interval > 0 else 2.0
+        except (ValueError, TypeError):
+            pass
     config = config or Config()
     try:
         interval = float(config.get("watch_interval", 2.0))
@@ -156,6 +164,12 @@ def get_watch_interval(config: Optional[Config] = None) -> float:
 
 def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     """Get file patterns to watch from config or default to ['*.ui']"""
+    import os
+    env_patterns = os.environ.get("PYGUBUAI_WATCH_PATTERNS")
+    if env_patterns:
+        patterns = [p.strip() for p in env_patterns.split(",") if p.strip()]
+        if patterns:
+            return patterns
     config = config or Config()
     patterns_str = config.get("watch_patterns", "*.ui")
     if isinstance(patterns_str, str):
@@ -329,3 +343,36 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+class WorkflowTracker:
+    """Tracks workflow events for a project"""
+
+    def __init__(self, project_path: str):
+        self.project_path = Path(project_path)
+        self.workflow_file = self.project_path / ".pygubu-workflow.json"
+
+    def add_event(self, action: str, description: str):
+        """Add a workflow event"""
+        workflow = load_workflow(self.project_path)
+
+        if "history" not in workflow:
+            workflow["history"] = []
+
+        event = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "action": action,
+            "description": description
+        }
+
+        workflow["history"].append(event)
+
+        # Keep only last 100 events
+        if len(workflow["history"]) > 100:
+            workflow["history"] = workflow["history"][-100:]
+
+        save_workflow(self.project_path, workflow)
+
+    def get_history(self) -> list:
+        """Get workflow history"""
+        workflow = load_workflow(self.project_path)
+        return workflow.get("history", [])
