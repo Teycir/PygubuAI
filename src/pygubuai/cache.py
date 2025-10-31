@@ -1,4 +1,5 @@
 """Simple caching system for parsed UI files."""
+
 import json
 import hashlib
 import time
@@ -18,6 +19,7 @@ def _get_file_hash(filepath: Path) -> str:
 def get_cached(filepath: Path) -> Optional[dict]:
     """Get cached parsed UI data if valid."""
     from .utils import validate_path
+
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     try:
         safe_filepath = validate_path(str(filepath), must_exist=True)
@@ -63,6 +65,7 @@ def cleanup_old_cache(max_age_days: int = 30, max_files: int = 100) -> None:
                 logger.debug(f"Cleaned up cache file: {f.name}")
     except (OSError, PermissionError) as e:
         logger.warning(f"Cache cleanup failed: {e}")
+
 
 # Auto-cleanup on module import
 

@@ -9,7 +9,6 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-
     "entry": """    <object class="ttk.Entry" id="{id}">
       <property name="textvariable">{variable}</property>
       <layout manager="pack">
@@ -17,14 +16,12 @@ SNIPPET_TEMPLATES = {
         <property name="fill">x</property>
       </layout>
     </object>""",
-
     "label": """    <object class="ttk.Label" id="{id}">
       <property name="text">{text}</property>
       <layout manager="pack">
         <property name="pady">5</property>
       </layout>
     </object>""",
-
     "frame": """    <object class="ttk.Frame" id="{id}">
       <property name="padding">10</property>
       <layout manager="{layout}">
@@ -32,7 +29,6 @@ SNIPPET_TEMPLATES = {
         <property name="fill">both</property>
       </layout>
     </object>""",
-
     "combobox": """    <object class="ttk.Combobox" id="{id}">
       <property name="textvariable">{variable}</property>
       <property name="values">{values}</property>
@@ -40,7 +36,6 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-
     "checkbutton": """    <object class="ttk.Checkbutton" id="{id}">
       <property name="text">{text}</property>
       <property name="variable">{variable}</property>
@@ -48,7 +43,6 @@ SNIPPET_TEMPLATES = {
         <property name="pady">5</property>
       </layout>
     </object>""",
-
     "text": """    <object class="tk.Text" id="{id}">
       <property name="height">{height}</property>
       <layout manager="pack">
@@ -56,7 +50,6 @@ SNIPPET_TEMPLATES = {
         <property name="fill">both</property>
       </layout>
     </object>""",
-
     "treeview": """    <object class="ttk.Treeview" id="{id}">
       <property name="columns">{columns}</property>
       <layout manager="pack">
@@ -116,20 +109,20 @@ def main():
     kwargs = {}
 
     # Get text if provided (first non-option argument)
-    if len(sys.argv) > 2 and not sys.argv[2].startswith('--'):
+    if len(sys.argv) > 2 and not sys.argv[2].startswith("--"):
         if widget_type in ["button", "label", "checkbutton"]:
             kwargs["text"] = sys.argv[2]
         elif widget_type in ["entry", "combobox"]:
             # Use text as variable name (sanitized)
-            var_name = sys.argv[2].lower().replace(' ', '_') + '_var'
+            var_name = sys.argv[2].lower().replace(" ", "_") + "_var"
             kwargs["variable"] = var_name
 
     # Parse --options
     i = 2
     while i < len(sys.argv):
-        if sys.argv[i].startswith('--'):
+        if sys.argv[i].startswith("--"):
             option = sys.argv[i][2:]
-            if i + 1 < len(sys.argv) and not sys.argv[i + 1].startswith('--'):
+            if i + 1 < len(sys.argv) and not sys.argv[i + 1].startswith("--"):
                 kwargs[option] = sys.argv[i + 1]
                 i += 2
             else:

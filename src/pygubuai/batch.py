@@ -10,6 +10,7 @@ from .validate_project import validate_project
 try:
     from rich.console import Console
     from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -45,7 +46,7 @@ def rename_widget(project_name: str, old_id: str, new_id: str) -> bool:
         content = content.replace(f'"{old_id}"', f'"{new_id}"')
         py_file.write_text(content)
 
-    tree.write(ui_file, encoding='utf-8', xml_declaration=True)
+    tree.write(ui_file, encoding="utf-8", xml_declaration=True)
     return True
 
 
@@ -128,10 +129,7 @@ def main():
             console.print(f"\n[cyan]Applying theme '{theme}' to projects...[/cyan]\n")
 
             with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                BarColumn(),
-                console=console
+                SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), console=console
             ) as progress:
                 task = progress.add_task("Processing...", total=None)
                 results = batch_update_theme(theme, project_list)
@@ -166,9 +164,7 @@ def main():
             console.print("\n[cyan]Validating projects...[/cyan]\n")
 
             with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                console=console
+                SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
             ) as progress:
                 task = progress.add_task("Validating...", total=None)
                 results = batch_validate(project_list)

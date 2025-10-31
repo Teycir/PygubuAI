@@ -149,6 +149,7 @@ def save_workflow(project_path: pathlib.Path, data: Dict) -> None:
 def get_watch_interval(config: Optional[Config] = None) -> float:
     """Get watch interval from config or default to 2.0s"""
     import os
+
     env_interval = os.environ.get("PYGUBUAI_WATCH_INTERVAL")
     if env_interval:
         try:
@@ -167,6 +168,7 @@ def get_watch_interval(config: Optional[Config] = None) -> float:
 def get_file_patterns(config: Optional[Config] = None) -> List[str]:
     """Get file patterns to watch from config or default to ['*.ui']"""
     import os
+
     env_patterns = os.environ.get("PYGUBUAI_WATCH_PATTERNS")
     if env_patterns:
         patterns = [p.strip() for p in env_patterns.split(",") if p.strip()]
@@ -352,6 +354,7 @@ class WorkflowTracker:
 
     def __init__(self, project_path: str):
         from pathlib import Path
+
         self.project_path = Path(project_path)
         self.workflow_file = self.project_path / ".pygubu-workflow.json"
 
@@ -362,11 +365,7 @@ class WorkflowTracker:
         if "history" not in workflow:
             workflow["history"] = []
 
-        event = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "action": action,
-            "description": description
-        }
+        event = {"timestamp": datetime.now(timezone.utc).isoformat(), "action": action, "description": description}
 
         workflow["history"].append(event)
 

@@ -1,9 +1,11 @@
 """SQLAlchemy ORM models"""
+
 from datetime import datetime, timezone
 
 try:
     from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey, JSON
     from sqlalchemy.orm import declarative_base, relationship
+
     SQLALCHEMY_AVAILABLE = True
 
     Base = declarative_base()
@@ -14,6 +16,7 @@ try:
 
     class Project(Base):
         """Project model"""
+
         __tablename__ = "projects"
 
         id = Column(Integer, primary_key=True)
@@ -29,6 +32,7 @@ try:
 
     class Template(Base):
         """Template model"""
+
         __tablename__ = "templates"
 
         id = Column(Integer, primary_key=True)
@@ -45,6 +49,7 @@ try:
 
     class WorkflowEvent(Base):
         """Workflow event model"""
+
         __tablename__ = "workflow_events"
 
         id = Column(Integer, primary_key=True)
@@ -57,6 +62,7 @@ try:
 
     class Analytics(Base):
         """Analytics model"""
+
         __tablename__ = "analytics"
 
         id = Column(Integer, primary_key=True)

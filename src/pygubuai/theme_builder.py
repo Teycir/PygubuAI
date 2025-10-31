@@ -1,4 +1,5 @@
 """Custom theme builder for PygubuAI"""
+
 import json
 from pathlib import Path
 from typing import Optional
@@ -12,14 +13,13 @@ def get_themes_dir() -> Path:
     return themes_dir
 
 
-def create_custom_theme(name: str, base: str = "clam", colors: dict = None,
-                        description: str = "") -> bool:
+def create_custom_theme(name: str, base: str = "clam", colors: dict = None, description: str = "") -> bool:
     """Create custom theme"""
     theme_data = {
         "name": name,
         "description": description or f"Custom theme: {name}",
         "base": base,
-        "colors": colors or {}
+        "colors": colors or {},
     }
 
     if not validate_preset(theme_data):
@@ -34,7 +34,7 @@ def save_theme(name: str, theme_data: dict):
     themes_dir = get_themes_dir()
     theme_file = themes_dir / f"{name}.json"
 
-    with open(theme_file, 'w') as f:
+    with open(theme_file, "w") as f:
         json.dump(theme_data, f, indent=2)
 
 
@@ -46,7 +46,7 @@ def load_theme(name: str) -> Optional[dict]:
     if not theme_file.exists():
         return None
 
-    with open(theme_file, 'r') as f:
+    with open(theme_file, "r") as f:
         return json.load(f)
 
 
@@ -65,7 +65,7 @@ def export_theme(name: str, output_path: str = None) -> str:
     if output_path is None:
         output_path = f"{name}.json"
 
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         json.dump(theme, f, indent=2)
 
     return output_path
@@ -73,11 +73,11 @@ def export_theme(name: str, output_path: str = None) -> str:
 
 def import_theme(source: str):
     """Import theme from file"""
-    with open(source, 'r') as f:
+    with open(source, "r") as f:
         theme_data = json.load(f)
 
     if not validate_preset(theme_data):
         raise ValueError("Invalid theme file")
 
-    save_theme(theme_data['name'], theme_data)
-    return theme_data['name']
+    save_theme(theme_data["name"], theme_data)
+    return theme_data["name"]

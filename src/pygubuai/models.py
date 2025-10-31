@@ -1,4 +1,5 @@
 """Pydantic models for data validation"""
+
 from typing import Optional, Dict, List
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,6 +8,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class ProjectConfig(BaseModel):
     """Project configuration model"""
+
     name: str
     path: str
     ui_file: Optional[str] = None
@@ -15,7 +17,7 @@ class ProjectConfig(BaseModel):
     last_modified: float = Field(default_factory=lambda: datetime.now(timezone.utc).timestamp())
     metadata: Dict = Field(default_factory=dict)
 
-    @field_validator('path')
+    @field_validator("path")
     @classmethod
     def validate_path(cls, v):
         if not Path(v).exists():
@@ -25,20 +27,22 @@ class ProjectConfig(BaseModel):
 
 class RegistryData(BaseModel):
     """Registry data model"""
+
     projects: Dict[str, Dict] = Field(default_factory=dict)
     active: Optional[str] = None
     version: str = "1.0"
 
-    @field_validator('active')
+    @field_validator("active")
     @classmethod
     def validate_active(cls, v, info):
-        if v and 'projects' in info.data and v not in info.data['projects']:
+        if v and "projects" in info.data and v not in info.data["projects"]:
             raise ValueError(f"Active project '{v}' not in registry")
         return v
 
 
 class WorkflowHistory(BaseModel):
     """Workflow history entry"""
+
     timestamp: str
     action: str
     description: str
@@ -47,6 +51,7 @@ class WorkflowHistory(BaseModel):
 
 class WorkflowData(BaseModel):
     """Workflow tracking data"""
+
     project: str
     history: List[WorkflowHistory] = Field(default_factory=list)
     last_sync: Optional[str] = None
@@ -57,6 +62,7 @@ class WorkflowData(BaseModel):
 
 class WidgetConfig(BaseModel):
     """Widget configuration"""
+
     widget_type: str
     widget_id: str
     properties: Dict = Field(default_factory=dict)
@@ -65,6 +71,7 @@ class WidgetConfig(BaseModel):
 
 class ExportConfig(BaseModel):
     """Export configuration"""
+
     project: str
     output_file: str
     standalone: bool = True

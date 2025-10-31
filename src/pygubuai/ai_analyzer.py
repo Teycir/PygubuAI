@@ -26,7 +26,7 @@ def analyze_project(project_name: str) -> Dict:
         "callback_count": 0,
         "layout_patterns": [],
         "widget_types": {},
-        "suggestions": []
+        "suggestions": [],
     }
 
     if ui_file.exists():

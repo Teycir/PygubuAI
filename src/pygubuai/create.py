@@ -1,4 +1,5 @@
 """Project creation with error handling"""
+
 import sys
 import logging
 import argparse
@@ -17,9 +18,15 @@ from .registry import Registry
 logger = logging.getLogger(__name__)
 
 
-def create_project(name: str, description: str, skip_validation: bool = False,
-                   dry_run: bool = False, init_git: bool = False,
-                   template: Optional[str] = None, tags: list = None) -> None:
+def create_project(
+    name: str,
+    description: str,
+    skip_validation: bool = False,
+    dry_run: bool = False,
+    init_git: bool = False,
+    template: Optional[str] = None,
+    tags: list = None,
+) -> None:
     """Create project with error handling"""
     try:
         if not skip_validation:
@@ -43,6 +50,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
         # Use template if specified
         if template:
             from .template import create_from_template
+
             create_from_template(name, template, dry_run=dry_run, init_git=init_git)
             return
 
@@ -82,7 +90,7 @@ def create_project(name: str, description: str, skip_validation: bool = False,
 
 def main(args=None):
     """CLI entry point"""
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     parser = argparse.ArgumentParser(
         description="Create a new pygubu project from a natural language description.",
         epilog=(
@@ -92,47 +100,42 @@ def main(args=None):
             "  pygubu-create --interactive\n"
             "  pygubu-create myapp 'app' --dry-run --git"
         ),
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        '--version', action='version', version=f"pygubu-create {__version__}"
-    )
-    parser.add_argument('name', nargs='?', help='Name of the project to create.')
-    parser.add_argument('description', nargs='?', help='Natural language description of the UI.')
-    parser.add_argument('--interactive', '-i', action='store_true', help='Interactive mode with prompts')
-    parser.add_argument('--dry-run', action='store_true', help='Preview without creating files')
-    parser.add_argument('--git', action='store_true', help='Initialize git repository')
-    parser.add_argument('--template', '-t', help='Use template (login, crud, settings, etc.)')
-    parser.add_argument('--tags', help='Comma-separated tags for project')
+    parser.add_argument("--version", action="version", version=f"pygubu-create {__version__}")
+    parser.add_argument("name", nargs="?", help="Name of the project to create.")
+    parser.add_argument("description", nargs="?", help="Natural language description of the UI.")
+    parser.add_argument("--interactive", "-i", action="store_true", help="Interactive mode with prompts")
+    parser.add_argument("--dry-run", action="store_true", help="Preview without creating files")
+    parser.add_argument("--git", action="store_true", help="Initialize git repository")
+    parser.add_argument("--template", "-t", help="Use template (login, crud, settings, etc.)")
+    parser.add_argument("--tags", help="Comma-separated tags for project")
 
     parsed_args = parser.parse_args(args)
 
     if parsed_args.interactive:
         config = interactive_create()
         create_project(
-            config['name'],
-            config['description'],
+            config["name"],
+            config["description"],
             dry_run=parsed_args.dry_run,
-            init_git=config.get('git', False),
-            template=config.get('template')
+            init_git=config.get("git", False),
+            template=config.get("template"),
         )
     else:
         if not parsed_args.name or not parsed_args.description:
             parser.error("name and description are required (or use --interactive)")
 
-        tags = (
-            [t.strip() for t in parsed_args.tags.split(',') if t.strip()]
-            if parsed_args.tags else None
-        )
+        tags = [t.strip() for t in parsed_args.tags.split(",") if t.strip()] if parsed_args.tags else None
         create_project(
             parsed_args.name,
             parsed_args.description,
             dry_run=parsed_args.dry_run,
             init_git=parsed_args.git,
             template=parsed_args.template,
-            tags=tags
+            tags=tags,
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
 """Accessibility helpers for WCAG compliance."""
+
 from typing import Dict, List, Tuple
 
 
@@ -8,8 +9,8 @@ def check_color_contrast(fg: str, bg: str) -> Tuple[bool, float]:
         return False, 0.0
 
     def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
-        hex_color = hex_color.lstrip('#')
-        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        hex_color = hex_color.lstrip("#")
+        return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
 
     def luminance(rgb: Tuple[int, int, int]) -> float:
         r, g, b = [x / 255.0 for x in rgb]
@@ -71,11 +72,7 @@ def check_accessibility(ui_data: Dict) -> Dict[str, List[str]]:
     if not ui_data or not isinstance(ui_data, dict):
         return {"validation": ["Invalid UI data provided"]}
 
-    issues = {
-        "contrast": [],
-        "keyboard": [],
-        "labels": []
-    }
+    issues = {"contrast": [], "keyboard": [], "labels": []}
 
     widgets = ui_data.get("widgets", [])
 

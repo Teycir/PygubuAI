@@ -1,4 +1,5 @@
 """Database CRUD operations"""
+
 from typing import List, Optional, Dict
 from datetime import datetime, timezone
 
@@ -96,9 +97,13 @@ def get_workflow_events(session: Session, project_name: str, limit: int = 100) -
     if not project:
         return []
 
-    return session.query(WorkflowEvent).filter(
-        WorkflowEvent.project_id == project.id
-    ).order_by(WorkflowEvent.timestamp.desc()).limit(limit).all()
+    return (
+        session.query(WorkflowEvent)
+        .filter(WorkflowEvent.project_id == project.id)
+        .order_by(WorkflowEvent.timestamp.desc())
+        .limit(limit)
+        .all()
+    )
 
 
 def create_template(session: Session, name: str, content: str, **kwargs) -> Optional[Template]:
@@ -118,13 +123,21 @@ def search_templates(session: Session, query: str) -> List[Template]:
     if not SQLALCHEMY_AVAILABLE:
         return []
 
-    return session.query(Template).filter(
-        (Template.name.contains(query)) | (Template.description.contains(query))
-    ).order_by(Template.downloads.desc()).all()
+    return (
+        session.query(Template)
+        .filter((Template.name.contains(query)) | (Template.description.contains(query)))
+        .order_by(Template.downloads.desc())
+        .all()
+    )
 
 
-def record_analytics(session: Session, metric_name: str, metric_value: float,
-                     project_name: Optional[str] = None, metadata: Optional[Dict] = None) -> bool:
+def record_analytics(
+    session: Session,
+    metric_name: str,
+    metric_value: float,
+    project_name: Optional[str] = None,
+    metadata: Optional[Dict] = None,
+) -> bool:
     """Record analytics metric"""
     if not SQLALCHEMY_AVAILABLE:
         return False
@@ -136,10 +149,7 @@ def record_analytics(session: Session, metric_name: str, metric_value: float,
             project_id = project.id
 
     analytics = Analytics(
-        project_id=project_id,
-        metric_name=metric_name,
-        metric_value=metric_value,
-        metadata=metadata or {}
+        project_id=project_id, metric_name=metric_name, metric_value=metric_value, metadata=metadata or {}
     )
     session.add(analytics)
     session.commit()

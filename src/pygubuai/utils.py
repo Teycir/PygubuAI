@@ -1,4 +1,5 @@
 """Utility functions"""
+
 import re
 import hashlib
 import logging
@@ -31,7 +32,7 @@ def validate_project_name(name: str) -> str:
     if not name:
         raise ValueError("Project name cannot be empty")
 
-    sanitized = re.sub(r'[^\w\-]', '_', name)
+    sanitized = re.sub(r"[^\w\-]", "_", name)
     if sanitized != name:
         logger.warning(f"Project name sanitized: '{name}' -> '{sanitized}'")
 
@@ -50,6 +51,7 @@ def ensure_directory(path: Path) -> Path:
 def find_pygubu_designer() -> str:
     """Find pygubu-designer executable"""
     import shutil
+
     designer = shutil.which("pygubu-designer")
     return designer if designer else "pygubu-designer"
 
@@ -140,4 +142,5 @@ def safe_xml_text(text: str) -> str:
     if text is None:
         return ""
     from xml.sax.saxutils import escape
+
     return escape(str(text), {"'": "&apos;", '"': "&quot;"})

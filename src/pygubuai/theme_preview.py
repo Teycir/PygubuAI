@@ -1,4 +1,5 @@
 """Theme preview functionality"""
+
 import tempfile
 import shutil
 from pathlib import Path
@@ -24,7 +25,7 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
         raise FileNotFoundError(f"UI file not found: {ui_file}")
 
     # Create temp copy
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.ui', delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".ui", delete=False) as tmp:
         temp_ui = Path(tmp.name)
 
     try:
@@ -32,6 +33,7 @@ def preview_theme(project_name: str, theme_name: str, watch: bool = False):
 
         # Apply theme to temp
         from .theme_presets import get_preset
+
         preset = get_preset(theme_name)
         if not preset:
             # Try custom theme
@@ -53,11 +55,10 @@ def _show_preview(ui_file: Path, theme_name: str, tk, pygubu):
     try:
         builder = pygubu.Builder()
         builder.add_from_file(str(ui_file))
-        builder.get_object('mainwindow', root)
+        builder.get_object("mainwindow", root)
 
         # Add info label
-        info = tk.Label(root, text=f"Preview Mode - Theme: {theme_name}",
-                        bg="yellow", fg="black")
+        info = tk.Label(root, text=f"Preview Mode - Theme: {theme_name}", bg="yellow", fg="black")
         info.pack(side="top", fill="x")
 
         root.mainloop()

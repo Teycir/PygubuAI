@@ -41,7 +41,7 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
 
     # Backup
     if backup:
-        backup_file = ui_file.with_suffix('.ui.bak')
+        backup_file = ui_file.with_suffix(".ui.bak")
         shutil.copy2(ui_file, backup_file)
 
     # Parse and modify
@@ -63,7 +63,7 @@ def apply_theme(project_name: str, theme_name: str, backup: bool = True) -> bool
         theme_prop.text = theme_name
 
     # Write back
-    tree.write(ui_file, encoding='utf-8', xml_declaration=True)
+    tree.write(ui_file, encoding="utf-8", xml_declaration=True)
     return True
 
 
@@ -141,7 +141,7 @@ def main():
             print(f"Description: {info['description']}")
             print(f"Base: {info['base']}")
             print("\nColors:")
-            for key, value in info['colors'].items():
+            for key, value in info["colors"].items():
                 print(f"  {key:15} {value}")
         else:
             print(f"Theme '{theme_name}' not found")

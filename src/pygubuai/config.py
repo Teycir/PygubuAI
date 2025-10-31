@@ -1,4 +1,5 @@
 """Configuration management with environment variable support and config merging."""
+
 import json
 import os
 import pathlib
@@ -42,6 +43,7 @@ class Config:
             Merged configuration dictionary
         """
         import logging
+
         logger = logging.getLogger(__name__)
 
         with self._lock:
@@ -110,6 +112,7 @@ class Config:
             Validated and expanded path to registry file
         """
         import logging
+
         logger = logging.getLogger(__name__)
 
         path_str = self.config["registry_path"]

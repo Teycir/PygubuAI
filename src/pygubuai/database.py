@@ -7,6 +7,7 @@ from .utils import validate_path
 try:
     from rich.console import Console
     from rich.table import Table
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -18,7 +19,7 @@ def init_database():
 
     if not SQLALCHEMY_AVAILABLE:
         print("Error: SQLAlchemy not installed")
-        print("Install with: pip install -e \".[db]\"")
+        print('Install with: pip install -e ".[db]"')
         return False
 
     db_path = get_db_path()
@@ -26,7 +27,7 @@ def init_database():
     if db_path.exists():
         print(f"Database already exists at {db_path}")
         response = input("Reinitialize? (y/N): ")
-        if response.lower() != 'y':
+        if response.lower() != "y":
             return False
         db_path.unlink()
 
@@ -58,8 +59,8 @@ def migrate_from_json():
         print(f"Migrating {len(projects)} projects...")
 
         for name, metadata in projects.items():
-            path = metadata.get('path') if isinstance(metadata, dict) else metadata
-            description = metadata.get('description', '') if isinstance(metadata, dict) else ''
+            path = metadata.get("path") if isinstance(metadata, dict) else metadata
+            description = metadata.get("description", "") if isinstance(metadata, dict) else ""
 
             project = create_project(session, name, path, description)
             if project:
@@ -73,10 +74,10 @@ def migrate_from_json():
                         with open(workflow_file) as f:
                             workflow_data = json.load(f)
 
-                        history = workflow_data.get('history', workflow_data.get('changes', []))
+                        history = workflow_data.get("history", workflow_data.get("changes", []))
                         for event in history[:100]:  # Limit to last 100
-                            action = event.get('action', 'file_changed')
-                            desc = event.get('description', event.get('file', ''))
+                            action = event.get("action", "file_changed")
+                            desc = event.get("description", event.get("file", ""))
                             add_workflow_event(session, name, action, desc)
                     except Exception as e:
                         print(f"    Warning: Could not migrate workflow: {e}")
@@ -164,7 +165,7 @@ def restore_database(backup_file: str):
 
     if db_path.exists():
         response = input(f"Overwrite existing database at {db_path}? (y/N): ")
-        if response.lower() != 'y':
+        if response.lower() != "y":
             return False
 
     shutil.copy2(backup_path, db_path)
@@ -215,7 +216,7 @@ def add_table(project_name: str, table_name: str, schema: dict):
 
     if not SQLALCHEMY_AVAILABLE:
         print("Error: SQLAlchemy not installed")
-        print("Install with: pip install -e \".[db]\"")
+        print('Install with: pip install -e ".[db]"')
         return False
 
     registry = Registry()
@@ -251,6 +252,7 @@ def _generate_table_code(project_path: str, project_name: str, table_name: str, 
     """Generate table-related code for project"""
 
     from pathlib import Path
+
     py_file = Path(project_path) / f"{project_name}.py"
     if not py_file.exists():
         return

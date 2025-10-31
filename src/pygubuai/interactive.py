@@ -1,4 +1,5 @@
 """Interactive CLI prompts for project creation"""
+
 import sys
 from typing import Optional, List
 
@@ -24,7 +25,7 @@ def confirm(message: str, default: bool = True) -> bool:
 
     if not response:
         return default
-    return response in ('y', 'yes')
+    return response in ("y", "yes")
 
 
 def choose(message: str, options: List[str], default: Optional[str] = None) -> str:
@@ -67,9 +68,4 @@ def interactive_create() -> dict:
 
     init_git = confirm("Initialize Git repository?", True)
 
-    return {
-        "name": name,
-        "description": description,
-        "template": template,
-        "git": init_git
-    }
+    return {"name": name, "description": description, "template": template, "git": init_git}

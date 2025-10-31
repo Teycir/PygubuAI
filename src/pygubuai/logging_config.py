@@ -1,12 +1,13 @@
 """Centralized logging configuration for PygubuAI."""
+
 import logging
 import os
 import sys
 from typing import Optional
 
 # Default log format with context
-DEFAULT_FORMAT = '%(levelname)s: %(message)s'
-DEBUG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+DEFAULT_FORMAT = "%(levelname)s: %(message)s"
+DEBUG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 
 def get_log_level() -> int:
@@ -15,7 +16,7 @@ def get_log_level() -> int:
     Returns:
         Logging level constant (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     """
-    level_name = os.environ.get('PYGUBUAI_LOG_LEVEL', 'INFO').upper()
+    level_name = os.environ.get("PYGUBUAI_LOG_LEVEL", "INFO").upper()
     return getattr(logging, level_name, logging.INFO)
 
 
@@ -29,7 +30,7 @@ def setup_logging(name: Optional[str] = None, level: Optional[int] = None) -> lo
     Returns:
         Configured logger instance
     """
-    logger = logging.getLogger(name or 'pygubuai')
+    logger = logging.getLogger(name or "pygubuai")
 
     if logger.handlers:
         return logger

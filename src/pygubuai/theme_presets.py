@@ -15,8 +15,8 @@ THEME_PRESETS = {
             "entry_fg": "#fffff",
             "select_bg": "#0078d4",
             "select_fg": "#fffff",
-            "disabled_fg": "#808080"
-        }
+            "disabled_fg": "#808080",
+        },
     },
     "modern-light": {
         "name": "Modern Light",
@@ -32,8 +32,8 @@ THEME_PRESETS = {
             "entry_fg": "#000000",
             "select_bg": "#0078d4",
             "select_fg": "#fffff",
-            "disabled_fg": "#a0a0a0"
-        }
+            "disabled_fg": "#a0a0a0",
+        },
     },
     "material": {
         "name": "Material Design",
@@ -49,8 +49,8 @@ THEME_PRESETS = {
             "entry_fg": "#212121",
             "select_bg": "#2196f3",
             "select_fg": "#fffff",
-            "disabled_fg": "#9e9e9e"
-        }
+            "disabled_fg": "#9e9e9e",
+        },
     },
     "nord": {
         "name": "Nord",
@@ -66,8 +66,8 @@ THEME_PRESETS = {
             "entry_fg": "#d8dee9",
             "select_bg": "#88c0d0",
             "select_fg": "#2e3440",
-            "disabled_fg": "#4c566a"
-        }
+            "disabled_fg": "#4c566a",
+        },
     },
     "solarized-dark": {
         "name": "Solarized Dark",
@@ -83,8 +83,8 @@ THEME_PRESETS = {
             "entry_fg": "#839496",
             "select_bg": "#268bd2",
             "select_fg": "#fdf6e3",
-            "disabled_fg": "#586e75"
-        }
+            "disabled_fg": "#586e75",
+        },
     },
     "solarized-light": {
         "name": "Solarized Light",
@@ -100,8 +100,8 @@ THEME_PRESETS = {
             "entry_fg": "#657b83",
             "select_bg": "#268bd2",
             "select_fg": "#fdf6e3",
-            "disabled_fg": "#93a1a1"
-        }
+            "disabled_fg": "#93a1a1",
+        },
     },
     "high-contrast": {
         "name": "High Contrast",
@@ -117,8 +117,8 @@ THEME_PRESETS = {
             "entry_fg": "#fffff",
             "select_bg": "#ffff00",
             "select_fg": "#000000",
-            "disabled_fg": "#808080"
-        }
+            "disabled_fg": "#808080",
+        },
     },
     "dracula": {
         "name": "Dracula",
@@ -134,9 +134,9 @@ THEME_PRESETS = {
             "entry_fg": "#f8f8f2",
             "select_bg": "#bd93f9",
             "select_fg": "#282a36",
-            "disabled_fg": "#6272a4"
-        }
-    }
+            "disabled_fg": "#6272a4",
+        },
+    },
 }
 
 

@@ -15,28 +15,28 @@ def generate_base_ui_xml_structure(project_name: str, widgets_data: List[Tuple[s
         f'    <property name="title">{safe_xml_text(project_name.replace("_", " ").title())}</property>',
         '    <property name="height">400</property>',
         '    <property name="width">600</property>',
-        '    <child>',
+        "    <child>",
         '      <object class="ttk.Frame" id="mainframe">',
         '        <property name="padding">20</property>',
         '        <layout manager="pack">',
         '          <property name="expand">true</property>',
         '          <property name="fill">both</property>',
-        '        </layout>',
+        "        </layout>",
     ]
 
     for i, (widget_type, config) in enumerate(widgets_data, 1):
         widget_id = config.get("id", f"{widget_type}{i}")
         xml_parts.extend(generate_widget_xml(widget_type, widget_id, config, i))
 
-    xml_parts.extend(['      </object>', '    </child>', '  </object>', '</interface>'])
-    return '\n'.join(xml_parts)
+    xml_parts.extend(["      </object>", "    </child>", "  </object>", "</interface>"])
+    return "\n".join(xml_parts)
 
 
 def generate_python_app_structure(project_name: str, callbacks: List[str], custom_callbacks_code: str = "") -> str:
     """Generate Python application structure."""
-    class_name = project_name.replace('_', ' ').title().replace(' ', '')
+    class_name = project_name.replace("_", " ").title().replace(" ", "")
 
-    code = f'''#!/usr/bin/env python3
+    code = f"""#!/usr/bin/env python3
 import pathlib
 import tkinter as tk
 import pygubu
@@ -51,18 +51,18 @@ class {class_name}App:
         self.builder.add_from_file(PROJECT_UI)
         self.mainwindow = self.builder.get_object('mainwindow', master)
         self.builder.connect_callbacks(self)
-'''
+"""
 
     for callback in callbacks:
-        code += f'''
+        code += f"""
     def {callback}(self):
         print("{callback} triggered")
-'''
+"""
 
     if custom_callbacks_code:
         code += f"\n{custom_callbacks_code}\n"
 
-    code += f'''
+    code += f"""
     def run(self):
         self.mainwindow.mainloop()
 
@@ -70,7 +70,7 @@ class {class_name}App:
 if __name__ == '__main__':
     app = {class_name}App()
     app.run()
-'''
+"""
     return code
 
 
@@ -83,7 +83,7 @@ def generate_readme_content(project_name: str, description: str, ui_file_name: s
     template_info = f"\nTemplate: {html.escape(template_name)}" if template_name else ""
     description_safe = html.escape(description)
 
-    return f'''# {title}
+    return f"""# {title}
 {template_info}
 {description_safe}
 
@@ -96,4 +96,4 @@ python {project_name}.py
 ```bash
 {find_pygubu_designer()} {ui_file_name}
 ```
-'''
+"""

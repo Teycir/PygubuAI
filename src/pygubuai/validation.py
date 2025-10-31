@@ -1,11 +1,22 @@
 """Enhanced input validation and sanitization"""
+
 import re
 from pathlib import Path
 from typing import Optional
 
 RESERVED_NAMES = {
-    'test', 'tests', 'src', 'lib', 'bin', 'build', 'dist',
-    'venv', 'env', '__pycache__', '.git', 'node_modules'
+    "test",
+    "tests",
+    "src",
+    "lib",
+    "bin",
+    "build",
+    "dist",
+    "venv",
+    "env",
+    "__pycache__",
+    ".git",
+    "node_modules",
 }
 
 MAX_NAME_LENGTH = 50
@@ -26,10 +37,10 @@ def validate_project_name(name: str) -> tuple[bool, Optional[str]]:
     if name.lower() in RESERVED_NAMES:
         return False, f"'{name}' is a reserved name"
 
-    if not re.match(r'^[a-zA-Z][a-zA-Z0-9_-]*$', name):
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", name):
         return False, "Project name must start with letter and contain only letters, numbers, hyphens, underscores"
 
-    if name.startswith('-') or name.startswith('_'):
+    if name.startswith("-") or name.startswith("_"):
         return False, "Project name cannot start with hyphen or underscore"
 
     return True, None
@@ -38,17 +49,17 @@ def validate_project_name(name: str) -> tuple[bool, Optional[str]]:
 def sanitize_project_name(name: str) -> str:
     """Sanitize project name to valid format"""
     # Remove invalid characters
-    name = re.sub(r'[^a-zA-Z0-9_-]', '_', name)
+    name = re.sub(r"[^a-zA-Z0-9_-]", "_", name)
 
     # Ensure starts with letter
     if name and not name[0].isalpha():
-        name = 'project_' + name
+        name = "project_" + name
 
     # Limit length
     if len(name) > MAX_NAME_LENGTH:
         name = name[:MAX_NAME_LENGTH]
 
-    return name or 'project'
+    return name or "project"
 
 
 def validate_path(path: str) -> tuple[bool, Optional[str]]:
@@ -57,7 +68,7 @@ def validate_path(path: str) -> tuple[bool, Optional[str]]:
         p = Path(path).resolve()
 
         # Check for path traversal
-        if '..' in path:
+        if ".." in path:
             return False, "Path traversal not allowed"
 
         # Check for absolute paths outside allowed areas
@@ -84,7 +95,7 @@ def validate_tags(tags: list) -> tuple[bool, Optional[str]]:
         if not tag or len(tag) > 20:
             return False, "Tags must be 1-20 characters"
 
-        if not re.match(r'^[a-zA-Z0-9_-]+$', tag):
+        if not re.match(r"^[a-zA-Z0-9_-]+$", tag):
             return False, "Tags can only contain letters, numbers, hyphens, underscores"
 
     return True, None

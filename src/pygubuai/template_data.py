@@ -1,4 +1,5 @@
 """Project templates with consistent data structures and validation."""
+
 from typing import List, Tuple, Dict, Any
 import uuid
 
@@ -129,11 +130,7 @@ def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[s
             widget_id = f"{widget_id}_{uuid.uuid4().hex[:8]}"
         used_ids.add(widget_id)
 
-        config = {
-            "class": WIDGET_MAP[widget_type],
-            "properties": {},
-            "id": widget_id
-        }
+        config = {"class": WIDGET_MAP[widget_type], "properties": {}, "id": widget_id}
         if text:
             config["properties"]["text"] = text
         config["properties"].update(props)
@@ -144,4 +141,4 @@ def get_template_widgets_and_callbacks(template_name: str) -> Tuple[List[Tuple[s
     for callback in template.get("callbacks", []):
         code.append(f'    def {callback}(self):\n        """Handle {callback} event."""\n        pass\n')
 
-    return widgets_for_generator, '\n'.join(code)
+    return widgets_for_generator, "\n".join(code)

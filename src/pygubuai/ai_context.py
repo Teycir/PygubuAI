@@ -24,7 +24,7 @@ def generate_context(project_name: str) -> Dict:
         "widgets": [],
         "callbacks": [],
         "history": [],
-        "metrics": {}
+        "metrics": {},
     }
 
     # Get widget info from UI file
@@ -42,13 +42,10 @@ def generate_context(project_name: str) -> Dict:
         if session:
             try:
                 from .db.operations import get_workflow_events
+
                 events = get_workflow_events(session, project_name, limit=10)
                 context["history"] = [
-                    {
-                        "action": e.action,
-                        "description": e.description,
-                        "timestamp": e.timestamp.isoformat()
-                    }
+                    {"action": e.action, "description": e.description, "timestamp": e.timestamp.isoformat()}
                     for e in events
                 ]
             finally:
@@ -128,7 +125,7 @@ def main():
     # Also save JSON for programmatic use
     output_file = Path.home() / ".amazonq" / "prompts" / f"{project_name}-context.json"
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         json.dump(context, f, indent=2)
 
     print(f"\nContext saved to: {output_file}")

@@ -9,6 +9,7 @@ from .utils import validate_path
 try:
     from rich.console import Console
     from rich.table import Table
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -77,6 +78,7 @@ def get_project_status(project_name: Optional[str] = None) -> Dict:
 def main():
     """CLI entry point"""
     import sys
+
     project_name = sys.argv[1] if len(sys.argv) > 1 else None
 
     status = get_project_status(project_name)
@@ -91,11 +93,11 @@ def main():
         table.add_column("Component", style="cyan")
         table.add_column("Value", style="green")
 
-        status_color = "green" if status['sync_status'] == "In Sync" else "yellow"
+        status_color = "green" if status["sync_status"] == "In Sync" else "yellow"
         table.add_row("Status", f"[{status_color}]{status['sync_status']}[/{status_color}]")
-        table.add_row("UI Modified", status['ui_modified'])
-        table.add_row("Code Modified", status['py_modified'])
-        table.add_row("Last Sync", status['last_sync'])
+        table.add_row("UI Modified", status["ui_modified"])
+        table.add_row("Code Modified", status["py_modified"])
+        table.add_row("Last Sync", status["last_sync"])
 
         console.print(table)
         if "message" in status:

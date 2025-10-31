@@ -12,6 +12,7 @@ from .progress import ProgressBar
 try:
     from rich.console import Console
     from rich.table import Table
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -48,7 +49,7 @@ def set_active(project_name: str) -> None:
     projects = registry.list_projects()
 
     if project_name not in projects:
-        available = ', '.join(projects.keys()) if projects else 'none'
+        available = ", ".join(projects.keys()) if projects else "none"
         raise ProjectNotFoundError(project_name, f"Available: {available}")
 
     registry.set_active(project_name)
@@ -79,12 +80,12 @@ def list_projects(show_metadata: bool = False) -> None:
 
         for name, data in projects.items():
             if isinstance(data, dict):
-                path = data['path']
-                description = data.get('description', '')
-                tags = ', '.join(data.get('tags', []))
+                path = data["path"]
+                description = data.get("description", "")
+                tags = ", ".join(data.get("tags", []))
             else:
                 path = data
-                description = tags = ''
+                description = tags = ""
 
             project_path = pathlib.Path(path)
             ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
@@ -103,13 +104,13 @@ def list_projects(show_metadata: bool = False) -> None:
             active_marker = " [ACTIVE]" if name == active else ""
 
             if isinstance(data, dict):
-                path = data['path']
-                description = data.get('description', '')
-                tags = data.get('tags', [])
-                created = data.get('created', '')
+                path = data["path"]
+                description = data.get("description", "")
+                tags = data.get("tags", [])
+                created = data.get("created", "")
             else:
                 path = data
-                description = tags = created = ''
+                description = tags = created = ""
 
             project_path = pathlib.Path(path)
             ui_files = list(project_path.glob("*.ui")) if project_path.exists() else []
@@ -140,15 +141,21 @@ def get_active() -> Optional[str]:
     project_path = registry.get_project(active_name)
     if project_path:
         import json
+
         path_obj = pathlib.Path(project_path)
         ui_files = list(path_obj.glob("*.ui")) if path_obj.exists() else []
         py_files = list(path_obj.glob("*.py")) if path_obj.exists() else []
-        print(json.dumps({
-            "name": active_name,
-            "path": project_path,
-            "ui_files": [str(f) for f in ui_files],
-            "py_files": [str(f) for f in py_files]
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "name": active_name,
+                    "path": project_path,
+                    "ui_files": [str(f) for f in ui_files],
+                    "py_files": [str(f) for f in py_files],
+                },
+                indent=2,
+            )
+        )
     return project_path
 
 
@@ -203,9 +210,9 @@ def search_projects(query: str) -> None:
     for name, metadata in results.items():
         print(f"  {name}")
         print(f"    Path: {metadata['path']}")
-        if metadata.get('description'):
+        if metadata.get("description"):
             print(f"    Description: {metadata['description']}")
-        if metadata.get('tags'):
+        if metadata.get("tags"):
             print(f"    Tags: {', '.join(metadata['tags'])}")
         print()
 
@@ -213,58 +220,57 @@ def search_projects(query: str) -> None:
 def main():
     """Main CLI entry point"""
     from . import __version__
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     parser = argparse.ArgumentParser(
         description="Register and manage pygubu projects globally.",
         epilog="Examples:\n"
-               "  pygubu-register add ~/number_game\n"
-               "  pygubu-register active number_game\n"
-               "  pygubu-register scan ~/projects",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        "  pygubu-register add ~/number_game\n"
+        "  pygubu-register active number_game\n"
+        "  pygubu-register scan ~/projects",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        '--version', action='version', version=f"pygubu-register {__version__}"
-    )
-    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    parser.add_argument("--version", action="version", version=f"pygubu-register {__version__}")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    add_parser = subparsers.add_parser('add', help='Register a project')
-    add_parser.add_argument('path', help='Path to the project directory')
+    add_parser = subparsers.add_parser("add", help="Register a project")
+    add_parser.add_argument("path", help="Path to the project directory")
 
-    active_parser = subparsers.add_parser('active', help='Set active project')
-    active_parser.add_argument('name', help='Name of the project to set as active')
+    active_parser = subparsers.add_parser("active", help="Set active project")
+    active_parser.add_argument("name", help="Name of the project to set as active")
 
-    list_parser = subparsers.add_parser('list', help='List all registered projects')
-    list_parser.add_argument('--metadata', '-m', action='store_true', help='Show full metadata')
+    list_parser = subparsers.add_parser("list", help="List all registered projects")
+    list_parser.add_argument("--metadata", "-m", action="store_true", help="Show full metadata")
 
-    subparsers.add_parser('info', help='Show active project information')
+    subparsers.add_parser("info", help="Show active project information")
 
-    scan_parser = subparsers.add_parser('scan', help='Auto-scan directory for projects')
-    scan_parser.add_argument('directory', nargs='?', default='.', help='Directory to scan (default: current directory)')
+    scan_parser = subparsers.add_parser("scan", help="Auto-scan directory for projects")
+    scan_parser.add_argument("directory", nargs="?", default=".", help="Directory to scan (default: current directory)")
 
-    search_parser = subparsers.add_parser('search', help='Search projects by name, description, or tags')
-    search_parser.add_argument('query', help='Search query')
+    search_parser = subparsers.add_parser("search", help="Search projects by name, description, or tags")
+    search_parser.add_argument("query", help="Search query")
 
-    add_parser.add_argument('--description', '-d', help='Project description')
-    add_parser.add_argument('--tags', '-t', help='Comma-separated tags')
+    add_parser.add_argument("--description", "-d", help="Project description")
+    add_parser.add_argument("--tags", "-t", help="Comma-separated tags")
 
     args = parser.parse_args()
 
     try:
-        if args.command == 'add':
-            tags = [t.strip() for t in args.tags.split(',')] if hasattr(args, 'tags') and args.tags else None
-            description = args.description if hasattr(args, 'description') else ""
+        if args.command == "add":
+            tags = [t.strip() for t in args.tags.split(",")] if hasattr(args, "tags") and args.tags else None
+            description = args.description if hasattr(args, "description") else ""
             register_project(args.path, description=description, tags=tags)
-        elif args.command == 'active':
+        elif args.command == "active":
             set_active(args.name)
-        elif args.command == 'list':
-            show_metadata = args.metadata if hasattr(args, 'metadata') else False
+        elif args.command == "list":
+            show_metadata = args.metadata if hasattr(args, "metadata") else False
             list_projects(show_metadata=show_metadata)
-        elif args.command == 'info':
+        elif args.command == "info":
             get_active()
-        elif args.command == 'scan':
+        elif args.command == "scan":
             scan_directory(args.directory)
-        elif args.command == 'search':
+        elif args.command == "search":
             search_projects(args.query)
         else:
             parser.print_help()
@@ -276,5 +282,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

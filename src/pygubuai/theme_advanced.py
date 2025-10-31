@@ -1,4 +1,5 @@
 """Advanced theming engine for PygubuAI"""
+
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Optional
@@ -18,6 +19,7 @@ WIDGET_COLOR_MAP = {
 def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bool:
     """Apply theme preset to project"""
     from .theme_presets import get_preset
+
     preset = get_preset(preset_name)
     if not preset:
         raise ValueError(f"Unknown preset: {preset_name}")
@@ -32,7 +34,7 @@ def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bo
         raise FileNotFoundError(f"UI file not found: {ui_file}")
 
     if backup:
-        shutil.copy2(ui_file, ui_file.with_suffix('.ui.bak'))
+        shutil.copy2(ui_file, ui_file.with_suffix(".ui.bak"))
 
     tree = ET.parse(ui_file)
     root = tree.getroot()
@@ -51,7 +53,7 @@ def apply_preset(project_name: str, preset_name: str, backup: bool = True) -> bo
         if widget_class in WIDGET_COLOR_MAP:
             apply_colors_to_widget(obj, preset["colors"], widget_class)
 
-    tree.write(ui_file, encoding='utf-8', xml_declaration=True)
+    tree.write(ui_file, encoding="utf-8", xml_declaration=True)
     return True
 
 
@@ -73,4 +75,5 @@ def apply_colors_to_widget(widget_element, colors: dict, widget_type: str):
 def get_preset_info(preset_name: str) -> Optional[dict]:
     """Get detailed preset information"""
     from .theme_presets import get_preset
+
     return get_preset(preset_name)

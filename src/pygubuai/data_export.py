@@ -1,4 +1,5 @@
 """Data export functionality for PygubuAI projects"""
+
 from pathlib import Path
 from typing import List
 import xml.etree.ElementTree as ET
@@ -50,7 +51,7 @@ def _add_export_button(project_path: str, project_name: str, formats: List[str])
     side_prop = ET.SubElement(layout, "property", {"name": "side"})
     side_prop.text = "bottom"
 
-    tree.write(ui_file, encoding='utf-8', xml_declaration=True)
+    tree.write(ui_file, encoding="utf-8", xml_declaration=True)
 
 
 def _generate_export_code(project_path: str, project_name: str, formats: List[str], widget_id: str):

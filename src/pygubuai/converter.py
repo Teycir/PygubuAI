@@ -1,4 +1,5 @@
 """Convert tkinter code to pygubu format"""
+
 import sys
 from pathlib import Path
 
@@ -24,5 +25,5 @@ def main():
     print("3. Connect callbacks via builder.connect_callbacks()")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

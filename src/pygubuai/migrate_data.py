@@ -25,7 +25,7 @@ def migrate_registry() -> bool:
         return True
 
     # Backup
-    backup_path = registry_path.with_suffix('.json.bak')
+    backup_path = registry_path.with_suffix(".json.bak")
     registry_path.rename(backup_path)
     logger.info(f"Backed up registry to {backup_path}")
 
@@ -34,14 +34,14 @@ def migrate_registry() -> bool:
             data = json.load(f)
 
         # Convert old format
-        if 'active_project' in data:
-            data['active'] = data.pop('active_project')
+        if "active_project" in data:
+            data["active"] = data.pop("active_project")
 
         # Validate
         registry_model = RegistryData(**data)
 
         # Write new format
-        with open(registry_path, 'w') as f:
+        with open(registry_path, "w") as f:
             json.dump(registry_model.model_dump(), f, indent=2)
 
         logger.info("Registry migrated successfully")
@@ -70,7 +70,7 @@ def migrate_workflow(project_path: Path) -> bool:
         return True
 
     # Backup
-    backup_file = workflow_file.with_suffix('.json.bak')
+    backup_file = workflow_file.with_suffix(".json.bak")
     workflow_file.rename(backup_file)
     logger.info(f"Backed up workflow to {backup_file}")
 
@@ -79,24 +79,24 @@ def migrate_workflow(project_path: Path) -> bool:
             data = json.load(f)
 
         # Convert old format
-        if 'changes' in data:
-            data['history'] = [
+        if "changes" in data:
+            data["history"] = [
                 WorkflowHistory(
-                    timestamp=c.get('timestamp', ''),
-                    action='file_changed',
-                    description=f"File {c.get('file', 'unknown')} changed"
+                    timestamp=c.get("timestamp", ""),
+                    action="file_changed",
+                    description=f"File {c.get('file', 'unknown')} changed",
                 ).model_dump()
-                for c in data.pop('changes', [])
+                for c in data.pop("changes", [])
             ]
 
-        if 'project' not in data:
-            data['project'] = project_path.name
+        if "project" not in data:
+            data["project"] = project_path.name
 
         # Validate
         workflow_model = WorkflowData(**data)
 
         # Write new format
-        with open(workflow_file, 'w') as f:
+        with open(workflow_file, "w") as f:
             json.dump(workflow_model.model_dump(), f, indent=2)
 
         logger.info(f"Workflow migrated for {project_path.name}")
@@ -112,7 +112,7 @@ def migrate_workflow(project_path: Path) -> bool:
 
 def migrate_all() -> None:
     """Migrate all data to new format"""
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     print("Starting data migration to Pydantic models...\n")
 
@@ -150,7 +150,7 @@ def main():
     """CLI entry point"""
     import sys
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--help':
+    if len(sys.argv) > 1 and sys.argv[1] == "--help":
         print("Usage: python -m pygubuai.migrate_data")
         print("\nMigrates registry and workflow files to Pydantic format")
         print("Creates backups with .bak extension")
@@ -159,5 +159,5 @@ def main():
     migrate_all()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

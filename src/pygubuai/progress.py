@@ -1,4 +1,5 @@
 """Progress indicators for long operations"""
+
 import sys
 import time
 from typing import Optional

@@ -28,7 +28,7 @@ def preview_ui(ui_file_path: str, watch: bool = False):
         builder = pygubu.Builder()
         try:
             builder.add_from_file(str(ui_path))
-            builder.get_object('mainwindow', root)
+            builder.get_object("mainwindow", root)
         except (KeyError, AttributeError) as e:
             # If mainwindow not found, try first object
             try:
@@ -44,6 +44,7 @@ def preview_ui(ui_file_path: str, watch: bool = False):
             raise UIParseError(str(ui_path), f"Failed to load UI: {e}") from e
 
         if watch:
+
             def check_changes():
                 nonlocal last_mtime
                 try:
@@ -55,6 +56,7 @@ def preview_ui(ui_file_path: str, watch: bool = False):
                 except (OSError, PermissionError) as e:
                     # File may be temporarily unavailable during write
                     import logging
+
                     logging.debug(f"Temporary error checking file: {e}")
                 except tk.TclError:
                     # Window already destroyed
@@ -95,7 +97,7 @@ def main():
     import logging
     from .errors import PygubuAIError
 
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     logger = logging.getLogger(__name__)
 
     if len(sys.argv) < 2:
@@ -108,7 +110,7 @@ def main():
     watch = "--watch" in sys.argv
 
     try:
-        if target.endswith('.ui'):
+        if target.endswith(".ui"):
             preview_ui(target, watch)
         else:
             preview_project(target, watch)

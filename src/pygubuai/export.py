@@ -50,7 +50,7 @@ def extract_callbacks(py_file: Path) -> str:
         return ""
 
     content = py_file.read_text()
-    lines = content.split('\\n')
+    lines = content.split("\\n")
 
     callbacks = []
     in_callback = False
@@ -59,15 +59,15 @@ def extract_callbacks(py_file: Path) -> str:
 
     for line in lines:
         # Detect callback method (starts with 'def on_')
-        if line.strip().startswith('def on_'):
+        if line.strip().startswith("def on_"):
             in_callback = True
             indent_level = len(line) - len(line.lstrip())
             current_callback = [line]
         elif in_callback:
             # Continue collecting callback lines
-            if line.strip() and not line.startswith(' ' * indent_level):
+            if line.strip() and not line.startswith(" " * indent_level):
                 # End of callback
-                callbacks.append('\\n'.join(current_callback))
+                callbacks.append("\\n".join(current_callback))
                 current_callback = []
                 in_callback = False
             else:
@@ -75,9 +75,9 @@ def extract_callbacks(py_file: Path) -> str:
 
     # Add last callback if exists
     if current_callback:
-        callbacks.append('\\n'.join(current_callback))
+        callbacks.append("\\n".join(current_callback))
 
-    return '\\n\\n'.join(callbacks) if callbacks else "    # Add your callbacks here\\n    pass"
+    return "\\n\\n".join(callbacks) if callbacks else "    # Add your callbacks here\\n    pass"
 
 
 def export_standalone(project_name: str, output_file: Optional[str] = None) -> str:
@@ -102,14 +102,11 @@ def export_standalone(project_name: str, output_file: Optional[str] = None) -> s
     callbacks = extract_callbacks(py_file)
 
     # Generate class name
-    class_name = ''.join(word.capitalize() for word in project_name.split('_')) + 'App'
+    class_name = "".join(word.capitalize() for word in project_name.split("_")) + "App"
 
     # Generate standalone code
     standalone_code = STANDALONE_TEMPLATE.format(
-        project_name=project_name,
-        class_name=class_name,
-        ui_content=ui_content,
-        callbacks=callbacks
+        project_name=project_name, class_name=class_name, ui_content=ui_content, callbacks=callbacks
     )
 
     # Determine output file

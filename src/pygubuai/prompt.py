@@ -20,7 +20,6 @@ Please:
 4. Maintain the existing layout and style
 
 Keep changes minimal and focused on the requested feature.""",
-
     "fix-layout": """Fix the layout issues in my pygubu project '{project}'.
 
 Current issues:
@@ -37,7 +36,6 @@ Please analyze the current layout and suggest improvements for:
 - Visual hierarchy
 
 Provide specific XML changes needed.""",
-
     "refactor": """Refactor my pygubu project '{project}' to improve code quality.
 
 Focus areas:
@@ -49,7 +47,6 @@ Focus areas:
 Project: {project_path}
 
 Provide specific refactoring steps.""",
-
     "add-validation": """Add input validation to my pygubu project '{project}'.
 
 Fields to validate:
@@ -62,7 +59,6 @@ Requirements:
 - Prevent invalid submissions
 
 Provide both UI changes and validation code.""",
-
     "add-menu": """Add a menu bar to my pygubu project '{project}'.
 
 Menu structure:
@@ -75,7 +71,6 @@ Include:
 - Keyboard shortcuts
 
 Provide XML for menu and Python callbacks.""",
-
     "improve-accessibility": """Improve accessibility in my pygubu project '{project}'.
 
 Focus on:
@@ -147,7 +142,7 @@ def main():
     if command == "list":
         print("\\nAvailable Prompt Templates:\\n")
         for template, content in PROMPT_TEMPLATES.items():
-            first_line = content.split('\\n')[0]
+            first_line = content.split("\\n")[0]
             print(f"  {template:20} - {first_line}")
         print()
         return
@@ -169,9 +164,9 @@ def main():
 
     try:
         prompt = generate_prompt(template_name, project_name, **kwargs)
-        print("\\n" + "="*60)
+        print("\\n" + "=" * 60)
         print(prompt)
-        print("="*60 + "\\n")
+        print("=" * 60 + "\\n")
 
         # Offer to save
         if project_name:

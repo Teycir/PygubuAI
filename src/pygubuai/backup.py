@@ -1,4 +1,5 @@
 """Backup and rollback functionality"""
+
 import shutil
 import logging
 from pathlib import Path

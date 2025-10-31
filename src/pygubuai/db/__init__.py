@@ -1,4 +1,5 @@
 """Database module for SQLAlchemy integration"""
+
 from pathlib import Path
 from typing import Optional
 import logging
@@ -8,6 +9,7 @@ logger = logging.getLogger(__name__)
 try:
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker, Session
+
     SQLALCHEMY_AVAILABLE = True
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
@@ -21,6 +23,7 @@ _SessionLocal = None
 def get_db_path() -> Path:
     """Get database file path"""
     from ..config import Config
+
     config = Config()
     return config.config_dir / "pygubuai.db"
 
@@ -41,6 +44,7 @@ def init_db(db_path: Optional[Path] = None) -> bool:
     _SessionLocal = sessionmaker(bind=_engine)
 
     from .models import Base
+
     Base.metadata.create_all(_engine)
 
     logger.info(f"Database initialized at {db_path}")

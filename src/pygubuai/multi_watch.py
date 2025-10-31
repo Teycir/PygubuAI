@@ -1,4 +1,5 @@
 """Multi-project watch mode"""
+
 import time
 import logging
 from pathlib import Path
@@ -75,10 +76,7 @@ def _check_project_changes(name: str, path: Path, workflow: Dict, patterns: List
         elif current_hash != prev_hash:
             print(f" [{name}] {ui_file.name} changed at {datetime.now(timezone.utc).strftime('%H:%M:%S')}")
             workflow["file_hashes"][file_key] = current_hash
-            workflow["changes"].append({
-                "file": ui_file.name,
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            })
+            workflow["changes"].append({"file": ui_file.name, "timestamp": datetime.now(timezone.utc).isoformat()})
             save_workflow(path, workflow)
 
 

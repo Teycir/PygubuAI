@@ -1,4 +1,5 @@
 """Dynamic template discovery and validation system."""
+
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Any

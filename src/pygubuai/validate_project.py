@@ -9,6 +9,7 @@ from .registry import Registry
 try:
     from rich.console import Console
     from rich.table import Table
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -83,7 +84,7 @@ def validate_project(project_name: str) -> List[ValidationIssue]:
                     issues.append(ValidationIssue("warning", "Code", f"Callback not found in Python: {callback}"))
 
             # Check for unused callbacks
-            defined_methods = re.findall(r'def (on_\w+)', py_content)
+            defined_methods = re.findall(r"def (on_\w+)", py_content)
             for method in defined_methods:
                 if method not in callbacks and method != "on_closing":
                     issues.append(ValidationIssue("info", "Code", f"Defined callback not used in UI: {method}"))

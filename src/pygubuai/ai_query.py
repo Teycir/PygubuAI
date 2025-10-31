@@ -18,13 +18,13 @@ def query_project(project_name: str, query: str) -> str:
     query_lower = query.lower()
 
     patterns = [
-        (r'how many (widgets?|buttons?|entries?|labels?)', _count_widgets),
-        (r'what (callbacks?|handlers?|events?)', _list_callbacks),
-        (r'(unused|missing) (callbacks?|handlers?)', _find_unused),
-        (r'complexity|complex', _get_complexity),
-        (r'suggestions?|improvements?|recommendations?', _get_suggestions),
-        (r'layout|manager', _get_layout_info),
-        (r'widget types?|what widgets', _list_widget_types),
+        (r"how many (widgets?|buttons?|entries?|labels?)", _count_widgets),
+        (r"what (callbacks?|handlers?|events?)", _list_callbacks),
+        (r"(unused|missing) (callbacks?|handlers?)", _find_unused),
+        (r"complexity|complex", _get_complexity),
+        (r"suggestions?|improvements?|recommendations?", _get_suggestions),
+        (r"layout|manager", _get_layout_info),
+        (r"widget types?|what widgets", _list_widget_types),
     ]
 
     for pattern, handler in patterns:
@@ -36,14 +36,14 @@ def query_project(project_name: str, query: str) -> str:
 
 def _count_widgets(analysis: Dict, context: Dict, query: str) -> str:
     """Count widgets"""
-    if 'button' in query:
-        count = analysis['widget_types'].get('ttk.Button', 0) + analysis['widget_types'].get('tk.Button', 0)
+    if "button" in query:
+        count = analysis["widget_types"].get("ttk.Button", 0) + analysis["widget_types"].get("tk.Button", 0)
         return f"Found {count} buttons"
-    elif 'entry' in query or 'entries' in query:
-        count = analysis['widget_types'].get('ttk.Entry', 0) + analysis['widget_types'].get('tk.Entry', 0)
+    elif "entry" in query or "entries" in query:
+        count = analysis["widget_types"].get("ttk.Entry", 0) + analysis["widget_types"].get("tk.Entry", 0)
         return f"Found {count} entry widgets"
-    elif 'label' in query:
-        count = analysis['widget_types'].get('ttk.Label', 0) + analysis['widget_types'].get('tk.Label', 0)
+    elif "label" in query:
+        count = analysis["widget_types"].get("ttk.Label", 0) + analysis["widget_types"].get("tk.Label", 0)
         return f"Found {count} labels"
     else:
         return f"Total widgets: {analysis['widget_count']}"
@@ -51,7 +51,7 @@ def _count_widgets(analysis: Dict, context: Dict, query: str) -> str:
 
 def _list_callbacks(analysis: Dict, context: Dict, query: str) -> str:
     """List callbacks"""
-    callbacks = context.get('callbacks', [])
+    callbacks = context.get("callbacks", [])
     if not callbacks:
         return "No callbacks found"
 
@@ -65,17 +65,19 @@ def _find_unused(analysis: Dict, context: Dict, query: str) -> str:
 
 def _get_complexity(analysis: Dict, context: Dict, query: str) -> str:
     """Get complexity score"""
-    score = analysis['complexity']
+    score = analysis["complexity"]
     level = "low" if score < 5 else "medium" if score < 10 else "high"
-    return f"Complexity: {score}/10 ({level})\n" \
-           f"Widgets: {analysis['widget_count']}\n" \
-           f"Callbacks: {analysis['callback_count']}\n" \
-           f"Layouts: {', '.join(analysis['layout_patterns'])}"
+    return (
+        f"Complexity: {score}/10 ({level})\n"
+        f"Widgets: {analysis['widget_count']}\n"
+        f"Callbacks: {analysis['callback_count']}\n"
+        f"Layouts: {', '.join(analysis['layout_patterns'])}"
+    )
 
 
 def _get_suggestions(analysis: Dict, context: Dict, query: str) -> str:
     """Get improvement suggestions"""
-    suggestions = analysis.get('suggestions', [])
+    suggestions = analysis.get("suggestions", [])
     if not suggestions:
         return "No suggestions - project looks good!"
 
@@ -84,7 +86,7 @@ def _get_suggestions(analysis: Dict, context: Dict, query: str) -> str:
 
 def _get_layout_info(analysis: Dict, context: Dict, query: str) -> str:
     """Get layout information"""
-    layouts = analysis.get('layout_patterns', [])
+    layouts = analysis.get("layout_patterns", [])
     if not layouts:
         return "No layout managers detected"
 
@@ -93,7 +95,7 @@ def _get_layout_info(analysis: Dict, context: Dict, query: str) -> str:
 
 def _list_widget_types(analysis: Dict, context: Dict, query: str) -> str:
     """List widget types"""
-    types = analysis.get('widget_types', {})
+    types = analysis.get("widget_types", {})
     if not types:
         return "No widgets found"
 

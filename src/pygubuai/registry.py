@@ -1,4 +1,5 @@
 """Thread-safe project registry"""
+
 import json
 import logging
 import time
@@ -15,6 +16,7 @@ except ImportError:
 try:
     from pydantic import ValidationError
     from .models import RegistryData
+
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
@@ -27,10 +29,12 @@ logger = logging.getLogger(__name__)
 
 class Registry:
     """Thread-safe registry with file locking"""
+
     REGISTRY_FILE = None  # For testing override
 
     def __init__(self, registry_path: Optional[Path] = None):
         from .utils import validate_safe_path
+
         if registry_path:
             self.registry_path = validate_safe_path(str(registry_path))
         elif self.REGISTRY_FILE:
@@ -51,14 +55,14 @@ class Registry:
             self._write({"projects": {}, "active": None})
 
     @contextmanager
-    def _lock(self, mode='r'):
+    def _lock(self, mode="r"):
         """Cross-platform file locking with proper cleanup order"""
         lock_file = None
         file_handle = None
 
         try:
             if FileLock:
-                lock_file = FileLock(str(self.registry_path) + '.lock', timeout=10)
+                lock_file = FileLock(str(self.registry_path) + ".lock", timeout=10)
                 lock_file.acquire()
             else:
                 logger.warning("filelock not installed, registry operations not thread-safe")
@@ -90,12 +94,12 @@ class Registry:
             return self._cache
 
         try:
-            with self._lock('r') as f:
+            with self._lock("r") as f:
                 data = json.load(f)
 
                 # Convert old format to new
-                if 'active_project' in data:
-                    data['active'] = data.pop('active_project')
+                if "active_project" in data:
+                    data["active"] = data.pop("active_project")
 
                 # Convert old string paths to new dict format
                 for name, project in list(data.get("projects", {}).items()):
@@ -105,7 +109,7 @@ class Registry:
                             "created": None,
                             "modified": None,
                             "description": "",
-                            "tags": []
+                            "tags": [],
                         }
 
                 # Validate with Pydantic if available
@@ -129,8 +133,8 @@ class Registry:
         if PYDANTIC_AVAILABLE:
             try:
                 # Ensure correct field names
-                if 'active_project' in data:
-                    data['active'] = data.pop('active_project')
+                if "active_project" in data:
+                    data["active"] = data.pop("active_project")
 
                 registry_model = RegistryData(**data)
                 data = registry_model.model_dump()
@@ -138,7 +142,7 @@ class Registry:
                 logger.error(f"Registry validation failed before write: {e}")
                 raise ValueError(f"Invalid registry data: {e}")
 
-        with self._lock('w') as f:
+        with self._lock("w") as f:
             json.dump(data, f, indent=2)
         # Invalidate cache on write
         self._cache = None
@@ -147,6 +151,7 @@ class Registry:
     def add_project(self, name: str, path: str, description: str = "", tags: List[str] = None):
         """Add project with metadata"""
         from .utils import validate_path
+
         data = self._read()
         try:
             safe_path = validate_path(path, must_exist=True, must_be_dir=True)
@@ -157,7 +162,7 @@ class Registry:
             "created": datetime.now(timezone.utc).isoformat(),
             "modified": datetime.now(timezone.utc).isoformat(),
             "description": description,
-            "tags": tags or []
+            "tags": tags or [],
         }
         self._write(data)
 

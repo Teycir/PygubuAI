@@ -8,6 +8,7 @@ from .utils import validate_path
 try:
     from rich.console import Console
     from rich.table import Table
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -41,7 +42,7 @@ def inspect_widget(project_name: str, widget_id: str) -> Optional[Dict]:
         "properties": {},
         "layout": {},
         "children": [],
-        "parent": None
+        "parent": None,
     }
 
     # Get properties
@@ -119,10 +120,7 @@ def list_callbacks(project_name: str) -> List[Dict]:
         widget_id = obj.get("id")
         for prop in obj.findall("property[@name='command']"):
             if prop.text:
-                callbacks.append({
-                    "widget": widget_id,
-                    "callback": prop.text
-                })
+                callbacks.append({"widget": widget_id, "callback": prop.text})
 
     return callbacks
 
@@ -169,21 +167,21 @@ def main():
             sys.exit(1)
 
         print(f"\\nWidget: {info['id']}")
-        print("=" * (8 + len(info['id'])))
+        print("=" * (8 + len(info["id"])))
         print(f"Class: {info['class']}")
         print(f"Parent: {info['parent'] or 'None'}")
 
-        if info['properties']:
+        if info["properties"]:
             print("\\nProperties:")
-            for key, value in info['properties'].items():
+            for key, value in info["properties"].items():
                 print(f"  {key}: {value}")
 
-        if info['layout']:
+        if info["layout"]:
             print("\\nLayout:")
-            for key, value in info['layout'].items():
+            for key, value in info["layout"].items():
                 print(f"  {key}: {value}")
 
-        if info['children']:
+        if info["children"]:
             print(f"\\nChildren: {', '.join(info['children'])}")
 
     elif "--callbacks" in sys.argv:
@@ -199,7 +197,7 @@ def main():
                 table.add_column("Callback", style="green")
 
                 for cb in callbacks:
-                    table.add_row(cb['widget'], cb['callback'])
+                    table.add_row(cb["widget"], cb["callback"])
 
                 console.print(table)
                 console.print(f"\nTotal: {len(callbacks)} callbacks", style="bold green")
