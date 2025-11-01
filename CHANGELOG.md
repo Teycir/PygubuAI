@@ -5,6 +5,18 @@ All notable changes to PygubuAI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-02-01
+
+### Changed
+- Pygubu Designer now ubiquitous - automatically installed with PygubuAI
+- Removed runtime validation checks for pygubu-designer
+- Simplified installation to use pipx for global isolated installation
+- Updated all documentation to reflect pipx as recommended method
+
+### Fixed
+- Users no longer prompted to install pygubu-designer separately
+- All commands available globally after single pipx install
+
 ## [0.8.0] - 2025-01-31
 
 ### Security Fixes - CRITICAL

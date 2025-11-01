@@ -132,10 +132,10 @@ Now "pygubuai" works in Amazon Q, Kilo Code, Roo Code, and Cline. Switch tools f
 ## Quick Start
 
 ```bash
-# Install
+# Install globally with pipx (includes pygubu-designer automatically)
 git clone https://github.com/Teycir/PygubuAI.git
 cd PygubuAI
-pip install -e .
+pipx install .
 
 # Enable for your AI tools (one-time setup)
 bash scripts/setup-amazonq.sh scan ~/Repos
@@ -204,22 +204,33 @@ bash scripts/setup-kilocode.sh scan ~/Repos
 
 ### Prerequisites
 - Python 3.9+
-- [Pygubu](https://github.com/alejandroautalan/pygubu) and [Pygubu Designer](https://github.com/alejandroautalan/pygubu-designer)
+- pipx (recommended) or pip
 
-### Recommended Method: pip install
+### Recommended Method: pipx install
 
 **This is the preferred installation method:**
 
 ```bash
+# Install pipx if not already installed
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+
+# Install PygubuAI globally
 git clone https://github.com/Teycir/PygubuAI.git
 cd PygubuAI
-pip install -e .
+pipx install .
 ```
+
+This automatically installs globally in isolated environment:
+- pygubu (UI framework)
+- pygubu-designer (visual editor)
+- All PygubuAI commands
+- All other dependencies
 
 Verify installation:
 ```bash
 pygubu-create --version
-pygubu-register list
+pygubu-designer --version
 ```
 
 ### Enable Natural Language Trigger
@@ -246,6 +257,8 @@ See [MULTI_AI_SETUP.md](MULTI_AI_SETUP.md) for details.
 
 ### Development Setup
 
+For development, use editable install:
+
 ```bash
 pip install -e ".[dev]"  # Install with dev dependencies
 make test-fast           # Run fast tests (<1 min)
@@ -259,7 +272,7 @@ make lint                # Run linters
 ### Uninstall
 
 ```bash
-pip uninstall pygubuai
+pipx uninstall pygubuai
 ```
 
 ## Commands

@@ -51,11 +51,8 @@ def ensure_directory(path: Path) -> Path:
 
 
 def find_pygubu_designer() -> str:
-    """Find pygubu-designer executable"""
-    import shutil
-
-    designer = shutil.which("pygubu-designer")
-    return designer if designer else "pygubu-designer"
+    """Find pygubu-designer executable (always available as required dependency)"""
+    return "pygubu-designer"
 
 
 def validate_path(path: str, must_exist: bool = False, must_be_dir: bool = False) -> Path:

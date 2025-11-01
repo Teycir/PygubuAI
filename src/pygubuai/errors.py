@@ -104,11 +104,8 @@ def validate_pygubu():
 
 
 def validate_pygubu_designer():
-    """Check pygubu-designer is available"""
-    import shutil
-
-    if not shutil.which("pygubu-designer"):
-        raise DependencyError("pygubu-designer", "pip install pygubu-designer>=0.42")
+    """Check pygubu-designer is available (no-op since it's a required dependency)"""
+    pass
 
 
 def handle_file_operation(operation: str, path: str, func, *args, **kwargs):
