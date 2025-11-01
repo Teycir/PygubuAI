@@ -5,6 +5,16 @@ All notable changes to PygubuAI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-02-01
+
+### Security
+- Fixed XXE (XML External Entity) vulnerability by replacing xml.etree.ElementTree with defusedxml
+- Added defusedxml>=0.7.1 as required dependency
+- Updated 8 modules to use secure XML parsing
+
+### Added
+- Comprehensive security review report (SECURITY_REVIEW_V1.md)
+
 ## [1.0.0] - 2025-02-01
 
 ### Changed
@@ -17,7 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Users no longer prompted to install pygubu-designer separately
 - All commands available globally after single pipx install
 
-## [0.8.0] - 2025-01-31
+## [0.9.0] - 2025-01-31
+
+### Added
+- Multi-AI setup scripts for Amazon Q, Kilo Code, Roo Code, Cline
+- Natural language trigger system with "pygubuai" keyword
+- Cross-AI project memory via global registry
+- AI context injection through tool-specific prompts
+
+### Changed
+- Enhanced documentation for multi-AI workflows
+- Improved trigger word detection
+- Updated setup scripts for better project scanning
 
 ### Security Fixes - CRITICAL
 
@@ -64,12 +85,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 - Added SECURITY_FIXES.md with complete fix documentation
-- Updated all version references to 0.8.0
+- Updated all version references
 - Added deployment checklist and verification instructions
 
-## [0.5.0] - 2025-01-25
+## [0.8.0] - 2025-01-28
 
-### Added - 10 High-Value Productivity Features 🚀
+### Added - 10 High-Value Productivity Features
 
 #### 1. Project Status Checker
 - `pygubu-status` command to check UI/code sync status
@@ -151,7 +172,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added - Documentation
 - `ROADMAP.md` - Complete implementation roadmap
 - `FEATURE_SHOWCASE.md` - Comprehensive feature guide with examples
-- Updated README with v0.5.0 features
+- Updated README with new features
 - 10 new CLI entry points in pyproject.toml
 
 ### Added - Tests
@@ -160,11 +181,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `test_theme.py` - Theme switcher tests
 - `test_snippet.py` - Snippet generator tests
 
-### Changed
-- Version bumped to 0.5.0
-- README reorganized with new features section
-- Commands table split into Core and New sections
-
 ### Technical
 - Zero new external dependencies
 - All features use existing Python stdlib + pygubu
@@ -172,7 +188,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive error handling
 - Cross-platform compatibility maintained
 
-## [0.3.0] - 2025-01-20
+## [0.7.0] - 2025-01-25
+
+### Added
+- Documentation improvements
+- Enhanced examples and guides
+
+## [0.6.0] - 2025-01-22
+
+### Added
+- Database integration with SQLAlchemy
+- Advanced caching system
+- Data export functionality
+- Migration tools for legacy projects
+
+### Changed
+- Improved performance with caching layer
+- Enhanced data persistence
+
+## [0.5.0] - 2025-01-20
 
 ### Changed
 - Updated documentation URLs to use actual repository (Teycir/PygubuAI)
@@ -183,7 +217,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected placeholder URLs in README.md and pyproject.toml
 - Fixed documentation link in pyproject.toml (PYGUBUAI.md → README.md)
 
-## [0.2.0] - 2025-01-15
+## [0.4.0] - 2025-01-18
+
+### Changed
+- Updated documentation URLs to use actual repository (Teycir/PygubuAI)
+- Fixed date consistency across documentation
+- Aligned version references across all documentation
+
+### Fixed
+- Corrected placeholder URLs in README.md and pyproject.toml
+- Fixed documentation link in pyproject.toml
+
+## [0.3.0] - 2025-01-15
 
 ### Added - High Priority Enhancements
 - **Interactive CLI Mode**: `--interactive` flag for guided project creation
@@ -233,7 +278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backward compatible registry format migration
 - Git integration with automatic .gitignore generation
 
-## [0.1.0] - 2025-01-10
+## [0.2.0] - 2025-01-10
 
 ### Added
 - **Testing Framework**: 23 automated tests across 6 modules
@@ -256,7 +301,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modular test structure with unittest framework
 - 100% backward compatibility maintained
 
-## [0.0.1] - Initial Release
+## [0.1.0] - 2025-01-05 - Initial Release
 
 ### Added
 - Basic project creation with `pygubu-create`

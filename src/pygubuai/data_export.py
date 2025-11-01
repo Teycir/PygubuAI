@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from typing import List, Union, Optional
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from .registry import Registry
 from .utils import validate_path
 

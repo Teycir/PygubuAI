@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Project validator for common issues"""
-import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import List
 import re
@@ -51,7 +50,8 @@ def validate_project(project_name: str) -> List[ValidationIssue]:
 
     # Validate UI file
     try:
-        tree = ET.parse(ui_file)
+        from defusedxml.ElementTree import parse
+        tree = parse(ui_file)
         root = tree.getroot()
 
         # Check for duplicate IDs
@@ -89,8 +89,11 @@ def validate_project(project_name: str) -> List[ValidationIssue]:
                 if method not in callbacks and method != "on_closing":
                     issues.append(ValidationIssue("info", "Code", f"Defined callback not used in UI: {method}"))
 
-    except ET.ParseError as e:
-        issues.append(ValidationIssue("error", "UI", f"XML parse error: {e}"))
+    except Exception as e:
+        if "ParseError" in str(type(e).__name__):
+            issues.append(ValidationIssue("error", "UI", f"XML parse error: {e}"))
+        else:
+            raise
     except Exception as e:
         issues.append(ValidationIssue("error", "Validation", f"Unexpected error: {e}"))
 

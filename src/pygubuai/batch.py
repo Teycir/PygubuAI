@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Batch operations across multiple projects"""
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import List, Dict, Union, Any
 from .registry import Registry

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Theme switcher for pygubu projects"""
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 
 from typing import Optional
 import shutil

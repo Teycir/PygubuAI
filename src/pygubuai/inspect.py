@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Widget inspector for UI files"""
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from typing import Optional, Dict, List, Any
 from .registry import Registry
 from .utils import validate_path

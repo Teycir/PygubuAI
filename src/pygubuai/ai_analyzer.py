@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Project analysis for AI insights"""
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Dict
 from collections import Counter

@@ -58,10 +58,9 @@ def generate_context(project_name: str) -> Dict:
 
 def _parse_ui_file(ui_file: Path) -> Tuple[List[Dict[str, str]], List[str]]:
     """Parse UI file for widgets and callbacks"""
-    import xml.etree.ElementTree as ET
-
     try:
-        tree = ET.parse(ui_file)
+        from defusedxml.ElementTree import parse
+        tree = parse(ui_file)
         root = tree.getroot()
 
         widgets: List[Dict[str, str]] = []
