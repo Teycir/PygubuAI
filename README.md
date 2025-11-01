@@ -23,15 +23,18 @@ cd PygubuAI
 # Install
 pip install -e .
 
-# Enable trigger word (one-time setup)
-bash scripts/setup-trigger.sh scan ~/Repos
+# Enable trigger word (one-time setup for all AI tools)
+bash scripts/setup-amazonq.sh scan ~/Repos      # Amazon Q
+bash scripts/setup-kilocode.sh scan ~/Repos     # Kilo Code
+bash scripts/setup-roocode.sh scan ~/Repos      # Roo Code
+bash scripts/setup-cline.sh scan ~/Repos        # Cline
 
-# Now just say "pygubuai" in Amazon Q from any directory!
+# Now just say "pygubuai" in any AI assistant from any directory!
 ```
 
 ### Natural Language Mode (Recommended)
 
-Just mention "pygubuai" in Amazon Q chat:
+Just mention "pygubuai" in any AI assistant (Amazon Q, Kilo Code, Roo Code, Cline):
 
 ```
 pygubuai create a login form
@@ -79,7 +82,7 @@ Migrate legacy tkinter code to pygubu format.
 
 ### AI Chat Integration - Trigger Word "pygubuai"
 
-Just say "pygubuai" + what you want in Amazon Q:
+Just say "pygubuai" + what you want in any AI assistant:
 
 ```
 pygubuai create a todo app
@@ -91,8 +94,17 @@ pygubuai build a settings panel with theme dropdown
 
 Works from ANY directory after one-time setup:
 ```bash
-bash scripts/setup-trigger.sh scan ~/Repos
+bash scripts/setup-amazonq.sh scan ~/Repos      # Amazon Q
+bash scripts/setup-kilocode.sh scan ~/Repos     # Kilo Code
+bash scripts/setup-roocode.sh scan ~/Repos      # Roo Code
+bash scripts/setup-cline.sh scan ~/Repos        # Cline
 ```
+
+Supported AI Assistants:
+- Amazon Q Developer
+- Kilo Code
+- Roo Code
+- Cline
 
 No need to use `@pygubu-context` - the trigger word activates everything automatically!
 
@@ -126,20 +138,31 @@ pygubu-register list
 
 ### Enable Natural Language Trigger (Recommended)
 
-One-time setup to enable "pygubuai" keyword:
+One-time setup to enable "pygubuai" keyword for all AI assistants:
 
 ```bash
-# Mark all pygubu projects in your repos
-bash scripts/setup-trigger.sh scan ~/Repos
+# Mark all pygubu projects in your repos (choose your AI tool)
+bash scripts/setup-amazonq.sh scan ~/Repos      # Amazon Q
+bash scripts/setup-kilocode.sh scan ~/Repos     # Kilo Code
+bash scripts/setup-roocode.sh scan ~/Repos      # Roo Code
+bash scripts/setup-cline.sh scan ~/Repos        # Cline
 
 # Or mark a specific directory
-bash scripts/setup-trigger.sh mark /path/to/project
+bash scripts/setup-amazonq.sh mark /path/to/project
+bash scripts/setup-kilocode.sh mark /path/to/project
+bash scripts/setup-roocode.sh mark /path/to/project
+bash scripts/setup-cline.sh mark /path/to/project
 
 # Or mark PygubuAI repo itself
-bash scripts/setup-trigger.sh self
+bash scripts/setup-amazonq.sh self
+bash scripts/setup-kilocode.sh self
+bash scripts/setup-roocode.sh self
+bash scripts/setup-cline.sh self
 ```
 
-After setup, just say "pygubuai" in Amazon Q from any marked directory!
+After setup, just say "pygubuai" in any AI assistant from any marked directory!
+
+See [MULTI_AI_SETUP.md](MULTI_AI_SETUP.md) for detailed multi-AI configuration.
 
 
 
@@ -193,6 +216,7 @@ All documentation is in the [docs/](docs/) folder:
 
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
 - **[Feature Showcase](docs/FEATURE_SHOWCASE.md)** - All features with examples
+- **[Multi-AI Setup](MULTI_AI_SETUP.md)** - Configure for Amazon Q, Kilo Code, Roo Code, Cline
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Architecture and API reference
 - **[Security Guide](docs/SECURITY_GUIDE.md)** - Security best practices
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment
@@ -247,17 +271,19 @@ See [examples/RUN_EXAMPLES.md](examples/RUN_EXAMPLES.md) for detailed instructio
 
 ```
 You: pygubuai create a login form
-Amazon Q: [Detects trigger word]
-          [Loads PygubuAI context]
-          [Runs: pygubu-create login 'login form']
-          [Shows: Created at /path/to/login/]
+AI Assistant: [Detects trigger word]
+              [Loads PygubuAI context]
+              [Runs: pygubu-create login 'login form']
+              [Shows: Created at /path/to/login/]
 
 You: pygubuai add a submit button
-Amazon Q: [Loads active project]
-          [Modifies .ui file]
-          [Updates Python code]
-          [Shows: Added submit button]
+AI Assistant: [Loads active project]
+              [Modifies .ui file]
+              [Updates Python code]
+              [Shows: Added submit button]
 ```
+
+Works with Amazon Q, Kilo Code, Roo Code, and Cline!
 
 No commands to memorize - just natural conversation!
 
