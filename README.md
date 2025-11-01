@@ -431,8 +431,7 @@ PygubuAI is built on top of [Pygubu](https://github.com/alejandroautalan/pygubu)
 - **PygubuAI Tools**: AI-assisted development workflow extensions
 ## Credits
 
-- **Pygubu**: Alejandro Autalán - https://github.com/alejandroautalan/pygubu
-- **PygubuAI Tools**: AI-assisted development workflow extensions
+- **Pygubu Creator**: Alejandro Autalán - https://github.com/alejandroautalan/pygubu
 - **PygubuAI Creator**: Teycir - https://github.com/Teycir
 ## Links
 
