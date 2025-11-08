@@ -434,6 +434,7 @@ PygubuAI is built on top of [Pygubu](https://github.com/alejandroautalan/pygubu)
 
 - [Pygubu](https://github.com/alejandroautalan/pygubu)
 - [Pygubu Designer](https://github.com/alejandroautalan/pygubu-designer)
+- [Teycir Ben Soltane](https://teycirbensoltane.tn)
 
 ---
 
