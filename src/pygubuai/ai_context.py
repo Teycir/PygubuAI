@@ -60,6 +60,7 @@ def _parse_ui_file(ui_file: Path) -> Tuple[List[Dict[str, str]], List[str]]:
     """Parse UI file for widgets and callbacks"""
     try:
         from defusedxml.ElementTree import parse
+
         tree = parse(ui_file)
         root = tree.getroot()
 

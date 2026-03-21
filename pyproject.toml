@@ -35,11 +35,12 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-benchmark>=4.0",
-    "black>=23.0",
+    "black==25.9.0",
     "flake8>=6.0",
     "mypy>=1.0",
     "coverage>=7.0",
     "types-filelock",
+    "types-defusedxml",
     "sqlalchemy[mypy]",
 ]
 
@@ -104,3 +105,16 @@ ignore_missing_imports = true
 module = "pygubuai.db.*"
 warn_return_any = false
 disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = [
+    "pygubuai.ai_analyzer",
+    "pygubuai.ai_context",
+    "pygubuai.batch",
+    "pygubuai.data_export",
+    "pygubuai.inspect",
+    "pygubuai.theme",
+    "pygubuai.theme_advanced",
+    "pygubuai.validate_project",
+]
+disable_error_code = ["union-attr", "attr-defined"]

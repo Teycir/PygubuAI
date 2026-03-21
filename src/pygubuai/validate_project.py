@@ -51,6 +51,7 @@ def validate_project(project_name: str) -> List[ValidationIssue]:
     # Validate UI file
     try:
         from defusedxml.ElementTree import parse
+
         tree = parse(ui_file)
         root = tree.getroot()
 

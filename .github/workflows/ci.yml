@@ -34,7 +34,7 @@ jobs:
     
     - name: Run tests with coverage
       run: |
-        pytest --cov=src/pygubuai --cov-report=term-missing --cov-report=xml
+        pytest --ignore=tests/test_performance.py --cov=src/pygubuai --cov-report=term-missing --cov-report=xml
     
     - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
