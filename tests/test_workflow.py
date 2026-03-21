@@ -188,6 +188,11 @@ class TestWorkflowSecurityFixes(unittest.TestCase):
 
         try:
             result = get_file_hash(test_file)
+            # On some platforms (notably Windows), chmod may not revoke read access.
+            # If so, simulate a read failure to still verify error handling behavior.
+            if result is not None:
+                with patch.object(pathlib.Path, "read_bytes", side_effect=PermissionError("permission denied")):
+                    result = get_file_hash(test_file)
             self.assertIsNone(result)
         finally:
             os.chmod(test_file, 0o644)
