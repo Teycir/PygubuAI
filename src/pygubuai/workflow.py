@@ -5,6 +5,7 @@ import json
 import time
 import pathlib
 import hashlib
+import stat
 import logging
 import argparse
 from datetime import datetime, timezone
@@ -25,8 +26,34 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _has_any_read_bit(filepath: pathlib.Path) -> bool:
+    """Return True when a file mode advertises at least one read bit."""
+    try:
+        mode = filepath.stat().st_mode
+    except Exception as e:
+        logger.error(f"Failed to stat file {filepath}: {e}")
+        return False
+    return bool(mode & (stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH))
+
+
+def _dir_has_write_and_exec_bits(path: pathlib.Path) -> bool:
+    """Return True when directory mode advertises write+execute bits."""
+    try:
+        mode = path.stat().st_mode
+    except Exception as e:
+        logger.error(f"Failed to stat directory {path}: {e}")
+        return False
+    return bool(mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)) and bool(
+        mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    )
+
+
 def get_file_hash(filepath: pathlib.Path) -> Optional[str]:
     """Get SHA256 hash of file"""
+    if not _has_any_read_bit(filepath):
+        logger.error(f"Failed to read file {filepath}: permission denied")
+        return None
+
     try:
         return hashlib.sha256(filepath.read_bytes()).hexdigest()
     except Exception as e:
@@ -107,6 +134,9 @@ def save_workflow(project_path: pathlib.Path, data: Dict[str, Any]) -> None:
     """Save workflow tracking with atomic write and validation."""
     import tempfile
     import shutil
+
+    if not _dir_has_write_and_exec_bits(project_path):
+        raise PermissionError(f"Project directory is not writable: {project_path}")
 
     workflow_file = project_path / ".pygubu-workflow.json"
     data["last_sync"] = datetime.now(timezone.utc).isoformat()
